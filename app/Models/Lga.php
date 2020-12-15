@@ -2,13 +2,22 @@
 
 namespace App\Models;
 
+use App\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
 class Lga extends Model
 {
+  use Sluggable;
+
+  /**
+   * set the attributes to slug from
+   *
+   * @var String
+   */
+  public $sluggable = 'name';
 
   const filterables = [
-    'name', 'state',
+    'name', 'state', 'enabled',
   ];
   /**
    * The attributes that are mass assignable.
@@ -16,7 +25,18 @@ class Lga extends Model
    * @var array
    */
   protected $fillable = [
-    'name', 'slug', 'lga_id',
+    'name', 'slug', 'state_id', 'enabled',
+  ];
+
+  /**
+   * The attributes that are hidden
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+    'deleted_at',
   ];
 
   /**
@@ -58,5 +78,17 @@ class Lga extends Model
   public function state()
   {
     return $this->belongsTo(State::class, 'state_id');
+  }
+
+  public function disable()
+  {
+    $this->towns()->update(['enabled' => false]);
+    $this->update(['enabled' => false]);
+  }
+
+  public function enabled()
+  {
+    $this->towns()->update(['enabled' => true]);
+    $this->update(['enabled' => true]);
   }
 }

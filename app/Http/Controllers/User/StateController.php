@@ -16,7 +16,7 @@ class StateController extends Controller
    */
   public function index(Request $request)
   {
-    $states = StateSearch::apply($request, 20);
+    $states = StateSearch::apply($request, null);
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);

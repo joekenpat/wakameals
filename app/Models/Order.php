@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
+use App\Traits\ShortCode;
+use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 
 class Order extends Model
 {
 
-  use GeneratesUuid;
+  use UuidForKey, ShortCode;
 
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
 
-  public function uuidColumns(): array
-  {
-    return ['id', 'user_id'];
-  }
+  protected $shortCodeConfig = [
+    [
+      'length' => 6,
+      'column_name' => 'dispatcher_code',
+      'unique' => true
+    ]
+  ];
 
   /**
    * The attributes that are mass assignable.
@@ -27,13 +26,15 @@ class Order extends Model
    * @var array
    */
   protected $fillable = [
+    'code',
     'user_id',
     'state_id',
     'lga_id',
     'town_id',
     'address',
     'status',
-    'delivery_code',
+    'dispatch_code',
+    'dispatcher_id',
   ];
 
   /**
@@ -67,10 +68,7 @@ class Order extends Model
    * @var array
    */
 
-  protected $casts = [
-    'id' => EfficientUuid::class,
-    'user_id' => EfficientUuid::class,
-  ];
+  protected $casts = [];
 
   public function ordered_meals()
   {
@@ -89,5 +87,27 @@ class Order extends Model
       $cost += $meals->sub_total;
     }
     return $cost;
+  }
+
+
+  /**
+   * The "booted" method of this model.
+   *
+   * @return void
+   */
+  protected static function booted()
+  {
+    static::created(function ($order) {
+      $code = $order->gen_short_code(8);
+      if (!static::where('id', '!=', $order->id)->whereCode($code)->withTrashed()->exists()) {
+        $order->code = $code;
+      } else {
+        $code = $order->gen_short_code(8);
+        while (static::where('id', '!=', $order->id)->whereCode($code)->withTrashed()->exists()) {
+          $code = $order->gen_short_code(8);
+        }
+        $order->code = $code;
+      }
+    });
   }
 }

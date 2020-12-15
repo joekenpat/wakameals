@@ -11,7 +11,7 @@ class LgaController extends Controller
 {
   public function index(Request $request)
   {
-    $lgas = LgaSearch::apply($request, 20);
+    $lgas = LgaSearch::apply($request, null);
     $response['status'] = 'success';
     $response['lgas'] = $lgas;
     return response()->json($response, Response::HTTP_OK);

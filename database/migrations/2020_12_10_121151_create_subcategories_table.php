@@ -18,7 +18,7 @@ class CreateSubcategoriesTable extends Migration
       $table->unsignedBigInteger('category_id');
       $table->string('name');
       $table->string('slug')->unique();
-      $table->string('icon');
+      $table->string('icon')->nullable()->default(null);
       $table->timestamp('created_at', 6)->useCurrent();
       $table->timestamp('updated_at', 6)->useCurrent()->nullable();
       $table->timestamp('deleted_at', 6)->nullable()->default(null);

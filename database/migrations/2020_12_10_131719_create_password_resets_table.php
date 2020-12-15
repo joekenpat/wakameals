@@ -16,7 +16,7 @@ class CreatePasswordResetsTable extends Migration
     Schema::create('password_resets', function (Blueprint $table) {
       $table->id();
       $table->string('resetable_type');
-      $table->efficientUuid('resetable_id');
+      $table->uuid('resetable_id');
       $table->integer('code');
       $table->boolean('used');
       $table->timestamp('expires_at', 6)->nullable()->default(null);

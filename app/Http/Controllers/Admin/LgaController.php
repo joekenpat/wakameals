@@ -1,64 +1,38 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Lga;
+use App\Services\LgaSearch;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class LgaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  public function index(Request $request)
+  {
+    $lgas = LgaSearch::apply($request, null);
+    $response['status'] = 'success';
+    $response['lgas'] = $lgas;
+    return response()->json($response, Response::HTTP_OK);
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function enable($lga_slug)
+  {
+    $lga = Lga::whereSlug($lga_slug)->firstOrFail();
+    $lga->enable();
+    $response['status'] = 'success';
+    $response['message'] = $lga->name . ' LGA and it\'s respective towns has been enabled for delivery';
+    return response()->json($response, Response::HTTP_OK);
+  }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Lga  $lga
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Lga $lga)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Lga  $lga
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Lga $lga)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Lga  $lga
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Lga $lga)
-    {
-        //
-    }
+  public function disable($lga_slug)
+  {
+    $lga = Lga::whereSlug($lga_slug)->firstOrFail();
+    $lga->disable();
+    $response['status'] = 'success';
+    $response['message'] = $lga->name . ' LGA and it\'s respective towns has been disabled for delivery';
+    return response()->json($response, Response::HTTP_OK);
+  }
 }

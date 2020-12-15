@@ -19,7 +19,7 @@ class Name implements Filter
   public static function apply(Builder $builder, $value)
   {
     $rules = [
-      'name' => 'string|min:5',
+      'name' => 'string|min:3',
     ];
     $valid_value = ['name' => $value];
     $validator = Validator::make($valid_value, $rules);

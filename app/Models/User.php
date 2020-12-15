@@ -2,21 +2,16 @@
 
 namespace App\Models;
 
+use App\Traits\UuidForKey;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-  use GeneratesUuid, Notifiable, HasApiTokens;
+  use UuidForKey, Notifiable, HasApiTokens;
 
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
 
   /**
    * The datetime format for this model.
@@ -64,7 +59,6 @@ class User extends Authenticatable
    */
   protected $casts = [
     'email_verified_at' => 'datetime',
-    'id' => EfficientUuid::class,
     'blocked_at' => 'datetime',
   ];
 
@@ -86,5 +80,10 @@ class User extends Authenticatable
   public function orders()
   {
     return $this->belongsTo(Order::class, 'user_id');
+  }
+
+  public function getAvatarAttribute($value): string
+  {
+    return $value == null ? null : public_path('images/users') . $value;
   }
 }

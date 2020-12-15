@@ -1,64 +1,25 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Guest;
 
+use App\Http\Controllers\Controller;
 use App\Models\Town;
+use App\Services\TownSearch;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class TownController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Town  $town
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Town $town)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Town  $town
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Town $town)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Town  $town
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Town $town)
-    {
-        //
-    }
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
+    $towns = TownSearch::apply($request, 20);
+    $response['status'] = 'success';
+    $response['towns'] = $towns;
+    return response()->json($response, Response::HTTP_OK);
+  }
 }

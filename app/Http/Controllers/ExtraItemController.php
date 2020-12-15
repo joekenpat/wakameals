@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\MealVariation;
+use App\Models\ExtraItem;
 use Illuminate\Http\Request;
 
-class MealVariationController extends Controller
+class ExtraItemController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -31,10 +31,10 @@ class MealVariationController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\MealVariation  $mealVariation
+     * @param  \App\Models\ExtraItem  $extraItem
      * @return \Illuminate\Http\Response
      */
-    public function show(MealVariation $mealVariation)
+    public function show(ExtraItem $extraItem)
     {
         //
     }
@@ -43,10 +43,10 @@ class MealVariationController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\MealVariation  $mealVariation
+     * @param  \App\Models\ExtraItem  $extraItem
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, MealVariation $mealVariation)
+    public function update(Request $request, ExtraItem $extraItem)
     {
         //
     }
@@ -54,10 +54,10 @@ class MealVariationController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\MealVariation  $mealVariation
+     * @param  \App\Models\ExtraItem  $extraItem
      * @return \Illuminate\Http\Response
      */
-    public function destroy(MealVariation $mealVariation)
+    public function destroy(ExtraItem $extraItem)
     {
         //
     }

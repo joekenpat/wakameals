@@ -3,16 +3,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 
 class OrderedMeal extends Model
 {
-
-  public function uuidColumns(): array
-  {
-    return ['order_id', 'meal_id'];
-  }
 
   /**
    * The attributes that are mass assignable.
@@ -57,10 +50,7 @@ class OrderedMeal extends Model
    * @var array
    */
 
-  protected $casts = [
-    'order_id' => EfficientUuid::class,
-    'meal_id' => EfficientUuid::class,
-  ];
+  protected $casts = [];
 
   public function order()
   {

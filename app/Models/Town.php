@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Model;
 
 class Town extends Model
 {
+  use Sluggable;
   const filterables = [
-    'name', 'state', 'lga',
+    'name', 'state', 'lga', 'enabled',
   ];
 
   /**
@@ -17,7 +19,18 @@ class Town extends Model
    */
   protected $fillable = [
     'id', 'name', 'slug', 'state_id',
-    'lga_id',
+    'lga_id', 'enabled',
+  ];
+
+  /**
+   * The attributes that are hidden
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+    'deleted_at',
   ];
 
   /**

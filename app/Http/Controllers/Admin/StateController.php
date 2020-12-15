@@ -3,62 +3,40 @@
 namespace App\Http\Controllers;
 
 use App\Models\State;
+use App\Services\StateSearch;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class StateController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
+    $states = StateSearch::apply($request, null);
+    $response['status'] = 'success';
+    $response['states'] = $states;
+    return response()->json($response, Response::HTTP_OK);
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+  public function enable($state_slug)
+  {
+    $state = State::whereSlug($state_slug)->firstOrFail();
+    $state->enable();
+    $response['status'] = 'success';
+    $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been enabled for delivery';
+    return response()->json($response, Response::HTTP_OK);
+  }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
-    public function show(State $state)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, State $state)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\State  $state
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(State $state)
-    {
-        //
-    }
+  public function disable($state_slug)
+  {
+    $state = State::whereSlug($state_slug)->firstOrFail();
+    $state->disable();
+    $response['status'] = 'success';
+    $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been disabled for delivery';
+    return response()->json($response, Response::HTTP_OK);
+  }
 }

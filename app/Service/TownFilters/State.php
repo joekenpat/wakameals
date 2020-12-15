@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Services\PlaceFilters;
+namespace App\Services\TownFilters;
 
 use App\Services\Filter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Validator;
+use App\Models\State as ModelsState;
 
 class State implements Filter
 {
@@ -19,13 +20,14 @@ class State implements Filter
   public static function apply(Builder $builder, $value)
   {
     $rules = [
-      'state' => 'integer|exists:states,id',
+      'state' => 'required|alpha_dash|exists:states,slug',
     ];
     $valid_value = ['state' => $value];
     $validator = Validator::make($valid_value, $rules);
     if (!$validator->fails()) {
+      $state = ModelsState::whereSlug($value)->firstOrFail();
       return $builder
-        ->where('state_id', $value);
+        ->where('state_id', $state->id);
     } else {
       return $builder;
     }

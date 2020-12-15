@@ -3,17 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class MealExtraItem extends Model
+class MealExtraItem extends Pivot
 {
 
-
-  public function uuidColumns(): array
-  {
-    return ['meal_id'];
-  }
 
   /**
    * The attributes that are mass assignable.
@@ -21,11 +15,8 @@ class MealExtraItem extends Model
    * @var array
    */
   protected $fillable = [
-    'name',
+    'extra_item_id',
     'meal_id',
-    'price',
-    'availability',
-    'measurement',
   ];
 
   /**
@@ -48,12 +39,7 @@ class MealExtraItem extends Model
    * @var array
    */
 
-  protected $casts = [
-    'email_verified_at' => 'datetime',
-    'id' => EfficientUuid::class,
-    'meal_id' => EfficientUuid::class,
-    'availability' => 'boolean',
-  ];
+  protected $casts = [];
 
   public function meal()
   {

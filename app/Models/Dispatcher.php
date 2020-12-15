@@ -2,21 +2,25 @@
 
 namespace App\Models;
 
+use App\Traits\ShortCode;
+use App\Traits\UuidForKey;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 
 class Dispatcher extends Authenticatable
 {
-  use GeneratesUuid, Notifiable, HasApiTokens;
+  use Notifiable, HasApiTokens, ShortCode, UuidForKey;
 
 
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
+  protected $shortCodeConfig = [
+    [
+      'length' => 6,
+      'column_name' => 'code',
+      'unique' => true
+    ]
+  ];
+
 
   /**
    * The attributes that are mass assignable.
@@ -25,6 +29,7 @@ class Dispatcher extends Authenticatable
    */
   protected $fillable = [
     'avatar',
+    'code',
     'first_name',
     'last_name',
     'email',
@@ -54,7 +59,6 @@ class Dispatcher extends Authenticatable
 
   protected $casts = [
     'email_verified_at' => 'datetime',
-    'id' => EfficientUuid::class,
     'blocked_at' => 'datetime',
   ];
 
@@ -66,5 +70,31 @@ class Dispatcher extends Authenticatable
   public function lga()
   {
     return $this->belongsTo(Lga::class, 'lga_id');
+  }
+
+  /**
+   * The "booted" method of this model.
+   *
+   * @return void
+   */
+  protected static function booted()
+  {
+    static::created(function ($dispatcher) {
+      $code = $dispatcher->gen_short_code(6);
+      if (!static::where('id', '!=', $dispatcher->id)->whereCode($code)->withTrashed()->exists()) {
+        $dispatcher->code = $code;
+      } else {
+        $code = $dispatcher->gen_short_code(6);
+        while (static::where('id', '!=', $dispatcher->id)->whereCode($code)->withTrashed()->exists()) {
+          $code = $dispatcher->gen_short_code(6);
+        }
+        $dispatcher->code = $code;
+      }
+    });
+  }
+
+  public function getAvatarAttribute($value): string
+  {
+    return $value == null ? null : public_path('images/dispatchers') . $value;
   }
 }

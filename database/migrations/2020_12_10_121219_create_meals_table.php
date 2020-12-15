@@ -14,15 +14,16 @@ class CreateMealsTable extends Migration
   public function up()
   {
     Schema::create('meals', function (Blueprint $table) {
-      $table->efficientUuid('id')->primary();
+      $table->uuid('id')->primary();
       $table->unsignedBigInteger('subcategory_id');
       $table->unsignedBigInteger('category_id');
       $table->string('slug')->unique();
       $table->string('name');
       $table->decimal('price');
-      $table->string('image');
-      $table->boolean('availability');
-      $table->string('measurement');
+      $table->string('image')->nullable()->default(null);
+      $table->boolean('available');
+      $table->integer('measurement_quantity');
+      $table->string('measurement_type');
       $table->text('description');
       $table->timestamp('created_at', 6)->useCurrent();
       $table->timestamp('updated_at', 6)->useCurrent()->nullable();

@@ -2,22 +2,14 @@
 
 namespace App\Models;
 
-
+use App\Traits\UuidForKey;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
 
 class Admin extends Authenticatable
 {
-  use Notifiable, HasApiTokens, GeneratesUuid;
-
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
-
+  use Notifiable, HasApiTokens, UuidForKey;
 
   /**
    * The attributes that are mass assignable.
@@ -62,7 +54,6 @@ class Admin extends Authenticatable
 
   protected $casts = [
     'email_verified_at' => 'datetime',
-    'id' => EfficientUuid::class,
     'blocked_at' => 'datetime',
   ];
 
@@ -74,5 +65,10 @@ class Admin extends Authenticatable
   public function lga()
   {
     return $this->belongsTo(Lga::class, 'lga_id');
+  }
+
+  public function getAvatarAttribute($value): string
+  {
+    return $value == null ? null : public_path('images/admins') . $value;
   }
 }

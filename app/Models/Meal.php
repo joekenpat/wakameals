@@ -2,19 +2,29 @@
 
 namespace App\Models;
 
+use App\Traits\Sluggable;
+use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
-use Dyrynda\Database\Support\GeneratesUuid;
-use Dyrynda\Database\Casts\EfficientUuid;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Meal extends Model
 {
 
-  use GeneratesUuid;
+  use UuidForKey, SoftDeletes, Sluggable;
 
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
+  /**
+   * set the attributes to slug from
+   *
+   * @var String
+   */
+  public $sluggable = 'name';
+
+  const filterables = [
+    'name', 'category', 'subcategory',
+    'max_price', 'min_price', 'available',
+  ];
+
 
   /**
    * The attributes that are mass assignable.
@@ -26,19 +36,25 @@ class Meal extends Model
     'slug',
     'price',
     'image',
-    'availability',
+    'available',
     'category_id',
     'subcategory_id',
-    'measurement',
+    'measurement_quantity',
+    'measurement_type',
     'description',
   ];
 
   /**
-   * The attributes that should be hidden for arrays.
+   * The attributes that are hidden
    *
    * @var array
    */
-  protected $hidden = [];
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+    'deleted_at',
+    'pivot',
+  ];
 
   /**
    * The datetime format for this model.
@@ -54,9 +70,14 @@ class Meal extends Model
    */
 
   protected $casts = [
-    'id' => EfficientUuid::class,
-    'availability' => 'boolean',
+    'available' => 'boolean',
   ];
+
+  protected $with = [
+    'category', 'subcategory',
+    'extra_items',
+  ];
+
 
   public function subcategory()
   {
@@ -75,6 +96,11 @@ class Meal extends Model
 
   public function extra_items()
   {
-    return $this->hasMany(MealExtraItem::class);
+    return $this->belongsToMany(ExtraItem::class, 'meal_extra_items')->using(MealExtraItem::class);
+  }
+
+  public function getImageAttribute($value)
+  {
+    return $value == null ? null : public_path('images/meals') . $value;
   }
 }

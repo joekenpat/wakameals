@@ -2,10 +2,35 @@
 
 namespace App\Models;
 
+use App\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Subcategory extends Model
 {
+  use SoftDeletes, Sluggable;
+
+  /**
+   * set the attributes to slug from
+   *
+   * @var String
+   */
+  public $sluggable = 'name';
+
+
+  /**
+   * The attributes that are hidden
+   *
+   * @var array
+   */
+  protected $hidden = [
+    'created_at',
+    'updated_at',
+    'deleted_at',
+  ];
+
+
   /**
    * The attributes that are mass assignable.
    *
@@ -43,6 +68,27 @@ class Subcategory extends Model
 
   public function getIconAttribute()
   {
-    return $this->icon !== null ? asset('images/categories/' . $this->icon) : null;
+    return $this->attributes['icon'] !== null ? asset('images/categories/' . $this->icon) : null;
+  }
+
+  /**
+   * The "booted" method of this model.
+   *
+   * @return void
+   */
+  protected static function booted()
+  {
+    static::saving(function ($model) {
+      $model_slug = Str::slug($model->attributes['name']);
+      if (!static::where('id', '!=', $model->id)->where('slug', $model_slug)->withTrashed()->exists()) {
+        $model->slug = $model_slug;
+      } else {
+        $count = 1;
+        while (static::where('id', '!=', $model->id)->where('slug', "{$model_slug}-" . $count)->withTrashed()->exists()) {
+          $count++;
+        }
+        $model->slug = "{$model_slug}-" . $count;
+      }
+    });
   }
 }

@@ -9,6 +9,11 @@ use Illuminate\Http\Response;
 
 class TownController extends Controller
 {
+   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
   public function index(Request $request)
   {
     $towns = TownSearch::apply($request, 20);
