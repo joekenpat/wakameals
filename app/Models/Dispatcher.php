@@ -21,6 +21,9 @@ class Dispatcher extends Authenticatable
     ]
   ];
 
+  const filterables = [
+    'name', 'state', 'lga', 'blocked',
+  ];
 
   /**
    * The attributes that are mass assignable.

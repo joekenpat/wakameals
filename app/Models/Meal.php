@@ -103,4 +103,24 @@ class Meal extends Model
   {
     return $value == null ? null : public_path('images/meals') . $value;
   }
+
+  public function make_available()
+  {
+    $this->update(['available' => true]);
+  }
+
+  public function make_unavailable()
+  {
+    $this->update(['available' => false]);
+  }
+
+  public function remove_single_extra_item(Int $extra_item_id)
+  {
+    $this->extra_items()->detach($extra_item_id);
+  }
+
+  public function remove_all_extra_item()
+  {
+    $this->extra_items()->detach();
+  }
 }

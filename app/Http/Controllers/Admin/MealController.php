@@ -84,13 +84,15 @@ class MealController extends Controller
       if ($request->has('meal_extras') && is_array($request->meal_extras) && count($request->meal_extras)) {
         $new_extras_items = $request->meal_extras;
         foreach ($new_extras_items as $meal_extra) {
-          $new_extra_item = ExtraItem::firstOrCreate([
-            'name' => $meal_extra['name'],
-            'available' => true,
-            'price' => $meal_extra['price'],
-            'measurement_type' => $meal_extra['measurement_type'],
-            'measurement_quantity' => $meal_extra['measurement_quantity'],
-          ]);
+          $new_extra_item = ExtraItem::firstOrCreate(
+            ['name' => $meal_extra['name']],
+            [
+              'available' => true,
+              'price' => $meal_extra['price'],
+              'measurement_type' => $meal_extra['measurement_type'],
+              'measurement_quantity' => $meal_extra['measurement_quantity'],
+            ]
+          );
           $new_meal->extra_items()->attach([$new_extra_item->id,]);
         }
       }
@@ -111,7 +113,7 @@ class MealController extends Controller
    * @param  Str  $meal_slug
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $meal_slug)
+  public function update(Request $request)
   {
     $this->validate($request, [
       'meal' => 'required|alpha_dash|exists:meals,slug',
@@ -165,17 +167,23 @@ class MealController extends Controller
         $image->save(public_path("images/meals/") . $img_name, 70, 'jpg');
         $updateable_meal->image = $img_name;
       }
+
       $updateable_meal->update();
+
+
       if ($request->has('meal_extras') && is_array($request->meal_extras) && count($request->meal_extras)) {
-        $new_extras_items = $request->meal_extras;
+
+        return  $new_extras_items = $request->meal_extras;
         foreach ($new_extras_items as $meal_extra) {
-          $new_extra_item = ExtraItem::firstOrCreate([
-            'name' => $meal_extra['name'],
-            'available' => true,
-            'price' => $meal_extra['price'],
-            'measurement_type' => $meal_extra['measurement_type'],
-            'measurement_quantity' => $meal_extra['measurement_quantity'],
-          ]);
+          $new_extra_item = ExtraItem::firstOrCreate(
+            ['name' => $meal_extra['name']],
+            [
+              'available' => true,
+              'price' => $meal_extra['price'],
+              'measurement_type' => $meal_extra['measurement_type'],
+              'measurement_quantity' => $meal_extra['measurement_quantity'],
+            ]
+          );
           $updateable_meal->extra_items()->attach([$new_extra_item->id,]);
         }
       }
@@ -190,13 +198,66 @@ class MealController extends Controller
   }
 
   /**
-   * Remove the specified resource from storage.
+   * make a meal available.
    *
-   * @param  \App\Models\Meal  $meal
+   * @param  Str  $meal_slug
    * @return \Illuminate\Http\Response
    */
-  public function destroy(Meal $meal)
+  public function make_available($meal_slug)
   {
-    //
+    $meal = Meal::whereSlug($meal_slug)->firstOrFail();
+    $meal->make_available();
+    $response['status'] = 'success';
+    $response['message'] = $meal->name . ' has been marked as Available';
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * make a meal unavailable.
+   *
+   * @param  Str  $meal_slug
+   * @return \Illuminate\Http\Response
+   */
+  public function make_unavailable($meal_slug)
+  {
+    $meal = Meal::whereSlug($meal_slug)->firstOrFail();
+    $meal->make_unavailable();
+    $response['status'] = 'success';
+    $response['message'] = $meal->name . ' has been marked as Unavailable';
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+
+
+  /**
+   * remove an extra item from a meal.
+   *
+   * @param  Str  $meal_slug
+   * @param  Str  $extra_item_slug
+   * @return \Illuminate\Http\Response
+   */
+  public function remove_single_extra_item($meal_slug, $extra_item_slug)
+  {
+    $meal = Meal::whereSlug($meal_slug)->firstOrFail();
+    $extra_item = ExtraItem::whereSlug($extra_item_slug)->firstOrFail();
+    $meal->remove_single_extra_item($extra_item->id);
+    $response['status'] = 'success';
+    $response['message'] = $extra_item->name . ' has been removed as an extra item from ' . $meal->name;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * remove an extra item from a meal.
+   *
+   * @param  Str  $meal_slug
+   * @return \Illuminate\Http\Response
+   */
+  public function remove_all_extra_items($meal_slug)
+  {
+    $meal = Meal::whereSlug($meal_slug)->firstOrFail();
+    $meal->remove_all_extra_items();
+    $response['status'] = 'success';
+    $response['message'] =  'All extra items from ' . $meal->name;
+    return response()->json($response, Response::HTTP_OK);
   }
 }

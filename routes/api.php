@@ -1,8 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
+use App\Http\Controllers\Admin\DispatcherController as AdminDispatcherController;
+use App\Http\Controllers\Admin\LgaController as AdminLgaController;
 use App\Http\Controllers\Admin\MealController as AdminMealController;
+use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
+use App\Http\Controllers\Admin\TownController as AdminTownController;
 use App\Http\Controllers\Guest\CategoryController;
 use App\Http\Controllers\Guest\LgaController;
 use App\Http\Controllers\Guest\MealController;
@@ -55,11 +59,25 @@ Route::group([], function () {
 //admin route
 Route::group(['prefix' => 'admin'], function () {
 
+  //admin category route
+  Route::group(['prefix' => 'dispatcher'], function () {
+    Route::get('list', [AdminDispatcherController::class, 'index']);
+    Route::post('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->where('dispatcher_code', '[a-z0-9-]+');
+    Route::post('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->where('dispatcher_code', '[a-z0-9-]+');
+  });
+
+
   //admin meal route
   Route::group(['prefix' => 'meal'], function () {
     Route::get('list', [AdminMealController::class, 'index']);
+    Route::get('make_available/{meal_slug}', [AdminMealController::class, 'make_available'])->where('meal_slug', '[a-z0-9-]+');
+    Route::get('make_unavailable/{meal_slug}', [AdminMealController::class, 'make_unavailable'])->where('meal_slug', '[a-z0-9-]+');
+    Route::get('{meal_slug}/remove_extra_item/{extra_item_slug}', [AdminMealController::class, 'remove_single_extra_item'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);
+    Route::get('make_unavailable/{meal_slug}', [AdminMealController::class, 'make_unavailable'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);
     Route::post('new', [AdminMealController::class, 'store']);
+    Route::post('update', [AdminMealController::class, 'update']);
   });
+
 
   //admin category route
   Route::group(['prefix' => 'category'], function () {
@@ -73,6 +91,25 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list', [AdminSubcategoryController::class, 'index']);
     Route::post('new', [AdminSubcategoryController::class, 'store']);
     Route::post('update', [AdminSubcategoryController::class, 'update']);
+  });
+
+  //admin state route
+  Route::group(['prefix' => 'state'], function () {
+    Route::get('list', [AdminStateController::class, 'index']);
+    Route::get('enable/{state_slug}', [AdminStateController::class, 'enable'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('disable/{state_slug}', [AdminStateController::class, 'disable'])->where('state_slug', '[a-z0-9-]+');
+  });
+
+  //admin lga route
+  Route::group(['prefix' => 'lga'], function () {
+    Route::get('list', [LgaController::class, 'index']);
+    Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('state_slug', '[a-z0-9-]+');
+  });
+
+  //admin town route
+  Route::group(['prefix' => 'town'], function () {
+    Route::get('list', [AdminTownController::class, 'index']);
   });
 });
 
