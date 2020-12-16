@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DispatcherController as AdminDispatcherController;
 use App\Http\Controllers\Admin\LgaController as AdminLgaController;
@@ -7,6 +8,7 @@ use App\Http\Controllers\Admin\MealController as AdminMealController;
 use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
 use App\Http\Controllers\Admin\TownController as AdminTownController;
+use App\Http\Controllers\Guest\CartController;
 use App\Http\Controllers\Guest\CategoryController;
 use App\Http\Controllers\Guest\LgaController;
 use App\Http\Controllers\Guest\MealController;
@@ -18,6 +20,7 @@ use App\Http\Controllers\User\MealController as UserMealController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\StateController as UserStateController;
 use App\Http\Controllers\User\TownController as UserTownController;
+use App\Http\Controllers\User\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +45,12 @@ Route::group([], function () {
 
   //guest meal route
   Route::post('meal/list', [MealController::class, 'index']);
+
+  //guest cart route
+  Route::post('cart/new', [CartController::class, 'store']);
+  Route::post('cart/sync', [CartController::class, 'sync_cart']);
+
+
   //guest state route
   Route::get('state/list', [StateController::class, 'index']);
   //guest lga route
@@ -59,6 +68,17 @@ Route::group([], function () {
 //admin route
 Route::group(['prefix' => 'admin'], function () {
 
+
+  //user auth route
+  Route::group(['prefix' => 'auth'], function () {
+    //user registration route
+    // Route::post('register/default', [UserController::class, 'default_register']);
+    //user lgin route
+    Route::post('login/default', [AdminController::class, 'default_login']);
+  });
+
+
+
   //admin category route
   Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('list', [AdminDispatcherController::class, 'index']);
@@ -72,7 +92,8 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list', [AdminMealController::class, 'index']);
     Route::get('make_available/{meal_slug}', [AdminMealController::class, 'make_available'])->where('meal_slug', '[a-z0-9-]+');
     Route::get('make_unavailable/{meal_slug}', [AdminMealController::class, 'make_unavailable'])->where('meal_slug', '[a-z0-9-]+');
-    Route::get('{meal_slug}/remove_extra_item/{extra_item_slug}', [AdminMealController::class, 'remove_single_extra_item'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);
+    Route::get('remove_extra_item/{meal_slug}/{extra_item_slug}', [AdminMealController::class, 'remove_single_extra_item'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);
+    Route::get('remove_extra_item/{meal_slug}', [AdminMealController::class, 'remove_all_extra_item'])->where(['meal_slug' => '[a-z0-9-]+']);
     Route::get('make_unavailable/{meal_slug}', [AdminMealController::class, 'make_unavailable'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);
     Route::post('new', [AdminMealController::class, 'store']);
     Route::post('update', [AdminMealController::class, 'update']);
@@ -116,6 +137,15 @@ Route::group(['prefix' => 'admin'], function () {
 
 //user routes
 Route::group(['prefix' => 'user'], function () {
+
+  //user auth route
+  Route::group(['prefix' => 'auth'], function () {
+    //user registration route
+    Route::post('register/default', [UserController::class, 'default_register']);
+    //user lgin route
+    Route::post('login/default', [UserController::class, 'default_login']);
+  });
+
 
   //user order route
   Route::group(['prefix' => 'order'], function () {

@@ -62,11 +62,16 @@ class UserController extends Controller
     foreach ($attribs as $attrib) {
       if (in_array($attrib, ['state', 'town', 'lga'])) {
         $new_user->{$attrib . '_id'} = $request->{$attrib};
+      } elseif ($attrib == 'password') {
+        $new_user->{$attrib} = Hash::make($request->{$attrib});
       } else {
         $new_user->{$attrib} = $request->{$attrib};
       }
     }
 
+    $new_user->status = 'active';
+    $new_user->last_login = now()->format('Y-m-d H:i:s.u');
+    $new_user->last_ip = request()->getClientIp();
     $new_user->save();
     $response['status'] = 'success';
     $response['message'] = 'Account has been created';
@@ -97,22 +102,22 @@ class UserController extends Controller
       'email' => 'sometimes|string|exists:users,' . $auth_by,
     ], $messages);
 
-    $credentials = [
-      "{$auth_by}" => $request->input('identifier'),
-      'password' => $request->input('password'),
-    ];
-
-    if (Auth::attempt($credentials, true)) {
+    if (User::where("$auth_by", $request->input('identifier'))->exists()) {
       $user = User::where($auth_by, $request->input('identifier'))->first();
-      auth('web')->login($user, true);
-      $this->auth_success($user);
-      $response['status'] = 'success';
-      $response['message'] = 'Log-in Successfull';
-      $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
-      return response()->json($response, Response::HTTP_OK);
+      if (password_verify($request->input('password'), $user->password)) {
+        $this->auth_success($user);
+        $response['status'] = 'success';
+        $response['message'] = 'Log-in Successfull';
+        $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
+        return response()->json($response, Response::HTTP_OK);
+      } else {
+        $response['message'] = 'Invalid Credentials';
+        $response['errors'] = ['password' => ['Password Incorrect']];
+        return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
     } else {
       $response['message'] = 'Invalid Credentials';
-      $response['errors'] = ['password' => ['Password Incorrect']];
+      $response['errors'] = ["$auth_by" => ['No account with that ' . "$auth_by"]];
       return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
   }

@@ -67,10 +67,14 @@ class DispatchController extends Controller
       }
     }
 
+    $new_dispatcher->status = 'active';
+    $new_dispatcher->last_login = now()->format('Y-m-d H:i:s.u');
+    $new_dispatcher->last_ip = request()->getClientIp();
+    $new_dispatcher->save();
     $new_dispatcher->save();
     $response['status'] = 'success';
     $response['message'] = 'Account has been created';
-    $response['token'] = $new_dispatcher->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
+    $response['token'] = $new_dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
     return response()->json($response, Response::HTTP_CREATED);
   }
 
@@ -108,7 +112,7 @@ class DispatchController extends Controller
       $this->auth_success($dispatcher);
       $response['status'] = 'success';
       $response['message'] = 'Log-in Successfull';
-      $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
+      $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
@@ -262,7 +266,7 @@ class DispatchController extends Controller
       $this->auth_success($dispatcher);
       $response['status'] = 'success';
       $response['message'] = 'Password Change Successfull';
-      $response['token'] = $dispatcher->createToken('bellefu')->accessToken;
+      $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';

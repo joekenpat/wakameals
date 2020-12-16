@@ -31,19 +31,18 @@ class OrderController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'town' => 'required_if:use_default_location,true|sometimes|nullable|alpha_dash|exists:towns,id',
-      'state' => 'required_if:use_default_location,true|sometimes|nullable|alpha_dash|exists:states,id',
-      'lga' => 'required_if:use_default_location,true|sometimes|nullable|alpha_dash|exists:lgas,id',
-      'address' => 'required_if:use_default_location,true|sometimes|nullable|string|min:5|max:255',
-      'use_default_location' => 'required|boolean',
+      'town' => 'required||integer|exists:towns,id',
+      'state' => 'required||integer|exists:states,id',
+      'lga' => 'required||integer|exists:lgas,id',
+      'address' => 'required|string|min:5|max:255',
       'recurring.dates.*' => 'sometimes|before_or_equal:7 days|after_or_equal:today',
       'recurring.times.*' => 'sometimes|before_or_equal:' . now()->addMinutes(45) . '|after_or_equal:today 5:15PM',
       'meals' => 'required|array|min:0',
-      'meals.*.name' => 'required|alpha_dash',
-      'meals.*.meal' => 'required|exists:meals,id',
+      'meals.*.name' => 'required|regex:/[A-Za-z0-9_ -]+/',
+      'meals.*.meal_id' => 'required|exists:meals,id',
       'meals.*.special_instruction' => 'sometimes|nullable|string',
       'meals.*.extra_items' => 'sometimes|array|min:0',
-      'meals.*.extra_items.*.extra_item' => 'required|exists:meal_extra_items,id',
+      'meals.*.extra_items.*.id' => 'required|exists:meal_extra_items,id',
       'meals.*.extra_items.*.quantity' => 'required|numeric|min:1|max:100',
     ], [
       'meals.*.meal.exists' => ':input is an invalid Meal identity',
@@ -64,7 +63,7 @@ class OrderController extends Controller
         foreach ($ordered_meals as $meal_item) {
           $new_ordered_meal = new OrderedMeal();
           $new_ordered_meal->name = $meal_item->name;
-          $new_ordered_meal->meal_id = $meal_item->meal;
+          $new_ordered_meal->meal_id = $meal_item->meal_id;
           $new_ordered_meal->special_instruction = $meal_item->special_instruction;
           $new_ordered_meal->status = 'created';
           $new_ordered_meal->order_id = $new_order->id;
