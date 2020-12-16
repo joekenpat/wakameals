@@ -19,7 +19,10 @@ class OrderController extends Controller
    */
   public function index()
   {
-    //
+    $orders = Order::whereUserId(Auth('user')->user()->id)->paginate(20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
   }
 
   /**
@@ -94,39 +97,5 @@ class OrderController extends Controller
       $response['message'] = $e->getMessage();
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-  }
-
-  /**
-   * Display the specified resource.
-   *
-   * @param  \App\Models\Order  $order
-   * @return \Illuminate\Http\Response
-   */
-  public function show(Order $order)
-  {
-    //
-  }
-
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Models\Order  $order
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, Order $order)
-  {
-    //
-  }
-
-  /**
-   * Remove the specified resource from storage.
-   *
-   * @param  \App\Models\Order  $order
-   * @return \Illuminate\Http\Response
-   */
-  public function destroy(Order $order)
-  {
-    //
   }
 }

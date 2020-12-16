@@ -146,8 +146,7 @@ class AdminController extends Controller
 
   public function logout()
   {
-    Auth::guard('user')->token()->revoke();
-    Auth::guard('user')->logout();
+    Auth::guard('admin')->token()->revoke();
     $response['status'] = 'success';
     $response['message'] = 'Admin Logged Out';
     return response()->json($response, Response::HTTP_OK);
@@ -171,7 +170,6 @@ class AdminController extends Controller
     $response['messages'] = 'Notification marked as Read';
     return response()->json($response, Response::HTTP_OK);
   }
-
 
   public function mark_admin_all_notification_as_read()
   {

@@ -12,6 +12,9 @@ class User extends Authenticatable
 {
   use UuidForKey, Notifiable, HasApiTokens;
 
+  const filterables = [
+    'name', 'state', 'lga', 'blocked',
+  ];
 
   /**
    * The datetime format for this model.

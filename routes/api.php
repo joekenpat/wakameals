@@ -68,7 +68,6 @@ Route::group([], function () {
 //admin route
 Route::group(['prefix' => 'admin'], function () {
 
-
   //user auth route
   Route::group(['prefix' => 'auth'], function () {
     //user registration route
