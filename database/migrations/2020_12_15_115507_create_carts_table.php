@@ -19,7 +19,7 @@ class CreateCartsTable extends Migration
       $table->uuid('meal_id');
       $table->string('name');
       $table->text('meal_extras')->nullable()->default(null);
-      $table->text('special_instructions')->nullable()->default(null);
+      $table->text('special_instruction')->nullable()->default(null);
       $table->timestamp('created_at', 6)->useCurrent();
       $table->timestamp('updated_at', 6)->useCurrent()->nullable();
     });

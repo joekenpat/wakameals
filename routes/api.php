@@ -37,13 +37,24 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //guest routes
 Route::group([], function () {
 
+  //user auth route
+  Route::group(['prefix' => 'auth'], function () {
+    //user registration route
+    Route::post('register/default', [UserController::class, 'default_register']);
+    //user lgin route
+    Route::post('login/default', [UserController::class, 'default_login']);
+  });
+
   //guest meal route
   Route::post('meal/list', [MealController::class, 'index']);
 
   //guest cart route
   Route::post('cart/new', [CartController::class, 'store']);
+  Route::post('cart/remove', [CartController::class, 'destroy'])->middleware('auth:user');
   Route::post('cart/sync', [CartController::class, 'sync_cart']);
 
+  //user order route
+  Route::get('order/list', [OrderController::class, 'index'])->middleware('auth:user');
 
   //guest state route
   Route::get('state/list', [StateController::class, 'index']);

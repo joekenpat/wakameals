@@ -90,17 +90,28 @@ class CartController extends Controller
       $cart_total = 0;
       foreach ($request->input('items') as $item) {
         $item_ids[] = $item['id'];
-        $cart_item = new Cart(
-          [
-            'name' => $item['name'],
-            'user_id' => null,
-            'meal_id' => $item['meal_id'],
-            'special_instruction' => $item['special_instruction'],
-            'meal_extras' => $item['meal_extras'],
-          ]
-        );
         if (Auth('user')->check()) {
-          $cart_item->firstOrCreate();
+          $cart_item = Auth('user')->user()->cart_items()->firstOrCreate(
+            [
+              'name' => $item['name'],
+              'user_id' => null,
+            ],
+            [
+              'meal_id' => $item['meal_id'],
+              'special_instruction' => $item['special_instruction'],
+              'meal_extras' => $item['meal_extras'],
+            ]
+          );
+        } else {
+          $cart_item = new Cart(
+            [
+              'name' => $item['name'],
+              'user_id' => null,
+              'meal_id' => $item['meal_id'],
+              'special_instruction' => $item['special_instruction'],
+              'meal_extras' => $item['meal_extras'],
+            ]
+          );
         };
         $cart_item->meal = Meal::find($cart_item->meal_id)->makeHidden(['subcategory', 'category', 'extra_items', 'subcategory_id', 'category_id',]);
         $cart_item->meal_extra_items = $this->meal_extra_items($cart_item);
@@ -148,5 +159,22 @@ class CartController extends Controller
       $extra_items_cost += $meal_item->sub_cost ?: 0;
     }
     return $meal_cost + $extra_items_cost;
+  }
+
+  public function destroy(Request $request)
+  {
+    $this->validate($request, [
+      'id' => 'required|uuid|exists:carts',
+    ]);
+    try {
+      Auth('user')->user()->cart_items()->whereId($request->id)->delete();
+      $response['status'] = 'success';
+      $response['message'] = 'Item has been removed from cart';
+      return response()->json($response, Response::HTTP_OK);
+    } catch (\Exception $e) {
+      $response['status'] = 'error';
+      $response['message'] = $e->getMessage() . ' File: ' . $e->getFile() . ' Line: ' . $e->getLine();
+      return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
   }
 }

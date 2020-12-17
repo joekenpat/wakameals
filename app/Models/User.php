@@ -80,6 +80,11 @@ class User extends Authenticatable
     return $this->belongsTo(Town::class, 'town_id');
   }
 
+  public function cart_items()
+  {
+    return $this->hasMany(Cart::class);
+  }
+
   public function orders()
   {
     return $this->belongsTo(Order::class, 'user_id');
