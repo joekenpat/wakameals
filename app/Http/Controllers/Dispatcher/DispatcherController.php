@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dispatcher;
+use App\Models\PasswordReset;
+use App\Notifications\PasswordResetCodeSent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
@@ -38,11 +42,11 @@ class DispatchController extends Controller
       'title' => 'required|in:mr,ms',
       'first_name' => 'required|alpha',
       'last_name' => 'required|alpha',
-      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone',
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
       'state' => 'required|integer|exists:states,id',
       'lga' => 'required|integer|exists:lgas,id',
       'town' => 'required|integer|exists:town,id',
-      'email' => 'required|email|unique:users,email',
+      'email' => 'required|email|unique:dispatchers,email',
       'password' => 'required|string|',
     ]);
 
@@ -98,7 +102,7 @@ class DispatchController extends Controller
     $this->validate($request, [
       'identifier' => 'required|string',
       'password' => 'required|string',
-      'email' => 'sometimes|string|exists:users,' . $auth_by,
+      'email' => 'sometimes|string|exists:dispatchers,' . $auth_by,
     ], $messages);
 
     $credentials = [
@@ -148,12 +152,12 @@ class DispatchController extends Controller
       if ($request->hasFile('avatar') && $request->avatar != null) {
         $image = Image::make($request->file('avatar'))->encode('jpg', 1);
         if (Auth('dispatcher')->user()->avatar != null) {
-          if (File::exists("images/users/" . Auth('dispatcher')->user()->avatar)) {
-            File::delete("images/users/" . Auth('dispatcher')->user()->avatar);
+          if (File::exists("images/dispatchers/" . Auth('dispatcher')->user()->avatar)) {
+            File::delete("images/dispatchers/" . Auth('dispatcher')->user()->avatar);
           }
         }
         $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
-        $image->save(public_path("images/users/") . $img_name, 70, 'jpg');
+        $image->save(public_path("images/dispatchers/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $dispatcher->avatar = $img_name;
       }
@@ -183,7 +187,7 @@ class DispatchController extends Controller
 
       $response['status'] = 'success';
       $response['message'] = 'Profile has been updated';
-      $response['user'] = $dispatcher;
+      $response['dispatcher'] = $dispatcher;
       return response()->json($response, Response::HTTP_OK);
     } catch (ModelNotFoundException $mnt) {
       $response['status'] = 'error';
@@ -198,8 +202,8 @@ class DispatchController extends Controller
 
   public function logout()
   {
-    Auth::guard('user')->token()->revoke();
-    Auth::guard('user')->logout();
+    Auth::guard('dispatcher')->token()->revoke();
+    Auth::guard('dispatcher')->logout();
     $response['status'] = 'success';
     $response['message'] = 'Dispatcher Logged Out';
     return response()->json($response, Response::HTTP_OK);
@@ -283,4 +287,7 @@ class DispatchController extends Controller
     ]);
     return;
   }
+
+
+  
 }

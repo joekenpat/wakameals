@@ -2,63 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Dispatcher;
 use App\Models\Order;
+use App\Services\OrderSearch;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class OrderController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index(Request $request)
+  {
+    $orders = OrderSearch::apply($request, 20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Order $order)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Order $order)
-    {
-        //
+  public function change_status(Request $request)
+  {
+    $this->validate($request, [
+      'order_id' => 'required|uuid',
+      'new_status' => 'required|alpha|in:completed,dispatched,confirmed,cancelled',
+      'dispatcher_code' => 'required_if:new_status,dispatched|alpha_num|size:8|exists:dispatchers,code'
+    ]);
+    if (in_array($request->new_status, ['completed', 'confirmed', 'cancelled'])) {
+      $order = Order::find($request->order_id);
+      $order->status = $request->new_status;
+    } else {
+      $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
+      $order = Order::find($request->order_id);
+      
     }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Order  $order
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Order $order)
-    {
-        //
-    }
+  }
 }

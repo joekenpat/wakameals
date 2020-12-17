@@ -75,6 +75,17 @@ class Dispatcher extends Authenticatable
     return $this->belongsTo(Lga::class, 'lga_id');
   }
 
+  public function password_resets()
+  {
+    $this->morphMany(PasswordReset::class, 'resetable');
+  }
+
+
+  public function getAvatarAttribute($value): string
+  {
+    return $value == null ? null : public_path('images/dispatchers') . $value;
+  }
+
   /**
    * The "booted" method of this model.
    *
@@ -82,22 +93,8 @@ class Dispatcher extends Authenticatable
    */
   protected static function booted()
   {
-    static::created(function ($dispatcher) {
-      $code = $dispatcher->gen_short_code(6);
-      if (!static::where('id', '!=', $dispatcher->id)->whereCode($code)->withTrashed()->exists()) {
-        $dispatcher->code = $code;
-      } else {
-        $code = $dispatcher->gen_short_code(6);
-        while (static::where('id', '!=', $dispatcher->id)->whereCode($code)->withTrashed()->exists()) {
-          $code = $dispatcher->gen_short_code(6);
-        }
-        $dispatcher->code = $code;
-      }
+    static::creating(function (Dispatcher $dispatcher) {
+      $dispatcher->AddShortCode();
     });
-  }
-
-  public function getAvatarAttribute($value): string
-  {
-    return $value == null ? null : public_path('images/dispatchers') . $value;
   }
 }

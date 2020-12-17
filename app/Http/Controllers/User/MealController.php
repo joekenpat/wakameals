@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category;
 use App\Services\MealSearch;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -16,9 +17,9 @@ class MealController extends Controller
    */
   public function index(Request $request)
   {
-    $meals = MealSearch::apply($request, 20);
+    $data = Category::all();
     $response['status'] = 'success';
-    $response['meals'] = $meals;
+    $response['data'] = $data;
     return response()->json($response, Response::HTTP_OK);
   }
 }

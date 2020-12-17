@@ -85,6 +85,11 @@ class User extends Authenticatable
     return $this->belongsTo(Order::class, 'user_id');
   }
 
+  public function password_resets()
+  {
+    $this->morphMany(PasswordReset::class, 'resetable');
+  }
+
   public function getAvatarAttribute($value): string
   {
     return $value == null ? null : public_path('images/users') . $value;

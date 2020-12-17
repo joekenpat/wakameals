@@ -46,7 +46,7 @@ class AdminController extends Controller
     $this->validate($request, [
       'identifier' => 'required|string',
       'password' => 'required|string',
-      'email' => 'sometimes|string|exists:users,' . $auth_by,
+      'email' => 'sometimes|string|exists:admins,' . $auth_by,
     ], $messages);
 
     if (Admin::where("$auth_by", $request->input('identifier'))->exists()) {
@@ -96,12 +96,12 @@ class AdminController extends Controller
       if ($request->hasFile('avatar') && $request->avatar != null) {
         $image = Image::make($request->file('avatar'))->encode('jpg', 1);
         if (Auth('admin')->user()->avatar != null) {
-          if (File::exists("images/users/" . Auth('admin')->user()->avatar)) {
-            File::delete("images/users/" . Auth('admin')->user()->avatar);
+          if (File::exists("images/admins/" . Auth('admin')->user()->avatar)) {
+            File::delete("images/admins/" . Auth('admin')->user()->avatar);
           }
         }
         $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
-        $image->save(public_path("images/users/") . $img_name, 70, 'jpg');
+        $image->save(public_path("images/admins/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $admin->avatar = $img_name;
       }
@@ -131,7 +131,7 @@ class AdminController extends Controller
 
       $response['status'] = 'success';
       $response['message'] = 'Profile has been updated';
-      $response['user'] = $admin;
+      $response['admin'] = $admin;
       return response()->json($response, Response::HTTP_OK);
     } catch (ModelNotFoundException $mnt) {
       $response['status'] = 'error';
@@ -200,15 +200,15 @@ class AdminController extends Controller
       'retype_new_password' => 'required|string|same:new_password',
     ]);
 
-    $admin = Admin::find(Auth::id());
+    $admin = Admin::find(Auth('admin')->id());
     $credentials = [
       "email" => $admin->email,
       'password' => $request->input('current_password'),
     ];
 
-    if (Auth::guard('web')->attempt($credentials)) {
+    if (password_verify($request->input('password'), $admin->password)) {
       $admin->password = Hash::make($request->input('new_password'));
-      $admin->update;
+      $admin->update();
       $this->auth_success($admin);
       $response['status'] = 'success';
       $response['message'] = 'Password Change Successfull';

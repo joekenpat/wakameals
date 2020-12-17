@@ -55,6 +55,8 @@ class Meal extends Model
     'deleted_at',
     'pivot',
     'available',
+    'category_id',
+    'subcategory_id',
   ];
 
   /**
@@ -75,7 +77,7 @@ class Meal extends Model
   ];
 
   protected $with = [
-    'category', 'subcategory',
+    // 'category', 'subcategory',
     'extra_items',
   ];
 

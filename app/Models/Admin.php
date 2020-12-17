@@ -67,6 +67,11 @@ class Admin extends Authenticatable
     return $this->belongsTo(Lga::class, 'lga_id');
   }
 
+  public function password_resets()
+  {
+    $this->morphMany(PasswordReset::class, 'resetable');
+  }
+
   public function getAvatarAttribute($value): string
   {
     return $value == null ? null : public_path('images/admins') . $value;

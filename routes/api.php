@@ -8,19 +8,14 @@ use App\Http\Controllers\Admin\MealController as AdminMealController;
 use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
 use App\Http\Controllers\Admin\TownController as AdminTownController;
-use App\Http\Controllers\Guest\CartController;
-use App\Http\Controllers\Guest\CategoryController;
-use App\Http\Controllers\Guest\LgaController;
-use App\Http\Controllers\Guest\MealController;
-use App\Http\Controllers\Guest\StateController;
-use App\Http\Controllers\Guest\SubcategoryController;
-use App\Http\Controllers\Guest\TownController;
-use App\Http\Controllers\User\LgaController as UserLgaController;
-use App\Http\Controllers\User\MealController as UserMealController;
+use App\Http\Controllers\User\LgaController;
+use App\Http\Controllers\User\MealController;
 use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\StateController as UserStateController;
-use App\Http\Controllers\User\TownController as UserTownController;
+use App\Http\Controllers\User\StateController;
+use App\Http\Controllers\User\TownController;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\User\CategoryController;
+use App\Http\Controllers\User\SubcategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,14 +49,9 @@ Route::group([], function () {
   //guest state route
   Route::get('state/list', [StateController::class, 'index']);
   //guest lga route
-  Route::get('lga/list', [LgaController::class, 'index']);
+  Route::get('lga/list/{state_slug}', [LgaController::class, 'index'])->where('state_slug', '[a-z0-9-]+');
   //guest town route
-  Route::get('town/list', [TownController::class, 'index']);
-  //guest category route
-  Route::get('category/list', [CategoryController::class, 'index']);
-
-  //guest subcategory route
-  Route::get('subcategory/list', [SubcategoryController::class, 'index']);
+  Route::get('town/list/{lga_slug}', [TownController::class, 'index'])->where('lga_slug', '[a-z0-9-]+');
 });
 
 
@@ -135,7 +125,7 @@ Route::group(['prefix' => 'admin'], function () {
 
 
 //user routes
-Route::group(['prefix' => 'user'], function () {
+Route::group([], function () {
 
   //user auth route
   Route::group(['prefix' => 'auth'], function () {
@@ -153,21 +143,21 @@ Route::group(['prefix' => 'user'], function () {
 
   //user meal route
   Route::group(['prefix' => 'meal'], function () {
-    Route::get('list', [UserMealController::class, 'index']);
+    Route::get('list', [MealController::class, 'index']);
   });
 
   //user state route
   Route::group(['prefix' => 'state'], function () {
-    Route::get('list', [UserStateController::class, 'index']);
+    Route::get('list', [StateController::class, 'index']);
   });
 
   //user lga route
   Route::group(['prefix' => 'lga'], function () {
-    Route::get('list', [UserLgaController::class, 'index']);
+    Route::get('list', [LgaController::class, 'index']);
   });
 
   //user town route
   Route::group(['prefix' => 'town'], function () {
-    Route::get('list', [UserTownController::class, 'index']);
+    Route::get('list', [TownController::class, 'index']);
   });
 });

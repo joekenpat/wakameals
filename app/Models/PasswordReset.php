@@ -2,10 +2,56 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Traits\ShortCode;
 use Illuminate\Database\Eloquent\Model;
 
 class PasswordReset extends Model
 {
-    use HasFactory;
+  use ShortCode;
+  protected $fillable = [
+    'user_id', 'code', 'used', 'expires_at'
+  ];
+
+  protected $shortCodeConfig = [
+    [
+      'length' => 6,
+      'column_name' => 'code',
+      'unique' => true
+    ]
+  ];
+
+  /**
+   * The datetime format for this model.
+   *
+   * @var String
+   */
+  protected $dateFormat = 'Y-m-d H:i:s.u';
+
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+  protected $casts = [
+    'expires_at' => 'datetime',
+    'used' => 'boolean',
+  ];
+
+  public function resetable()
+  {
+    return $this->morphTo();
+  }
+
+
+  /**
+   * The "booted" method of this model.
+   *
+   * @return void
+   */
+  protected static function booted()
+  {
+    static::creating(function (PasswordReset $password_reset) {
+      $password_reset->AddShortCode();
+    });
+  }
 }

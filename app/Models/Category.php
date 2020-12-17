@@ -34,7 +34,15 @@ class Category extends Model
    * @var array
    */
   protected $withCount = [
-    'meals', 'subcategories',
+    'subcategories', 'meals'
+  ];
+  /**
+   * Realations.
+   *
+   * @var array
+   */
+  protected $with = [
+    'subcategories',
   ];
 
   /**

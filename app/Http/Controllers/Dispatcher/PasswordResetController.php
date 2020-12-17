@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dispatcher;
 use App\Models\PasswordReset;
 use App\Models\User;
 use App\Notifications\PasswordResetCodeSent;
@@ -17,18 +18,18 @@ class PasswordResetController extends Controller
   public function password_reset_request(Request $request)
   {
     $this->validate($request, [
-      'email' => 'required|email|exists:users',
+      'email' => 'required|email|exists:dispatchers',
     ], [
       'email.exists' => 'No Account With Found for :input'
     ]);
     try {
-      $user = User::whereEmail($request->email)->firstOrFail();
+      $dispatcher = Dispatcher::whereEmail($request->email)->firstOrFail();
       $new_password_reset = new PasswordReset([
         'used' => false,
         'expires_at' => now()->addMinutes(30)
       ]);
-      $user->password_resets()->save($new_password_reset);
-      $user->notify(new PasswordResetCodeSent($user, $new_password_reset));
+      $dispatcher->password_resets()->save($new_password_reset);
+      $dispatcher->notify(new PasswordResetCodeSent($dispatcher, $new_password_reset));
       $response['status'] = 'success';
       $response['message'] = 'A reset code has been sent to email, please follow the instructions there.';
       return response()->json($response, Response::HTTP_OK);
@@ -45,23 +46,23 @@ class PasswordResetController extends Controller
       'id' => 'required|string',
       'token' => 'required|string',
     ], [
-      'id.alpha_num' => 'Invalid User',
+      'id.alpha_num' => 'Invalid Dispatcher',
       'token.alpha_num' => 'Invalid Token'
     ]);
 
     $identity['email'] = Crypt::decryptString($request->id);
     $validator = Validator::make($identity, [
-      'email' => 'required|email|exists:users'
+      'email' => 'required|email|exists:dispatchers'
     ]);
     if (!$validator->fails()) {
-      $user = User::whereEmail($identity['email'])->firstOrFail();
+      $dispatcher = Dispatcher::whereEmail($identity['email'])->firstOrFail();
       $credentials['code'] = Crypt::decryptString($request->token);
       $validator = Validator::make($credentials, [
         'code' => 'required|alpha_num|exists:password_resets'
       ]);
       if (!$validator->fails()) {
 
-        $password_reset = $user->password_resets()->whereCode($credentials['code'])->whereUsed(false)->firstOrFail();
+        $password_reset = $dispatcher->password_resets()->whereCode($credentials['code'])->whereUsed(false)->firstOrFail();
         if (!now()->greaterThan($password_reset->expires_at)) {
           $response['status'] = 'success';
           $response['message'] = 'You can now enter a new password';
@@ -75,7 +76,7 @@ class PasswordResetController extends Controller
         }
       } else {
         $response['status'] = 'error';
-        $response['message'] = 'Token Invalid for user';
+        $response['message'] = 'Token Invalid for dispatcher';
         return response()->json($response, Response::HTTP_BAD_REQUEST);
       }
     } else {
@@ -88,19 +89,19 @@ class PasswordResetController extends Controller
   public function password_reset(Request $request)
   {
     $this->validate($request, [
-      'email' => 'required|email|exists:users',
+      'email' => 'required|email|exists:dispatchers',
       'code' => 'required|alpha_num|exists:password_resets',
       'password' => 'required|string|min:5|max:15',
       'c_password' => 'required|same:password',
     ]);
 
-    $user = User::whereEmail($request->email)->firstOrFail();
-    $user_password_reset = $user->password_resets()->whereCode($request->code)->whereUsed(false)->firstOrFail();
-    if (!now()->greaterThan($user_password_reset->expires_at)) {
-      $user->password = Hash::make($request->password);
-      $user->update();
-      $user_password_reset->used = true;
-      $user_password_reset->update();
+    $dispatcher = Dispatcher::whereEmail($request->email)->firstOrFail();
+    $dispatcher_password_reset = $dispatcher->password_resets()->whereCode($request->code)->whereUsed(false)->firstOrFail();
+    if (!now()->greaterThan($dispatcher_password_reset->expires_at)) {
+      $dispatcher->password = Hash::make($request->password);
+      $dispatcher->update();
+      $dispatcher_password_reset->used = true;
+      $dispatcher_password_reset->update();
       $response['status'] = 'success';
       $response['message'] = 'Password Reset Successful';
       return response()->json($response, Response::HTTP_OK);

@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\PasswordReset;
 use App\Models\User;
+use App\Notifications\PasswordResetCodeSent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
@@ -260,13 +264,13 @@ class UserController extends Controller
       'password' => $request->input('current_password'),
     ];
 
-    if (Auth::guard('web')->attempt($credentials)) {
+    if (password_verify($request->input('password'), $user->password)) {
       $user->password = Hash::make($request->input('new_password'));
       $user->update;
       $this->auth_success($user);
       $response['status'] = 'success';
       $response['message'] = 'Password Change Successfull';
-      $response['token'] = $user->createToken('bellefu')->accessToken;
+      $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
@@ -283,4 +287,5 @@ class UserController extends Controller
     ]);
     return;
   }
+
 }
