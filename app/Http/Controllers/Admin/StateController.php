@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\State;
-use App\Services\StateSearch;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -17,7 +16,7 @@ class StateController extends Controller
    */
   public function index(Request $request)
   {
-    $states = StateSearch::apply($request, null);
+    $states = State::get();
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);
