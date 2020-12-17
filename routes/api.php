@@ -14,8 +14,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\StateController;
 use App\Http\Controllers\User\TownController;
 use App\Http\Controllers\User\UserController;
-use App\Http\Controllers\User\CategoryController;
-use App\Http\Controllers\User\SubcategoryController;
+use App\Http\Controllers\User\CartController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
