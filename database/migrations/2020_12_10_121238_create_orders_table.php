@@ -18,7 +18,7 @@ class CreateOrdersTable extends Migration
       $table->string('code', 8)->unique();
       $table->string('dispatch_code', 8)->unique()->nullable()->default(null);
       $table->uuid('user_id');
-      $table->uuid('dispatcher_id');
+      $table->uuid('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('state_id')->nullable()->default(null);
       $table->unsignedBigInteger('lga_id')->nullable()->default(null);
       $table->unsignedBigInteger('town_id')->nullable()->default(null);

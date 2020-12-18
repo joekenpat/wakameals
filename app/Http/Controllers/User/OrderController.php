@@ -65,23 +65,24 @@ class OrderController extends Controller
         $ordered_meals = $request->meals;
         foreach ($ordered_meals as $meal_item) {
           $new_ordered_meal = new OrderedMeal();
-          $new_ordered_meal->name = $meal_item->name;
-          $new_ordered_meal->meal_id = $meal_item->meal_id;
-          $new_ordered_meal->special_instruction = $meal_item->special_instruction;
+          $new_ordered_meal->name = $meal_item['name'];
+          $new_ordered_meal->meal_id = $meal_item['meal_id'];
+          $new_ordered_meal->special_instruction = $meal_item['special_instruction'];
           $new_ordered_meal->status = 'created';
           $new_ordered_meal->order_id = $new_order->id;
-          $new_order->saveOrFail();
+          $new_order->save();
 
-          if ($request->has('meals.extra_items') && is_array($request->meals['extra_items']) && count($request->meals['extra_items'])) {
-            $ordered_meals_extra_items = $request->meals['extra_items'];
+          if ($request->has('meals.meal_extras') && is_array($request->meals->meal_extras) && count($request->meals->meal_extras)) {
+            return "i reach meals extras";
+            $ordered_meals_extra_items = $request->meals['meal_extras'];
             foreach ($ordered_meals_extra_items as $meals_extra_item) {
               $new_ordered_meals_extra_item = new OrderedMealExtraItem();
-              $new_ordered_meals_extra_item->meal_extra_item_id = $meals_extra_item->extra_item;
-              $new_ordered_meals_extra_item->ordered_meal_id = $meals_extra_item->$new_ordered_meal->id;
-              $new_ordered_meals_extra_item->quantity = $meals_extra_item->quantity;
+              $new_ordered_meals_extra_item->meal_extra_item_id = $meals_extra_item['extra_item'];
+              $new_ordered_meals_extra_item->ordered_meal_id = $new_ordered_meal->id;
+              $new_ordered_meals_extra_item->quantity = $meals_extra_item['quantity'];
               $new_ordered_meals_extra_item->status = 'created';
               $new_ordered_meals_extra_item->order_id = $new_order->id;
-              $new_order->saveOrFail();
+              $new_order->save();
             }
           }
         }
@@ -94,7 +95,7 @@ class OrderController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } catch (\Exception $e) {
       $response['status'] = 'error';
-      $response['message'] = $e->getMessage();
+      $response['message'] = $e->getMessage() . " File :" . $e->getFile() . " Line: " . $e->getLine();
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
   }

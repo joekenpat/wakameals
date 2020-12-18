@@ -46,7 +46,7 @@ Route::group([], function () {
   });
 
   //guest meal route
-  Route::post('meal/list', [MealController::class, 'index']);
+  Route::get('meal/list', [MealController::class, 'index']);
 
   //guest cart route
   Route::post('cart/new', [CartController::class, 'store']);
@@ -54,8 +54,10 @@ Route::group([], function () {
   Route::post('cart/sync', [CartController::class, 'sync_cart']);
 
   //user order route
-  Route::get('order/list', [OrderController::class, 'index'])->middleware('auth:user');
-
+  Route::group(['prefix' => 'order', 'middleware' => ['auth:user']], function () {
+    Route::get('list', [OrderController::class, 'index']);
+    Route::post('new', [OrderController::class, 'store']);
+  });
   //guest state route
   Route::get('state/list', [StateController::class, 'index']);
   //guest lga route
@@ -130,44 +132,5 @@ Route::group(['prefix' => 'admin'], function () {
   //admin town route
   Route::group(['prefix' => 'town'], function () {
     Route::get('list', [AdminTownController::class, 'index']);
-  });
-});
-
-
-//user routes
-Route::group([], function () {
-
-  //user auth route
-  Route::group(['prefix' => 'auth'], function () {
-    //user registration route
-    Route::post('register/default', [UserController::class, 'default_register']);
-    //user lgin route
-    Route::post('login/default', [UserController::class, 'default_login']);
-  });
-
-
-  //user order route
-  Route::group(['prefix' => 'order'], function () {
-    Route::post('new', [OrderController::class, 'store']);
-  });
-
-  //user meal route
-  Route::group(['prefix' => 'meal'], function () {
-    Route::get('list', [MealController::class, 'index']);
-  });
-
-  //user state route
-  Route::group(['prefix' => 'state'], function () {
-    Route::get('list', [StateController::class, 'index']);
-  });
-
-  //user lga route
-  Route::group(['prefix' => 'lga'], function () {
-    Route::get('list', [LgaController::class, 'index']);
-  });
-
-  //user town route
-  Route::group(['prefix' => 'town'], function () {
-    Route::get('list', [TownController::class, 'index']);
   });
 });

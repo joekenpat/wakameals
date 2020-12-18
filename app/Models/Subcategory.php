@@ -55,9 +55,7 @@ class Subcategory extends Model
    *
    * @var array
    */
-  protected $with = [
-    'meals',
-  ];
+  protected $with = [];
 
   /**
    * The datetime format for this model.

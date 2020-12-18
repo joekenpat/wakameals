@@ -5,11 +5,12 @@ namespace App\Models;
 use App\Traits\ShortCode;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
 
-  use UuidForKey, ShortCode;
+  use UuidForKey, ShortCode, SoftDeletes;
 
 
   protected $shortCodeConfig = [
@@ -97,7 +98,7 @@ class Order extends Model
    */
   protected static function booted()
   {
-    static::created(function ($order) {
+    static::creating(function ($order) {
       $code = $order->gen_short_code(8);
       if (!static::where('id', '!=', $order->id)->whereCode($code)->withTrashed()->exists()) {
         $order->code = $code;

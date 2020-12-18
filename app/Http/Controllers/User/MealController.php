@@ -15,7 +15,7 @@ class MealController extends Controller
    */
   public function index()
   {
-    $data = Category::all();
+    $data = Category::with(['subcategories.meals'])->get();
     $response['status'] = 'success';
     $response['data'] = $data;
     return response()->json($response, Response::HTTP_OK);

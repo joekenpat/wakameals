@@ -41,9 +41,7 @@ class Category extends Model
    *
    * @var array
    */
-  protected $with = [
-    'subcategories',
-  ];
+  protected $with = [];
 
   /**
    * The attributes that are hidden
