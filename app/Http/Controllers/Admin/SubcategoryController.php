@@ -77,33 +77,42 @@ class SubcategoryController extends Controller
       'category' => 'sometimes|nullable|intger|exists:categories,slug',
       'icon' => 'sometimes|nullable|image|mimes:png,jpg,svg,jpeg,gif',
     ]);
-
-    $subcategory = Subcategory::whereSlug($subcategory_slug)->firstOrFail();
-    if (isset($request->category)) {
-      $cat = Category::whereSlug($request->category)->firstOrFail();
-      $subcategory->category_id = $cat->id;
-    }
-    if (isset($request->name)) {
-      $subcategory->name = $request->name;
-    }
-    $subcategory->update();
-
-    //adding images
-    if ($request->hasFile('icon') && $request->file('icon') != null) {
-      $image = Image::make($request->file('icon'))->encode('jpg', 1);
-      if ($subcategory->icon != null) {
-        if (File::exists("images/subcategories/" . $subcategory->icon)) {
-          File::delete("images/subcategories/" . $subcategory->icon);
-        }
+    try {
+      $subcategory = Subcategory::whereSlug($subcategory_slug)->firstOrFail();
+      if (isset($request->category)) {
+        $cat = Category::whereSlug($request->category)->firstOrFail();
+        $subcategory->category_id = $cat->id;
       }
-      $img_name = sprintf("SUBCAT%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
-      $image->save(public_path("images/categories/") . $img_name, 70, 'jpg');
-      $subcategory->icon = $img_name;
+      if (isset($request->name)) {
+        $subcategory->name = $request->name;
+      }
       $subcategory->update();
-    }
 
-    $response['status'] = 'success';
-    $response['message'] = 'Subcategory Updated';
-    return response()->json($response, Response::HTTP_OK);
+      //adding images
+      if ($request->hasFile('icon') && $request->file('icon') != null) {
+        $image = Image::make($request->file('icon'))->encode('jpg', 1);
+        if ($subcategory->icon != null) {
+          if (File::exists("images/subcategories/" . $subcategory->icon)) {
+            File::delete("images/subcategories/" . $subcategory->icon);
+          }
+        }
+        $img_name = sprintf("SUBCAT%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
+        $image->save(public_path("images/categories/") . $img_name, 70, 'jpg');
+        $subcategory->icon = $img_name;
+        $subcategory->update();
+      }
+
+      $response['status'] = 'success';
+      $response['message'] = 'Subcategory Updated';
+      return response()->json($response, Response::HTTP_OK);
+    } catch (ModelNotFoundException $mnf) {
+      $response['status'] = 'error';
+      $response['message'] = 'Category not found';
+      return response()->json($response, Response::HTTP_NOT_FOUND);
+    } catch (\Exception $e) {
+      $response['status'] = 'error';
+      $response['message'] = $e->getMessage();
+      return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
   }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
@@ -73,27 +74,37 @@ class CategoryController extends Controller
       'icon' => 'sometimes|nullable|image|mimes:png,jpg,svg,jpeg,gif',
     ]);
 
-    $category = Category::whereSlug($category_slug)->firstOrFail();
-    if (isset($request->name)) {
-      $category->name = $request->name;
-    }
-    $category->update();
-
-    //adding images
-    if ($request->hasFile('icon') && $request->file('icon') != null) {
-      $image = Image::make($request->file('icon'))->encode('jpg', 1);
-      if ($category->icon != null) {
-        if (File::exists("images/subcategories/" . $category->icon)) {
-          File::delete("images/subcategories/" . $category->icon);
-        }
+    try {
+      $category = Category::whereSlug($category_slug)->firstOrFail();
+      if (isset($request->name)) {
+        $category->name = $request->name;
       }
-      $img_name = sprintf("SUBCAT%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
-      $image->save(public_path("images/categories/") . $img_name, 70, 'jpg');
-      $category->icon = $img_name;
       $category->update();
+
+      //adding images
+      if ($request->hasFile('icon') && $request->file('icon') != null) {
+        $image = Image::make($request->file('icon'))->encode('jpg', 1);
+        if ($category->icon != null) {
+          if (File::exists("images/subcategories/" . $category->icon)) {
+            File::delete("images/subcategories/" . $category->icon);
+          }
+        }
+        $img_name = sprintf("SUBCAT%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
+        $image->save(public_path("images/categories/") . $img_name, 70, 'jpg');
+        $category->icon = $img_name;
+        $category->update();
+      }
+      $response['status'] = 'success';
+      $response['message'] = 'Category Updated';
+      return response()->json($response, Response::HTTP_OK);
+    } catch (ModelNotFoundException $mnf) {
+      $response['status'] = 'error';
+      $response['message'] = 'Category not found';
+      return response()->json($response, Response::HTTP_NOT_FOUND);
+    } catch (\Exception $e) {
+      $response['status'] = 'error';
+      $response['message'] = $e->getMessage();
+      return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-    $response['status'] = 'success';
-    $response['message'] = 'Category Updated';
-    return response()->json($response, Response::HTTP_OK);
   }
 }
