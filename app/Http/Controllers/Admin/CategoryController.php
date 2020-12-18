@@ -66,15 +66,15 @@ class CategoryController extends Controller
    * @param Str $subcat_slug
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $subcat_slug)
+  public function update(Request $request, $cat_slug)
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable|string|min:3|max:245',
       'icon' => 'sometimes|nullable|image|mimes:png,jpg,svg,jpeg,gif',
     ]);
 
-    $category = Category::whereSlug($subcat_slug)->firstOrFail();
-    if (isset($request->category)) {
+    $category = Category::whereSlug($cat_slug)->firstOrFail();
+    if (isset($request->name)) {
       $category->name = $request->name;
     }
     $category->update();

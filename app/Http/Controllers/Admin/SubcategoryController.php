@@ -70,7 +70,7 @@ class SubcategoryController extends Controller
    * @param Str $subcat_slug
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $subcat_slug)
+  public function update(Request $request, $subcategory_slug)
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable|string|min:3|max:245',
@@ -78,12 +78,12 @@ class SubcategoryController extends Controller
       'icon' => 'sometimes|nullable|image|mimes:png,jpg,svg,jpeg,gif',
     ]);
 
-    $subcategory = Subcategory::whereSlug($subcat_slug)->firstOrFail();
+    $subcategory = Subcategory::whereSlug($subcategory_slug)->firstOrFail();
     if (isset($request->category)) {
       $cat = Category::whereSlug($request->category)->firstOrFail();
       $subcategory->category_id = $cat->id;
     }
-    if (isset($request->category)) {
+    if (isset($request->name)) {
       $subcategory->name = $request->name;
     }
     $subcategory->update();

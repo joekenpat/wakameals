@@ -46,6 +46,8 @@ class DispatchController extends Controller
       'state' => 'required|integer|exists:states,id',
       'lga' => 'required|integer|exists:lgas,id',
       'town' => 'required|integer|exists:town,id',
+      'address' => 'required|string',
+      'type' => 'required|in:door_delivery,pickup',
       'email' => 'required|email|unique:dispatchers,email',
       'password' => 'required|string|',
     ]);
@@ -58,6 +60,8 @@ class DispatchController extends Controller
       'state',
       'lga',
       'town',
+      'address',
+      'type',
       'email',
       'password'
     ];
@@ -287,7 +291,4 @@ class DispatchController extends Controller
     ]);
     return;
   }
-
-
-  
 }

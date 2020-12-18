@@ -15,7 +15,7 @@ use App\Http\Controllers\User\StateController;
 use App\Http\Controllers\User\TownController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\DispatchController;
+use App\Http\Controllers\User\DispatcherController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,7 +47,7 @@ Route::group([], function () {
   });
 
   //guest pickup  route
-  Route::get('avail_pickup/list', [DispatchController::class, 'index']);
+  Route::get('avail_pickup/list/{lga_slug}/', [DispatcherController::class, 'index'])->where(['lga_slug' => '[a-z0-9-]+']);
   //guest meal route
   Route::get('meal/list', [MealController::class, 'index']);
 
@@ -108,14 +108,14 @@ Route::group(['prefix' => 'admin'], function () {
   Route::group(['prefix' => 'category'], function () {
     Route::get('list', [AdminCategoryController::class, 'index']);
     Route::post('new', [AdminCategoryController::class, 'store']);
-    Route::post('update', [AdminCategoryController::class, 'update']);
+    Route::post('update/{category_slug}', [AdminCategoryController::class, 'update'])->where('category_slug', '[a-z0-9-]+');
   });
 
   //admin subcategory route
   Route::group(['prefix' => 'subcategory'], function () {
     Route::get('list', [AdminSubcategoryController::class, 'index']);
     Route::post('new', [AdminSubcategoryController::class, 'store']);
-    Route::post('update', [AdminSubcategoryController::class, 'update']);
+    Route::post('update/{subcategory_slug}', [AdminSubcategoryController::class, 'update'])->where('subcategory_slug', '[a-z0-9-]+');
   });
 
   //admin state route
