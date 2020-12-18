@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Subcategory;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
@@ -74,7 +75,7 @@ class SubcategoryController extends Controller
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable|string|min:3|max:245',
-      'category' => 'sometimes|nullable|intger|exists:categories,slug',
+      'category' => 'sometimes|nullable|exists:categories,slug',
       'icon' => 'sometimes|nullable|image|mimes:png,jpg,svg,jpeg,gif',
     ]);
     try {
@@ -107,7 +108,7 @@ class SubcategoryController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } catch (ModelNotFoundException $mnf) {
       $response['status'] = 'error';
-      $response['message'] = 'Category not found';
+      $response['message'] = 'Subcategory not found';
       return response()->json($response, Response::HTTP_NOT_FOUND);
     } catch (\Exception $e) {
       $response['status'] = 'error';
