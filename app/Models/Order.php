@@ -30,6 +30,7 @@ class Order extends Model
     'code',
     'user_id',
     'state_id',
+    'delivery_type',
     'lga_id',
     'town_id',
     'address',

@@ -15,20 +15,22 @@ class CreateDispatchersTable extends Migration
   {
     Schema::create('dispatchers', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->string('code',6)->unique();
+      $table->string('code', 6)->unique();
       $table->string('avatar')->nullable()->default(null);
       $table->string('first_name')->nullable()->default(null);
       $table->string('last_name')->nullable()->default(null);
       $table->string('title')->nullable()->default(null); //mr,ms
-      $table->string('phone', 25)->unique()->nullable()->default(null);
+      $table->string('phone', 11)->unique()->nullable()->default(null);
       $table->string('email')->unique();
-      $table->string('status');
+      $table->string('status', 40);
+      $table->string('type', 40);
       $table->unsignedBigInteger('state_id')->nullable()->default(null);
       $table->unsignedBigInteger('lga_id')->nullable()->default(null);
       $table->unsignedBigInteger('town_id')->nullable()->default(null);
       $table->timestamp('email_verified_at')->nullable();
       $table->ipAddress('last_ip');
       $table->string('password');
+      $table->text('address')->nullable()->default(null);
       $table->rememberToken();
       $table->timestamp('last_login', 6)->nullable()->default(null);
       $table->timestamp('blocked_at', 6)->nullable()->default(null);

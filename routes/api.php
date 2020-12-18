@@ -15,6 +15,7 @@ use App\Http\Controllers\User\StateController;
 use App\Http\Controllers\User\TownController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
+use App\Http\Controllers\User\DispatchController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -45,6 +46,8 @@ Route::group([], function () {
     Route::post('login/default', [UserController::class, 'default_login']);
   });
 
+  //guest pickup  route
+  Route::get('avail_pickup/list', [DispatchController::class, 'index']);
   //guest meal route
   Route::get('meal/list', [MealController::class, 'index']);
 

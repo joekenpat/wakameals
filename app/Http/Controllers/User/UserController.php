@@ -27,7 +27,10 @@ class UserController extends Controller
    */
   public function index()
   {
-    //
+    $user = Auth('user')->user();
+    $response['status'] = 'success';
+    $response['details'] = $user;
+    return response()->json($response, Response::HTTP_OK);
   }
 
   /**
@@ -287,5 +290,4 @@ class UserController extends Controller
     ]);
     return;
   }
-
 }

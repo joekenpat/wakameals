@@ -34,7 +34,8 @@ class OrderController extends Controller
     $this->validate($request, [
       'order_id' => 'required|uuid',
       'new_status' => 'required|alpha|in:completed,dispatched,confirmed,cancelled',
-      'dispatcher_code' => 'required_if:new_status,dispatched|alpha_num|size:8|exists:dispatchers,code'
+      'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
+      'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:8|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
       $order = Order::find($request->order_id);
@@ -53,8 +54,13 @@ class OrderController extends Controller
       $response['messages'] = 'Order #' . $order->code . ' has been cancelled';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'dispatched') {
-      $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
+
       $order = Order::find($request->order_id);
+      if ($request->dispatch_type == 'pickup') {
+        $dispatcher = Dispatcher::whereId($order->dispatcher_id)->firstOrFail();
+      } else {
+        $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
+      }
       $order->dispatcher_code = $dispatcher->code;
       $order->status = 'dispatched';
       $order->update();

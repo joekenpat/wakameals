@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Models\Dispatcher;
 use App\Models\Meal;
 use App\Models\Order;
 use App\Models\OrderedMeal;
@@ -34,10 +35,12 @@ class OrderController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'town' => 'required||integer|exists:towns,id',
-      'state' => 'required||integer|exists:states,id',
-      'lga' => 'required||integer|exists:lgas,id',
-      'address' => 'required|string|min:5|max:255',
+      'delivery_type' => 'required|in:door_delivery,pickup',
+      'pickup_code' => 'required_if:delivery_type,pickup|nullable|exists:dispatchers,code',
+      'town' => 'required_if:delivery_type,door_delivery|integer|exists:towns,id',
+      'state' => 'required_if:delivery_type,door_delivery|integer|exists:states,id',
+      'lga' => 'required_if:delivery_type,door_delivery|integer|exists:lgas,id',
+      'address' => 'required_if:delivery_type,door_delivery|string|min:5|max:255',
       'recurring.dates.*' => 'sometimes|before_or_equal:7 days|after_or_equal:today',
       'recurring.times.*' => 'sometimes|before_or_equal:' . now()->addMinutes(45) . '|after_or_equal:today 5:15PM',
       'meals' => 'required|array|min:0',
@@ -53,10 +56,18 @@ class OrderController extends Controller
 
     try {
       $new_order = new Order();
-      $new_order->state_id = $request->state;
-      $new_order->lga_id = $request->lga;
-      $new_order->town_id = $request->town;
-      $new_order->address = $request->address;
+      if ($request->delivery_type == 'pickup') {
+        $dispatcher = Dispatcher::whereCode($request->pickup_code)->firstOrFail();
+        $new_order->state_id = $dispatcher->state_id;
+        $new_order->lga_id = $dispatcher->lga_id;
+        $new_order->town_id = $dispatcher->town_id;
+        $new_order->address = $dispatcher->address;
+      } else {
+        $new_order->state_id = $request->state;
+        $new_order->lga_id = $request->lga;
+        $new_order->town_id = $request->town;
+        $new_order->address = $request->address;
+      }
       $new_order->status = 'created';
       $new_order->user_id = Auth('user')->user()->id;
       $new_order->saveOrFail();
