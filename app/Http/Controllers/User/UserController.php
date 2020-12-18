@@ -21,13 +21,13 @@ use Illuminate\Support\Str;
 class UserController extends Controller
 {
   /**
-   * Display a listing of the resource.
+   * Display a resource.
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function show()
   {
-    $user = Auth('user')->user();
+    $user = User::whereId(Auth('user')->user()->id)->with(['state', 'lga', 'town'])->firstOrFail();
     $response['status'] = 'success';
     $response['details'] = $user;
     return response()->json($response, Response::HTTP_OK);

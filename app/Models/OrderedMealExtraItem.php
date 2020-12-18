@@ -19,16 +19,6 @@ class OrderedMealExtraItem extends Model
   ];
 
   /**
-   * The attributes that are appendable.
-   *
-   * @var array
-   */
-
-  protected $appends = [
-    'cost'
-  ];
-
-  /**
    * The datetime format for this model.
    *
    * @var String
@@ -40,7 +30,13 @@ class OrderedMealExtraItem extends Model
    *
    * @var array
    */
-  protected $hidden = [];
+  protected $hidden = [
+    'created_at',
+    'deleted_at',
+    'updated_at',
+    'ordered_meal_id',
+    'meal_extra_item_id',
+  ];
 
   /**
    * The attributes that should be cast to native types.
@@ -58,13 +54,5 @@ class OrderedMealExtraItem extends Model
   public function meal_extra_item()
   {
     return $this->belongsTo(MealExtraItem::class);
-  }
-
-  public function getCostAttribute(): int
-  {
-    $cost = 0;
-    $extra_item = $this->meal_extra_item();
-    $cost += $extra_item->price * $this->quantity;
-    return $cost;
   }
 }

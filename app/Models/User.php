@@ -53,6 +53,15 @@ class User extends Authenticatable
   protected $hidden = [
     'password',
     'remember_token',
+    'state_id',
+    'lga_id',
+    'town_id',
+    'last_ip',
+    'blocked_at',
+    'updated_at',
+    'deleted_at',
+    'created_at',
+    'email_verified_at'
   ];
 
   /**
@@ -95,7 +104,7 @@ class User extends Authenticatable
     $this->morphMany(PasswordReset::class, 'resetable');
   }
 
-  public function getAvatarAttribute($value): string
+  public function getAvatarAttribute($value)
   {
     return $value == null ? null : public_path('images/users') . $value;
   }

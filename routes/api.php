@@ -42,8 +42,12 @@ Route::group([], function () {
   Route::group(['prefix' => 'auth'], function () {
     //user registration route
     Route::post('register/default', [UserController::class, 'default_register']);
-    //user lgin route
+    //user login route
     Route::post('login/default', [UserController::class, 'default_login']);
+  });
+  Route::group(['prefix' => 'profile', 'middleware' => ['auth:user']], function () {
+    //user profile route
+    Route::get('details', [UserController::class, 'show']);
   });
 
   //guest pickup  route

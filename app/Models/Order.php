@@ -29,8 +29,8 @@ class Order extends Model
   protected $fillable = [
     'code',
     'user_id',
-    'state_id',
     'delivery_type',
+    'state_id',
     'lga_id',
     'town_id',
     'address',
@@ -52,8 +52,19 @@ class Order extends Model
    * @var array
    */
 
-  protected $appends = [
-    'total'
+  protected $appends = [];
+
+  /**
+   * The relationships that are appendable.
+   *
+   * @var array
+   */
+
+  protected $with = [
+    // 'ordered_meals',
+    'state',
+    'lga',
+    'town',
   ];
 
 
@@ -62,7 +73,14 @@ class Order extends Model
    *
    * @var array
    */
-  protected $hidden = [];
+  protected $hidden = [
+    'dispatcher_id',
+    'deleted_at',
+    'updated_at',
+    'state_id',
+    'lga_id',
+    'town_id',
+  ];
 
   /**
    * The attributes that should be cast to native types.
@@ -72,6 +90,21 @@ class Order extends Model
 
   protected $casts = [];
 
+  public function state()
+  {
+    return $this->belongsTo(State::class, 'state_id');
+  }
+
+  public function lga()
+  {
+    return $this->belongsTo(Lga::class, 'lga_id');
+  }
+
+  public function town()
+  {
+    return $this->belongsTo(Town::class, 'town_id');
+  }
+
   public function ordered_meals()
   {
     return $this->hasMany(OrderedMeal::class);
@@ -80,15 +113,6 @@ class Order extends Model
   public function user()
   {
     return $this->belongsTo(User::class);
-  }
-
-  public function getTotalAttribute(): int
-  {
-    $cost = 0;
-    foreach ($this->ordered_meals() as $meals) {
-      $cost += $meals->sub_total;
-    }
-    return $cost;
   }
 
 
