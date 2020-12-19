@@ -24,7 +24,7 @@ class MealController extends Controller
    */
   public function index(Request $request)
   {
-    $meals = MealSearch::apply($request, 20);
+    $meals = Meal::paginate(20);
     $response['status'] = 'success';
     $response['meals'] = $meals;
     return response()->json($response, Response::HTTP_OK);
