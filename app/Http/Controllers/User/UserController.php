@@ -46,9 +46,6 @@ class UserController extends Controller
       'first_name' => 'required|alpha',
       'last_name' => 'required|alpha',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone',
-      'state' => 'required|integer|exists:states,id',
-      'lga' => 'required|integer|exists:lgas,id',
-      'town' => 'required|integer|exists:towns,id',
       'email' => 'required|email|unique:users,email',
       'password' => 'required|string|',
     ]);
@@ -58,18 +55,13 @@ class UserController extends Controller
       'last_name',
       'title',
       'phone',
-      'state',
-      'lga',
-      'town',
       'email',
       'password'
     ];
 
     $new_user = new User();
     foreach ($attribs as $attrib) {
-      if (in_array($attrib, ['state', 'town', 'lga'])) {
-        $new_user->{$attrib . '_id'} = $request->{$attrib};
-      } elseif ($attrib == 'password') {
+      if ($attrib == 'password') {
         $new_user->{$attrib} = Hash::make($request->{$attrib});
       } else {
         $new_user->{$attrib} = $request->{$attrib};
