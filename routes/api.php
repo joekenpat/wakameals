@@ -50,6 +50,9 @@ Route::group([], function () {
   Route::group(['prefix' => 'profile', 'middleware' => ['auth:user']], function () {
     //user profile route
     Route::get('details', [UserController::class, 'show']);
+    Route::post('update', [UserController::class, 'update']);
+    //user password update
+    Route::post('password/update', [UserController::class, 'update_password']);
   });
 
   //guest pickup  route
@@ -64,7 +67,9 @@ Route::group([], function () {
 
   //user order route
   Route::group(['prefix' => 'order', 'middleware' => ['auth:user']], function () {
-    Route::get('list', [OrderController::class, 'index']);
+    Route::get('list/open', [OrderController::class, 'index_open']);
+    Route::get('list/closed', [OrderController::class, 'index_closed']);
+    Route::get('test_mail/{order_code}', [OrderController::class, 'test_order_mail'])->whereAlphaNumeric('order_code');
     Route::post('new', [OrderController::class, 'store']);
   });
   //guest state route

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Dispatcher;
 use App\Http\Controllers\Controller;
 use App\Models\Dispatcher;
 use App\Models\PasswordReset;
-use App\Models\User;
 use App\Notifications\PasswordResetCodeSent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;

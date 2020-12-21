@@ -89,6 +89,7 @@ class CartController extends Controller
       $processed_cart_items = [];
       $processed_cart_items['items'] = [];
       $cart_total = 0;
+      Auth('user')->user()->cart_items()->delete();
       foreach ($request->input('items') as $item) {
         $item_ids[] = $item['id'];
         if (Auth('user')->check()) {
