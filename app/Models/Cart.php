@@ -16,6 +16,7 @@ use UuidForKey;
    */
 
   protected $fillable = [
+    "id",
     'name',
     'user_id',
     'meal_id',
