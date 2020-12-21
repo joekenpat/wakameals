@@ -8,6 +8,8 @@ use App\Http\Controllers\Admin\MealController as AdminMealController;
 use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
 use App\Http\Controllers\Admin\TownController as AdminTownController;
+use App\Http\Controllers\Dispatcher\DispatchController;
+use App\Http\Controllers\Dispatcher\OrderController as DispatcherOrderController;
 use App\Http\Controllers\User\LgaController;
 use App\Http\Controllers\User\MealController;
 use App\Http\Controllers\User\OrderController;
@@ -73,6 +75,27 @@ Route::group([], function () {
   Route::get('town/list/{lga_slug}', [TownController::class, 'index'])->where('lga_slug', '[a-z0-9-]+');
 });
 
+//guest routes
+Route::group(['prefix' => 'dispatcher'], function () {
+
+  //user auth route
+  Route::group(['prefix' => 'auth'], function () {
+    //user registration route
+    Route::post('register/default', [DispatchController::class, 'default_register']);
+    //user login route
+    Route::post('login/default', [DispatchController::class, 'default_login']);
+  });
+  Route::group(['prefix' => 'profile', 'middleware' => ['auth:dispatcher']], function () {
+    //user profile route
+    Route::get('details', [DispatchController::class, 'show']);
+  });
+
+  //user order route
+  Route::group(['prefix' => 'order', 'middleware' => ['auth:dispatcher']], function () {
+    Route::get('list', [DispatcherOrderController::class, 'index']);
+    Route::post('confirm', [DispatcherOrderController::class, 'confirm']);
+  });
+});
 
 //admin route
 Route::group(['prefix' => 'admin'], function () {
@@ -117,7 +140,8 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin subcategory route
   Route::group(['prefix' => 'subcategory'], function () {
-    Route::get('list', [AdminSubcategoryController::class, 'index']);
+    Route::get('list_all', [AdminSubcategoryController::class, 'index']);
+    Route::get('list/{category_slug}', [AdminSubcategoryController::class, 'index_cat'])->where('category_slug', '[a-z0-9-]+');
     Route::post('new', [AdminSubcategoryController::class, 'store']);
     Route::post('update/{subcategory_slug}', [AdminSubcategoryController::class, 'update'])->where('subcategory_slug', '[a-z0-9-]+');
   });
@@ -131,13 +155,15 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin lga route
   Route::group(['prefix' => 'lga'], function () {
-    Route::get('list', [LgaController::class, 'index']);
-    Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('state_slug', '[a-z0-9-]+');
-    Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('list/{state_slug}', [AdminLgaController::class, 'index'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('lga_slug', '[a-z0-9-]+');
+    Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('lga_slug', '[a-z0-9-]+');
   });
 
   //admin town route
   Route::group(['prefix' => 'town'], function () {
-    Route::get('list', [AdminTownController::class, 'index']);
+    Route::get('list/{lga_slug}', [AdminTownController::class, 'index'])->where('lga_slug', '[a-z0-9-]+');
+    Route::get('enable/{town_slug}', [AdminTownController::class, 'enable'])->where('town_slug', '[a-z0-9-]+');
+    Route::get('disable/{town_slug}', [AdminTownController::class, 'disable'])->where('townslug', '[a-z0-9-]+');
   });
 });

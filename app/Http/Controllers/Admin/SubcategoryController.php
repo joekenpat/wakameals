@@ -27,6 +27,20 @@ class SubcategoryController extends Controller
   }
 
   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_cat($category_slug)
+  {
+    $category = Category::whereSlug($category_slug)->firstOrFail();
+    $subcategories = Subcategory::whereCategoryId($category->id)->get();
+    $response['status'] = 'success';
+    $response['subcategories'] = $subcategories;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
    * Store a newly created resource in storage.
    *
    * @param  \Illuminate\Http\Request  $request
