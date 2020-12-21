@@ -96,10 +96,10 @@ class CartController extends Controller
           $cart_item = Auth('user')->user()->cart_items()->firstOrCreate(
             [
               'id' => $item['id'],
-              'name' => $item['name'],
               'user_id' => null,
             ],
             [
+              'name' => $item['name'],
               'meal_id' => $item['meal_id'],
               'special_instruction' => $item['special_instruction'],
               'meal_extras' => $item['meal_extras'],
