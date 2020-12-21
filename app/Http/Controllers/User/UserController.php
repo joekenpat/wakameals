@@ -249,7 +249,7 @@ class UserController extends Controller
       'retype_new_password' => 'required|string|same:new_password',
     ]);
 
-    $user = User::where(Auth('user')->user()->id);
+    $user = User::whereId(auth('user')->user()->id)->firstOrFail();
     $credentials = [
       "email" => $user->email,
       'password' => $request->input('current_password'),
