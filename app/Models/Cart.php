@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Cart extends Model
 {
+  use UuidForKey;
   /**
    * The attributes that are mass assignable.
    *

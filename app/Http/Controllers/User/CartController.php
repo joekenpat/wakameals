@@ -94,6 +94,7 @@ class CartController extends Controller
         if (Auth('user')->check()) {
           $cart_item = Auth('user')->user()->cart_items()->firstOrCreate(
             [
+              'id'=>$item['id'],
               'name' => $item['name'],
               'user_id' => null,
             ],
