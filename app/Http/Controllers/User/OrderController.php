@@ -3,13 +3,16 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderRecieved;
 use App\Models\Dispatcher;
-use App\Models\Meal;
 use App\Models\Order;
 use App\Models\OrderedMeal;
 use App\Models\OrderedMealExtraItem;
+use App\Models\Transaction;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Http;
 
 class OrderController extends Controller
 {
@@ -18,9 +21,22 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index_open()
   {
-    $orders = Order::whereUserId(Auth('user')->user()->id)->paginate(20);
+    $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['dispatched', 'created', 'pending', 'new'])->paginate(20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_closed()
+  {
+    $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -109,5 +125,40 @@ class OrderController extends Controller
       $response['message'] = $e->getMessage() . " File :" . $e->getFile() . " Line: " . $e->getLine();
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
+  }
+
+  public function verify_paystack_transaction(Request $request)
+  {
+    $paystack_client = Http::withToken(config('paystack.secretKey'))->get("https://api.paystack.co/transaction/verify/" . $request->query('trxref'));
+    $payment_details = $paystack_client->json();
+    if ($payment_details['data']['status'] === "success") {
+      $order_user = User::whereEmail($payment_details['data']['metadata']['email']);
+      $order = Order::select('id', 'title', 'slug', 'plan', 'plan_id')
+        ->whereCode($payment_details['data']['metadata']['order_code'])
+        ->firstOrFail();
+      $transaction =  new Transaction([
+        'status' => 'created',
+        'total_amount' => 0,
+        'user_id' => $order_user->id,
+        'gateway' => 'paystack',
+        'reference' => $payment_details['data']['reference'],
+      ]);
+      $transaction->status = 'completed';
+      $transaction->save();
+
+      $order->transactions()->save($transaction);
+      $order->update();
+    }
+    $response['status'] = 'success';
+    $response['message'] = 'Product Updated';
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  public function test_order_mail($order_code)
+  {
+    $order = Order::with('ordered_meals')->whereCode($order_code)->firstOrFail();
+    $user = User::whereId(auth('user')->user()->id)->firstOrFail();
+    // return $order;
+    return new OrderRecieved($user, $order);
   }
 }
