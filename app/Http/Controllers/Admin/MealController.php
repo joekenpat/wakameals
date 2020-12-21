@@ -41,7 +41,7 @@ class MealController extends Controller
     $this->validate($request, [
       'name' => 'required|string|min:3|max:240',
       'price' => 'required|integer|digits_between:1,999999',
-      'image' => 'sometimes|nullable|image|mimes:png,jpg,jpeg,svg,gif|max:50000',
+      'image' => 'required|image|mimes:png,jpg,jpeg,svg,gif|max:50000',
       'category' => 'required|alpha_dash|exists:categories,slug',
       'subcategory' => 'required|alpha_dash|exists:subcategories,slug',
       'measurement_quantity' => 'required|integer',
