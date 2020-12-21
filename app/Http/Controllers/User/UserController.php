@@ -148,6 +148,9 @@ class UserController extends Controller
           }
         }
         $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
+        if (!File::isDirectory(public_path("images/users/"))) {
+          File::makeDirectory(public_path("images/users"));
+        }
         $image->save(public_path("images/users/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $user->avatar = $img_name;
@@ -265,7 +268,7 @@ class UserController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
-      $response['errors'] = ['current_password' => ['Current Password Incorrect']];
+      $response['errors'] = ['current_password' => ['Current Password is not correct']];
       return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
   }

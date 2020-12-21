@@ -4,32 +4,30 @@ namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dispatcher;
-use App\Models\PasswordReset;
-use App\Notifications\PasswordResetCodeSent;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
 class DispatchController extends Controller
 {
   /**
-   * Display a listing of the resource.
+   * Display a resource.
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function show()
   {
-    //
+    $dispatcher = Dispatcher::whereId(Auth('dispatcher')->user()->id)->with(['state', 'lga', 'town'])->firstOrFail();
+    $response['status'] = 'success';
+    $response['details'] = $dispatcher;
+    return response()->json($response, Response::HTTP_OK);
   }
-
   /**
    * Store a newly created resource in storage.
    *
@@ -159,6 +157,9 @@ class DispatchController extends Controller
           if (File::exists("images/dispatchers/" . Auth('dispatcher')->user()->avatar)) {
             File::delete("images/dispatchers/" . Auth('dispatcher')->user()->avatar);
           }
+        }
+        if (!File::isDirectory(public_path("images/dispatchers/"))) {
+          File::makeDirectory(public_path("images/dispatchers"));
         }
         $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
         $image->save(public_path("images/dispatchers/") . $img_name, 70, 'jpg');

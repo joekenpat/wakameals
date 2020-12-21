@@ -206,7 +206,7 @@ class AdminController extends Controller
       'password' => $request->input('current_password'),
     ];
 
-    if (password_verify($request->input('password'), $admin->password)) {
+    if (password_verify($request->input('current_password'), $admin->password)) {
       $admin->password = Hash::make($request->input('new_password'));
       $admin->update();
       $this->auth_success($admin);
@@ -216,7 +216,7 @@ class AdminController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
-      $response['errors'] = ['current_password' => ['Current Password Incorrect']];
+      $response['errors'] = ['current_password' => ['Current Password is not correct']];
       return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
   }
