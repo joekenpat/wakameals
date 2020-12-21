@@ -76,7 +76,7 @@ class MealController extends Controller
         //     File::delete("images/meals/" . Auth()->user()->avatar);
         //   }
         // }
-        $img_name = sprintf("MEAL%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
+        $img_name = sprintf("MEAL%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
         $image->save(public_path("images/meals/") . $img_name, 70, 'jpg');
         $new_meal->image = $img_name;
       }
