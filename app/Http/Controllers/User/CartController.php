@@ -41,6 +41,7 @@ class CartController extends Controller
     try {
       $cart_item = new Cart($request->only(
         [
+          "id",
           'name',
           'user_id',
           'meal_id',
