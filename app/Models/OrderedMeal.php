@@ -34,7 +34,7 @@ class OrderedMeal extends Model
    */
 
   protected $with = [
-    'meal', 'ordered_extra_items',
+    'meal', 'ordered_meal_extra_items',
   ];
 
   /**
@@ -68,7 +68,7 @@ class OrderedMeal extends Model
     return $this->belongsTo(Meal::class);
   }
 
-  public function ordered_extra_items()
+  public function ordered_meal_extra_items()
   {
     return $this->hasMany(OrderedMealExtraItem::class);
   }

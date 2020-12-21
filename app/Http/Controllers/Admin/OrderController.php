@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderCompleted;
+use App\Mail\OrderConfirmed;
+use App\Mail\OrderSystemCancelled;
 use App\Models\Dispatcher;
 use App\Models\Order;
-use App\Notifications\CancelledOrder;
-use App\Notifications\CompletedOrder;
-use App\Notifications\ConfirmedOrder;
-use App\Notifications\DispatchedOrder;
 use App\Services\OrderSearch;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -20,9 +20,18 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request)
+  public function index($status)
   {
-    $orders = OrderSearch::apply($request, 20);
+    $statuses = [];
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed'])) {
+      $statuses = [$status];
+    } elseif ($status == 'cancelled') {
+      $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
+    } else {
+      $statuses = ['new'];
+    }
+
+    $orders = Order::whereIn('status', $statuses);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -38,24 +47,24 @@ class OrderController extends Controller
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:8|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
-      $order = Order::find($request->order_id);
+      $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'completed';
       $order->update();
-      $order->user()->notify(new CompletedOrder($order->user(), $order));
+      Mail::to($order->user())->send(new OrderCompleted($order->user(), $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Completed';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'cancelled') {
-      $order = Order::find($request->order_id);
+      $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'cancelled';
       $order->update();
-      $order->user()->notify(new CancelledOrder($order->user(), $order));
+      Mail::to($order->user())->send(new OrderSystemCancelled($order->user(), $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been cancelled';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'dispatched') {
 
-      $order = Order::find($request->order_id);
+      $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       if ($request->dispatch_type == 'pickup') {
         $dispatcher = Dispatcher::whereId($order->dispatcher_id)->firstOrFail();
       } else {
@@ -64,15 +73,15 @@ class OrderController extends Controller
       $order->dispatcher_code = $dispatcher->code;
       $order->status = 'dispatched';
       $order->update();
-      $order->user()->notify(new DispatchedOrder($order->user(), $order, $dispatcher));
+      Mail::to($order->user())->send(new OrderCompleted($order->user(), $order, $dispatcher));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'confirmed') {
-      $order = Order::find($request->order_id);
+      $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'confirmed';
       $order->update();
-      $order->user()->notify(new ConfirmedOrder($order->user(), $order));
+      Mail::to($order->user())->send(new OrderConfirmed($order->user(), $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Confirmed';
       return response()->json($response, Response::HTTP_OK);

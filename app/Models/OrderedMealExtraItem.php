@@ -46,6 +46,19 @@ class OrderedMealExtraItem extends Model
 
   protected $casts = [];
 
+
+  /**
+   * appendable relationships
+   *
+   * @var array
+   */
+
+  protected $with = [
+    'meal_extra_item',
+  ];
+
+
+
   public function ordered_meal()
   {
     return $this->belongsTo(OrderedMeal::class);
@@ -53,6 +66,6 @@ class OrderedMealExtraItem extends Model
 
   public function meal_extra_item()
   {
-    return $this->belongsTo(MealExtraItem::class);
+    return $this->belongsTo(ExtraItem::class);
   }
 }

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DispatcherController as AdminDispatcherController;
 use App\Http\Controllers\Admin\LgaController as AdminLgaController;
 use App\Http\Controllers\Admin\MealController as AdminMealController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
 use App\Http\Controllers\Admin\TownController as AdminTownController;
@@ -113,6 +114,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('login/default', [AdminController::class, 'default_login']);
   });
 
+  //admin order route
+  Route::group(['prefix' => 'order'], function () {
+    Route::get('list/{status}', [AdminOrderController::class, 'index'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed']);
+  });
 
 
   //admin category route

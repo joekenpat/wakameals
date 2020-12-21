@@ -166,7 +166,10 @@ class MealController extends Controller
             File::delete(public_path("images/meals/") . $updateable_meal->image);
           }
         }
-        $img_name = sprintf("MEAL%s%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
+        if (!File::isDirectory(public_path("images/meals/"))) {
+          File::makeDirectory(public_path("images/meals"));
+        }
+        $img_name = sprintf("MEAL%s.jpg", md5($request->name . now()->format('y-m-d H:i:s.u')));
         $image->save(public_path("images/meals/") . $img_name, 70, 'jpg');
         $updateable_meal->image = $img_name;
       }
