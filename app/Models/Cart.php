@@ -46,7 +46,7 @@ class Cart extends Model
    * @var array
    */
   protected $hidden = [
-    'meal_extras', 'meal_id',
+    'meal_extras',
   ];
 
   /**
