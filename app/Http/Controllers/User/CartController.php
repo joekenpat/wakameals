@@ -93,7 +93,7 @@ class CartController extends Controller
       foreach ($request->input('items') as $item) {
         $item_ids[] = $item['id'];
         if (Auth('user')->check()) {
-          $cart_item = Auth('user')->user()->cart_items()->firstOrCreate(
+          $cart_item = Auth('user')->user()->cart_items()->firstOrUpdate(
             [
               'id' => $item['id'],
               'user_id' => null,

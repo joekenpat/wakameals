@@ -249,13 +249,13 @@ class UserController extends Controller
       'retype_new_password' => 'required|string|same:new_password',
     ]);
 
-    $user = User::find(Auth::id());
+    $user = User::where(Auth('user')->user()->id);
     $credentials = [
       "email" => $user->email,
       'password' => $request->input('current_password'),
     ];
 
-    if (password_verify($request->input('password'), $user->password)) {
+    if (password_verify($request->input('current_password'), $user->password)) {
       $user->password = Hash::make($request->input('new_password'));
       $user->update;
       $this->auth_success($user);
