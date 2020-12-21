@@ -15,8 +15,8 @@ trait UuidForKey
   {
     static::creating(function ($model) {
       $model->incrementing = false;
-      if ($model->{$model->getKeyName()} === null || $model->{$model->getKeyName()} === '') {
-        $model->{$model->getKeyName()} = Str::orderedUuid();
+      if (!isset($model->{$model->getKeyName()})) {
+        $model->{$model->getKeyName()} = Str::uuid();
       }
     });
   }
