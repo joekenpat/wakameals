@@ -107,22 +107,22 @@ class DispatchController extends Controller
       'email' => 'sometimes|string|exists:dispatchers,' . $auth_by,
     ], $messages);
 
-    $credentials = [
-      "{$auth_by}" => $request->input('identifier'),
-      'password' => $request->input('password'),
-    ];
-
-    if (Auth::attempt($credentials, true)) {
+    if (Dispatcher::where("$auth_by", $request->input('identifier'))->exists()) {
       $dispatcher = Dispatcher::where($auth_by, $request->input('identifier'))->first();
-      auth('web')->login($dispatcher, true);
-      $this->auth_success($dispatcher);
-      $response['status'] = 'success';
-      $response['message'] = 'Log-in Successfull';
-      $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
-      return response()->json($response, Response::HTTP_OK);
+      if (password_verify($request->input('password'), $dispatcher->password)) {
+        $this->auth_success($dispatcher);
+        $response['status'] = 'success';
+        $response['message'] = 'Log-in Successfull';
+        $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
+        return response()->json($response, Response::HTTP_OK);
+      } else {
+        $response['message'] = 'Invalid Credentials';
+        $response['errors'] = ['password' => ['Password Incorrect']];
+        return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+      }
     } else {
       $response['message'] = 'Invalid Credentials';
-      $response['errors'] = ['password' => ['Password Incorrect']];
+      $response['errors'] = ["$auth_by" => ['No account with that ' . "$auth_by"]];
       return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
   }
@@ -263,13 +263,8 @@ class DispatchController extends Controller
       'retype_new_password' => 'required|string|same:new_password',
     ]);
 
-    $dispatcher = Dispatcher::find(Auth::id());
-    $credentials = [
-      "email" => $dispatcher->email,
-      'password' => $request->input('current_password'),
-    ];
-
-    if (Auth::guard('web')->attempt($credentials)) {
+    $dispatcher = Dispatcher::whereId(auth('dispatcher')->user()->id)->firstOrFail();
+    if (password_verify($request->input('current_password'), $dispatcher->password)) {
       $dispatcher->password = Hash::make($request->input('new_password'));
       $dispatcher->update;
       $this->auth_success($dispatcher);
@@ -279,7 +274,7 @@ class DispatchController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
-      $response['errors'] = ['current_password' => ['Current Password Incorrect']];
+      $response['errors'] = ['current_password' => ['Current Password is not correct']];
       return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
     }
   }

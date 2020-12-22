@@ -253,11 +253,6 @@ class UserController extends Controller
     ]);
 
     $user = User::whereId(auth('user')->user()->id)->firstOrFail();
-    $credentials = [
-      "email" => $user->email,
-      'password' => $request->input('current_password'),
-    ];
-
     if (password_verify($request->input('current_password'), $user->password)) {
       $user->password = Hash::make($request->input('new_password'));
       $user->update;
