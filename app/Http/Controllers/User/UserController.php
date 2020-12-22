@@ -99,16 +99,22 @@ class UserController extends Controller
 
     if (User::where("$auth_by", $request->input('identifier'))->exists()) {
       $user = User::where($auth_by, $request->input('identifier'))->first();
-      if (password_verify($request->input('password'), $user->password)) {
-        $this->auth_success($user);
-        $response['status'] = 'success';
-        $response['message'] = 'Log-in Successfull';
-        $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
-        return response()->json($response, Response::HTTP_OK);
-      } else {
+      if ($user->status == 'blocked') {
         $response['message'] = 'Invalid Credentials';
-        $response['errors'] = ['password' => ['Password Incorrect']];
+        $response['errors'] = ["$auth_by" => ['No account with that ' . "$auth_by"]];
         return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+      } else {
+        if (password_verify($request->input('password'), $user->password)) {
+          $this->auth_success($user);
+          $response['status'] = 'success';
+          $response['message'] = 'Log-in Successfull';
+          $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['user'])->accessToken;
+          return response()->json($response, Response::HTTP_OK);
+        } else {
+          $response['message'] = 'Invalid Credentials';
+          $response['errors'] = ['password' => ['Password Incorrect']];
+          return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
       }
     } else {
       $response['message'] = 'Invalid Credentials';
