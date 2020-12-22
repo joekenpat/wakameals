@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cart;
 use App\Models\ExtraItem;
 use App\Models\Meal;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -89,14 +90,16 @@ class CartController extends Controller
       $processed_cart_items = [];
       $processed_cart_items['items'] = [];
       $cart_total = 0;
-      Auth('user')->user()->cart_items()->delete();
+
       foreach ($request->input('items') as $item) {
         $item_ids[] = $item['id'];
         if (Auth('user')->check()) {
+          $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
+          $user->cart_items()->delete();
           $cart_item = Cart::updateOrCreate(
             [
               'id' => $item['id'],
-              'user_id' => Auth('user')->user()->id,
+              'user_id' => $user->id,
             ],
             [
               'name' => $item['name'],
