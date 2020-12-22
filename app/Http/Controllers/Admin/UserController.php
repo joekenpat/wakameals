@@ -38,7 +38,7 @@ class UserController extends Controller
 
   public function activate($user_id)
   {
-    $user = User::find($user_id)->firstOrFail();
+    $user = User::whereId($user_id)->firstOrFail();
     $user->status = 'active';
     $user->blocked_at = null;
     $user->update();
@@ -49,7 +49,7 @@ class UserController extends Controller
 
   public function block($user_id)
   {
-    $user = User::find($user_id)->firstOrFail();
+    $user = User::whereId($user_id)->firstOrFail();
     $user->status = 'blocked';
     $user->blocked_at = now();
     $user->update();
