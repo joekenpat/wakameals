@@ -106,6 +106,6 @@ class User extends Authenticatable
 
   public function getAvatarAttribute($value)
   {
-    return $value == null ? null : asset('images/users/') . $value;
+    return $value == null ? null : asset('images/users/' . $value);
   }
 }

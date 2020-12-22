@@ -74,6 +74,6 @@ class Admin extends Authenticatable
 
   public function getAvatarAttribute($value): string
   {
-    return $value == null ? null : asset('images/admins/') . $value;
+    return $value == null ? null : asset('images/admins/' . $value);
   }
 }
