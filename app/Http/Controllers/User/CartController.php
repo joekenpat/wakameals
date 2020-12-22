@@ -44,14 +44,14 @@ class CartController extends Controller
         [
           "id",
           'name',
-          'user_id',
           'meal_id',
           'special_instruction',
           'meal_extras',
         ]
       ));
       if (Auth('user')->check()) {
-        $cart_item->save();
+        $cart_item->user_id = auth('user')->user()->id;
+        $cart_item->update();
       }
       $cart_item->meal = Meal::find($cart_item->meal_id)->makeHidden(['subcategory', 'category', 'extra_items', 'subcategory_id', 'category_id',]);
       $cart_item->meal_extra_items = $this->meal_extra_items($cart_item);
@@ -91,7 +91,7 @@ class CartController extends Controller
       $processed_cart_items['items'] = [];
       $cart_total = 0;
 
-      foreach ($request->input('items') as $item) {
+      foreach ($request->items as $item) {
         $item_ids[] = $item['id'];
         if (Auth('user')->check()) {
           $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
