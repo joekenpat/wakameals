@@ -90,18 +90,19 @@ class CartController extends Controller
       $processed_cart_items = [];
       $processed_cart_items['items'] = [];
       $cart_total = 0;
-
+      if (Auth('user')->check()) {
+        $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
+        $user->cart_items()->delete();
+      }
       foreach ($request->items as $item) {
         $item_ids[] = $item['id'];
         if (Auth('user')->check()) {
-          $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
-          $user->cart_items()->delete();
           $cart_item = Cart::updateOrCreate(
             [
               'id' => $item['id'],
             ],
             [
-              'user_id' => $user->id,
+              'user_id' => Auth('user')->user()->id,
               'name' => $item['name'],
               'meal_id' => $item['meal_id'],
               'special_instruction' => $item['special_instruction'],
