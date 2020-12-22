@@ -100,7 +100,7 @@ class AdminController extends Controller
             File::delete("images/admins/" . Auth('admin')->user()->avatar);
           }
         }
-        $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
+        $img_name = sprintf("ADMIN%s.jpg", strtolower(Str::random(15)));
         $image->save(public_path("images/admins/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $admin->avatar = $img_name;

@@ -147,7 +147,7 @@ class UserController extends Controller
             File::delete("images/users/" . Auth()->user()->avatar);
           }
         }
-        $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
+        $img_name = sprintf("USER%s.jpg", strtolower(Str::random(15)));
         if (!File::isDirectory(public_path("images/users/"))) {
           File::makeDirectory(public_path("images/users"));
         }

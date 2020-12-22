@@ -161,7 +161,7 @@ class DispatchController extends Controller
         if (!File::isDirectory(public_path("images/dispatchers/"))) {
           File::makeDirectory(public_path("images/dispatchers"));
         }
-        $img_name = sprintf("%s%s.jpg", strtolower(Str::random(15)));
+        $img_name = sprintf("DISPATCHER%s.jpg", strtolower(Str::random(15)));
         $image->save(public_path("images/dispatchers/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $dispatcher->avatar = $img_name;
