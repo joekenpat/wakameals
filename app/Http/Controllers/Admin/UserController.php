@@ -17,9 +17,9 @@ class UserController extends Controller
    */
   public function index_active()
   {
-    $user = User::whereStatus('active')->paginate(20);
+    $users = User::whereStatus('active')->paginate(20);
     $response['status'] = 'success';
-    $response['users'] = $user;
+    $response['users'] = $users;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -28,11 +28,11 @@ class UserController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index_blocked(Request $request)
+  public function index_blocked()
   {
-    $user = User::whereStatus('active')->paginate(20);
+    $users = User::whereStatus('blocked')->paginate(20);
     $response['status'] = 'success';
-    $response['users'] = $user;
+    $response['users'] = $users;
     return response()->json($response, Response::HTTP_OK);
   }
 
