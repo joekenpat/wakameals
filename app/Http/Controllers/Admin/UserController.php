@@ -53,6 +53,7 @@ class UserController extends Controller
     $user->status = 'blocked';
     $user->blocked_at = now();
     $user->update();
+    $user->token()->revoke();
     $response['status'] = 'success';
     $response['message'] = $user->first_name . ' User Account has been Blocked';
     return response()->json($response, Response::HTTP_OK);
