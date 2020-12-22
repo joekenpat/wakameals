@@ -64,6 +64,10 @@ class User extends Authenticatable
     'email_verified_at'
   ];
 
+
+  protected $withCount  = [
+    'orders',
+  ];
   /**
    * The attributes that should be cast to native types.
    *

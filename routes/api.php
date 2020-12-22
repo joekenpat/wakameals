@@ -77,9 +77,9 @@ Route::group([], function () {
   //guest state route
   Route::get('state/list', [StateController::class, 'index']);
   //guest lga route
-  Route::get('lga/list/{state_slug}', [LgaController::class, 'index'])->where('state_slug', '[a-z0-9-]+');
+  Route::get('lga/list/{state_id}', [LgaController::class, 'index'])->where('state_id', '[0-9]+');
   //guest town route
-  Route::get('town/list/{lga_slug}', [TownController::class, 'index'])->where('lga_slug', '[a-z0-9-]+');
+  Route::get('town/list/{lga_id}', [TownController::class, 'index'])->where('lga_id', '[0-9]+');
 });
 
 //guest routes

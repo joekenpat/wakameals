@@ -10,15 +10,15 @@ use Illuminate\Support\Facades\Validator;
 
 class LgaController extends Controller
 {
-  public function index($state_slug)
+  public function index($state_id)
   {
     $rules = [
-      'state' => 'required|alpha_dash|exists:states,slug',
+      'id' => 'required|alpha_dash|exists:states,id',
     ];
-    $valid_value = ['state' => $state_slug];
+    $valid_value = ['id' => $state_id];
     $validator = Validator::make($valid_value, $rules);
-    if (!$validator->fails()) {
-      $state = State::whereSlug($state_slug)->firstOrFail();
+  if (!$validator->fails()) {
+      $state = State::whereId($state_id)->firstOrFail();
       $lgas = Lga::whereStateId($state->id)->get();
       $response['status'] = 'success';
       $response['lgas'] = $lgas;
