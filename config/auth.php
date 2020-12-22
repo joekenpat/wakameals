@@ -88,7 +88,7 @@ return [
 
     'admins' => [
       'driver' => 'eloquent',
-      'mdoel' =>  \App\Models\Admin::class,
+      'model' =>  \App\Models\Admin::class,
     ],
 
     'dispatchers' => [
