@@ -133,8 +133,8 @@ Route::group(['prefix' => 'admin'], function () {
   Route::group(['prefix' => 'user'], function () {
     Route::get('list/active', [AdminUserController::class, 'index_active']);
     Route::get('list/blocked', [AdminUserController::class, 'index_blocked']);
-    Route::post('block/{user_id}', [AdminUserController::class, 'block'])->whereUuid(['user_id']);
-    Route::post('activate/{user_id}', [AdminUserController::class, 'activate'])->whereUuid(['user_id']);
+    Route::get('block/{user_id}', [AdminUserController::class, 'block'])->whereUuid(['user_id']);
+    Route::get('activate/{user_id}', [AdminUserController::class, 'activate'])->whereUuid(['user_id']);
   });
 
   //admin meal route
