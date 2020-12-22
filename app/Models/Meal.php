@@ -104,7 +104,7 @@ class Meal extends Model
 
   public function getImageAttribute($value)
   {
-    return $value == null ? null : asset('images/meals/') . $value;
+    return $value == null ? null : asset('images/meals/'. $value);
   }
 
   public function make_available()
