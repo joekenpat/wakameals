@@ -99,9 +99,9 @@ class CartController extends Controller
           $cart_item = Cart::updateOrCreate(
             [
               'id' => $item['id'],
-              'user_id' => $user->id,
             ],
             [
+              'user_id' => $user->id,
               'name' => $item['name'],
               'meal_id' => $item['meal_id'],
               'special_instruction' => $item['special_instruction'],
@@ -174,7 +174,8 @@ class CartController extends Controller
       'id' => 'required|uuid|exists:carts',
     ]);
     try {
-      Auth('user')->user()->cart_items()->whereId($request->id)->delete();
+      $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
+      $user->cart_items()->whereId($request->id)->delete();
       $response['status'] = 'success';
       $response['message'] = 'Item has been removed from cart';
       return response()->json($response, Response::HTTP_OK);
