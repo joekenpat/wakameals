@@ -130,7 +130,8 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin meal route
   Route::group(['prefix' => 'meal', 'middleware' => ['auth:admin']], function () {
-    Route::get('list', [AdminMealController::class, 'index']);
+    Route::get('list/available', [AdminMealController::class, 'index_available']);
+    Route::get('list/unavailable', [AdminMealController::class, 'index_unavailable']);
     Route::get('make_available/{meal_slug}', [AdminMealController::class, 'make_available'])->where('meal_slug', '[a-z0-9-]+');
     Route::get('make_unavailable/{meal_slug}', [AdminMealController::class, 'make_unavailable'])->where('meal_slug', '[a-z0-9-]+');
     Route::get('remove_extra_item/{meal_slug}/{extra_item_slug}', [AdminMealController::class, 'remove_single_extra_item'])->where(['meal_slug' => '[a-z0-9-]+', 'extra_item_slug' => '[a-z0-9-]+']);

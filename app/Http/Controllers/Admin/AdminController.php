@@ -50,12 +50,12 @@ class AdminController extends Controller
     ], $messages);
 
     if (Admin::where("$auth_by", $request->input('identifier'))->exists()) {
-      $user = Admin::where($auth_by, $request->input('identifier'))->first();
-      if (password_verify($request->input('password'), $user->password)) {
-        $this->auth_success($user);
+      $admin = Admin::where($auth_by, $request->input('identifier'))->first();
+      if (password_verify($request->input('password'), $admin->password)) {
+        $this->auth_success($admin);
         $response['status'] = 'success';
         $response['message'] = 'Log-in Successfull';
-        $response['token'] = $user->createToken(config('app.name') . '_personal_access_token', ['admin'])->accessToken;
+        $response['token'] = $admin->createToken(config('app.name') . '_personal_access_token', ['admin'])->accessToken;
         return response()->json($response, Response::HTTP_OK);
       } else {
         $response['message'] = 'Invalid Credentials';

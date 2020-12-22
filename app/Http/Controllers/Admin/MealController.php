@@ -22,9 +22,22 @@ class MealController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request)
+  public function index_available(Request $request)
   {
-    $meals = Meal::paginate(20);
+    $meals = Meal::whereAvailable(true)->paginate(20);;
+    $response['status'] = 'success';
+    $response['meals'] = $meals;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_unavailable(Request $request)
+  {
+    $meals = Meal::whereAvailable(false)->paginate(20);;
     $response['status'] = 'success';
     $response['meals'] = $meals;
     return response()->json($response, Response::HTTP_OK);
