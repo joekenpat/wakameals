@@ -27,6 +27,6 @@ If this wasn't intentional please place the order again and we'll be glad to ser
 **N/B**:
 If you have questions or concerns please shoot us an email or call ASAP! Don't forget to mention your order number
 
-Sincerely at your service,
+At your service,
 [ **{{config('app.name')}} Team**]({{config('app.url')}}).
 @endmarkdown

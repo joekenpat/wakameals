@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\StateController as AdminStateController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
 use App\Http\Controllers\Admin\TownController as AdminTownController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Dispatcher\DispatchController;
 use App\Http\Controllers\Dispatcher\OrderController as DispatcherOrderController;
 use App\Http\Controllers\User\LgaController;
@@ -120,13 +121,21 @@ Route::group(['prefix' => 'admin'], function () {
   });
 
 
-  //admin category route
+  //admin dispatcher route
   Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('list', [AdminDispatcherController::class, 'index']);
     Route::post('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->where('dispatcher_code', '[a-z0-9-]+');
     Route::post('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->where('dispatcher_code', '[a-z0-9-]+');
   });
 
+
+  //admin user route
+  Route::group(['prefix' => 'user'], function () {
+    Route::get('list/active', [AdminUserController::class, 'index_active']);
+    Route::get('list/blocked', [AdminUserController::class, 'index_blocked']);
+    Route::post('block/{user_id}', [AdminUserController::class, 'block'])->where('user_id', '[a-z0-9-]+');
+    Route::post('activate/{user_id}', [AdminUserController::class, 'activate'])->where('user_id', '[a-z0-9-]+');
+  });
 
   //admin meal route
   Route::group(['prefix' => 'meal', 'middleware' => ['auth:admin']], function () {

@@ -25,6 +25,6 @@ If yes please [click here](https://survey.wakameals.com) to take a 30secs survey
 
 If you have any questions or concerns please don't hesitate to contact us via phone, whatsapp, LiveChat or email.
 
-Sincerely at your service,
+At your service,
 [ **{{config('app.name')}} Team**]({{config('app.url')}}).
 @endmarkdown

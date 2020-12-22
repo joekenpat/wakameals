@@ -24,6 +24,6 @@ your new order was received! One of our reps will call you shortly to confirm yo
 Keep an eye on your mailbox as more notifications would be sent shortly. If you have questions or concerns please shoot
 us an email or call ASAP! Don't forget to mention your order code: **`{{$order->code}}`**.
 
-Sincerely at your service,
+At your service,
 [ **{{config('app.name')}} Team**]({{config('app.url')}}).
 @endmarkdown
