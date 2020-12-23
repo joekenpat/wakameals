@@ -18,7 +18,7 @@ class DispatcherController extends Controller
   public function index_pending()
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
-      ->whereStatus('pending')->simplePaginate()->makeHidden([
+      ->whereStatus('pending')->simplePaginate(20)->makeHidden([
         'last_ip', 'created_at',
         'updated_at', 'deleted_at',
         'email_verified_at',
@@ -38,7 +38,7 @@ class DispatcherController extends Controller
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
       ->whereStatus('active')
-      ->simplePaginate()
+      ->simplePaginate(20)
       ->makeHidden([
         'last_ip', 'created_at',
         'updated_at', 'deleted_at',
@@ -57,7 +57,7 @@ class DispatcherController extends Controller
   public function index_blocked()
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
-      ->whereStatus('blocked')->simplePaginate()
+      ->whereStatus('blocked')->simplePaginate(20)
       ->makeHidden([
         'last_ip', 'created_at',
         'updated_at', 'deleted_at',
