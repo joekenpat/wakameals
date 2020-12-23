@@ -74,10 +74,55 @@ class OrderController extends Controller
     ], [
       'meals.*.meal.exists' => ':input is an invalid Meal identity',
     ]);
-    $orders = [];
-    $order_ids = [];
+    $order_codes = [];
 
     try {
+
+      $new_order = new Order();
+      if ($request->delivery_type == 'pickup') {
+        $dispatcher = Dispatcher::whereCode($request->pickup_code)->firstOrFail();
+        $new_order->state_id = $dispatcher->state_id;
+        $new_order->lga_id = $dispatcher->lga_id;
+        $new_order->town_id = $dispatcher->town_id;
+        $new_order->address = $dispatcher->address;
+        $new_order->dispatcher_id = $dispatcher->id;
+      } else {
+        $new_order->state_id = $request->state;
+        $new_order->lga_id = $request->lga;
+        $new_order->town_id = $request->town;
+        $new_order->address = $request->address;
+      }
+      $new_order->delivery_type = $request->delivery_type;
+      $new_order->status = 'created';
+      $new_order->user_id = Auth('user')->user()->id;
+      $new_order->save();
+
+      if ($request->has('meals') && is_array($request->meals) && count($request->meals)) {
+        $ordered_meals = $request->meals;
+        foreach ($ordered_meals as $meal_item) {
+          $new_ordered_meal = new OrderedMeal();
+          $new_ordered_meal->name = $meal_item['name'];
+          $new_ordered_meal->meal_id = $meal_item['meal_id'];
+          $new_ordered_meal->special_instruction = $meal_item['special_instruction'];
+          $new_ordered_meal->status = 'created';
+          $new_ordered_meal->order_id = $new_order->id;
+          $new_ordered_meal->save();
+
+          if (is_array($meal_item['meal_extras']) && count($meal_item['meal_extras'])) {
+            $ordered_meals_extra_items = $meal_item['meal_extras'];
+            foreach ($ordered_meals_extra_items as $meals_extra_item) {
+              $new_ordered_meals_extra_item = new OrderedMealExtraItem();
+              $new_ordered_meals_extra_item->meal_extra_item_id = $meals_extra_item['id'];
+              $new_ordered_meals_extra_item->ordered_meal_id = $new_ordered_meal->id;
+              $new_ordered_meals_extra_item->quantity = $meals_extra_item['quantity'];
+              $new_ordered_meals_extra_item->status = 'created';
+              $new_ordered_meals_extra_item->save();
+            }
+          }
+        }
+      }
+      $order_codes[] = $new_order->code;
+
       if ($request->recurring) {
         if ($request->has('recurring_dates') && is_array($request->recurring_dates) && count($request->recurring_dates)) {
           if ($request->has('recurring_times') && is_array($request->recurring_times) && count($request->recurring_times)) {
@@ -132,63 +177,16 @@ class OrderController extends Controller
                     }
                   }
                 }
-                $orders[] = $new_order;
-                $order_ids[] = $new_order->id;
+                $order_codes[] = $new_order->code;
               }
             }
           }
         }
-      } else {
-        $new_order = new Order();
-        if ($request->delivery_type == 'pickup') {
-          $dispatcher = Dispatcher::whereCode($request->pickup_code)->firstOrFail();
-          $new_order->state_id = $dispatcher->state_id;
-          $new_order->lga_id = $dispatcher->lga_id;
-          $new_order->town_id = $dispatcher->town_id;
-          $new_order->address = $dispatcher->address;
-          $new_order->dispatcher_id = $dispatcher->id;
-        } else {
-          $new_order->state_id = $request->state;
-          $new_order->lga_id = $request->lga;
-          $new_order->town_id = $request->town;
-          $new_order->address = $request->address;
-        }
-        $new_order->delivery_type = $request->delivery_type;
-        $new_order->status = 'created';
-        $new_order->user_id = Auth('user')->user()->id;
-        $new_order->save();
-
-        if ($request->has('meals') && is_array($request->meals) && count($request->meals)) {
-          $ordered_meals = $request->meals;
-          foreach ($ordered_meals as $meal_item) {
-            $new_ordered_meal = new OrderedMeal();
-            $new_ordered_meal->name = $meal_item['name'];
-            $new_ordered_meal->meal_id = $meal_item['meal_id'];
-            $new_ordered_meal->special_instruction = $meal_item['special_instruction'];
-            $new_ordered_meal->status = 'created';
-            $new_ordered_meal->order_id = $new_order->id;
-            $new_ordered_meal->save();
-
-            if (is_array($meal_item['meal_extras']) && count($meal_item['meal_extras'])) {
-              $ordered_meals_extra_items = $meal_item['meal_extras'];
-              foreach ($ordered_meals_extra_items as $meals_extra_item) {
-                $new_ordered_meals_extra_item = new OrderedMealExtraItem();
-                $new_ordered_meals_extra_item->meal_extra_item_id = $meals_extra_item['id'];
-                $new_ordered_meals_extra_item->ordered_meal_id = $new_ordered_meal->id;
-                $new_ordered_meals_extra_item->quantity = $meals_extra_item['quantity'];
-                $new_ordered_meals_extra_item->status = 'created';
-                $new_ordered_meals_extra_item->save();
-              }
-            }
-          }
-        }
-        $orders[] = $new_order->refresh();
-        $order_ids[] = $new_order->id;
       }
+
       $response['status'] = 'success';
       $response['message'] = 'Order Created';
-      $response['orders'] = $orders;
-      $response['order_ids'] = $order_ids;
+      $response['order_codes'] = $order_codes;
       return response()->json($response, Response::HTTP_OK);
     } catch (\Exception $e) {
       $response['status'] = 'error';
