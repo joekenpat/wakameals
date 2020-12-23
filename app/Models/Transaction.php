@@ -9,17 +9,6 @@ use Dyrynda\Database\Casts\EfficientUuid;
 class Transaction extends Model
 {
 
-  use GeneratesUuid;
-
-  public function uuidColumn(): string
-  {
-    return 'id';
-  }
-
-  public function uuidColumns(): array
-  {
-    return ['id', 'user_id', 'order_id'];
-  }
 
   /**
    * The attributes that are mass assignable.
@@ -57,11 +46,7 @@ class Transaction extends Model
    * @var array
    */
 
-  protected $casts = [
-    'id' => EfficientUuid::class,
-    'user_id' => EfficientUuid::class,
-    'order_id' => EfficientUuid::class,
-  ];
+  protected $casts = [];
 
   public function user()
   {

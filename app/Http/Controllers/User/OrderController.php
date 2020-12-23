@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Unicodeveloper\Paystack\Facades\Paystack;
 
 class OrderController extends Controller
 {
@@ -200,50 +201,57 @@ class OrderController extends Controller
 
   public function verify_paystack_transaction(Request $request)
   {
-    $paystack_client = Http::withToken(config('paystack.secretKey'))->get("https://api.paystack.co/transaction/verify/" . $request->query('trxref'));
-    $payment_details = $paystack_client->json();
-    if ($payment_details['data']['status'] === "success") {
-      $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
-      $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
-        ->get();
-      foreach ($orders as $order) {
-        $transaction =  new Transaction([
-          'status' => 'completed',
-          'total_amount' => ($payment_details['data']['amount'] / 100),
-          'user_id' => $order_user->id,
-          'order_id' => $order->id,
-          'gateway' => 'paystack',
-          'reference' => $payment_details['data']['reference'],
-        ]);
-        $transaction->save();
-        $order->status = 'new';
-        $order->update();
-      }
-      $response['message'] = 'Order Payment Successfull';
-    } else {
-      if ($payment_details['data']['status'] === "failed") {
+    try {
+      $paystack_client = Http::withToken(config('paystack.secretKey'))->get("https://api.paystack.co/transaction/verify/" . $request->query('trxref'));
+      $payment_details = $paystack_client->json();
+      if ($payment_details['data']['status'] === "success") {
         $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
         $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
           ->get();
         foreach ($orders as $order) {
-          $transaction =  new Transaction([
-            'status' => 'failed',
-            'total_amount' => ($payment_details['data']['amount'] / 100),
-            'user_id' => $order_user->id,
-            'order_id' => $order->id,
-            'gateway' => 'paystack',
-            'reference' => $payment_details['data']['reference'],
-          ]);
-          $transaction->save();
-          $order->status = 'cancelled_failed_payment';
-          $order->update();
+          if (($payment_details['data']['amount'] / 100) == $order->total) {
+            $transaction =  new Transaction([
+              'status' => 'completed',
+              'total_amount' => ($payment_details['data']['amount'] / 100),
+              'user_id' => $order_user->id,
+              'order_id' => $order->id,
+              'gateway' => 'paystack',
+              'reference' => $payment_details['data']['reference'],
+            ]);
+            $transaction->save();
+            $order->status = 'new';
+            $order->update();
+          }
         }
-        $response['message'] = 'Order Payment Failed';
+        $response['message'] = 'Order Payment Successfull';
+      } else {
+        if ($payment_details['data']['status'] === "failed") {
+          $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
+          $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
+            ->get();
+          foreach ($orders as $order) {
+            $transaction =  new Transaction([
+              'status' => 'failed',
+              'total_amount' => ($payment_details['data']['amount'] / 100),
+              'user_id' => $order_user->id,
+              'order_id' => $order->id,
+              'gateway' => 'paystack',
+              'reference' => $payment_details['data']['reference'],
+            ]);
+            $transaction->save();
+            $order->status = 'cancelled_failed_payment';
+            $order->update();
+          }
+          // $response['message'] = 'Order Payment Failed';
+        }
       }
+      $response['status'] = 'success';
+      return response()->json($response, Response::HTTP_OK);
+    } catch (\Exception $e) {
+      $response['status'] = 'error';
+      $response['message'] = $e->getMessage() . " File :" . $e->getFile() . " Line: " . $e->getLine();
+      return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
-    $response['status'] = 'success';
-    $response['details'] = $payment_details;
-    return response()->json($response, Response::HTTP_OK);
   }
 
 
