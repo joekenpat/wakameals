@@ -18,7 +18,7 @@
 </body>
 <script src="{{mix('js/manifest.js')}}"></script>
 <script src="{{mix('js/vendor.js')}}"></script>
-<script src="{{mix('js/customer.min.js')}}"></script>
+<script src="{{mix('js/user.min.js')}}"></script>
 <!--Start of Tawk.to Script-->
 
 <!--End of Tawk.to Script-->
