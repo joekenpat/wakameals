@@ -104,6 +104,7 @@ Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('list/assigned', [DispatcherOrderController::class, 'index_assigned']);
     Route::get('list/delivered', [DispatcherOrderController::class, 'index_delivered']);
     Route::post('confirm', [DispatcherOrderController::class, 'confirm']);
+    Route::post('get_order_details', [DispatcherOrderController::class, 'get_order_details']);
   });
 });
 

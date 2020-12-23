@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('{any}', function () {
+  if (request()->segment(1) == 'dispatch') {
+    return view('dispatcher');
+  } elseif (request()->segment(1) == 'secured_admin') {
+    return view('admin');
+  } else {
+    return view('user');
+  }
+})->where('any', '^((?!api).)*$');

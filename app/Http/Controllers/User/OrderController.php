@@ -249,7 +249,7 @@ class OrderController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } catch (\Exception $e) {
       $response['status'] = 'error';
-      $response['message'] = $e->getMessage() . " File :" . $e->getFile() . " Line: " . $e->getLine();
+      $response['message'] = $e->getMessage();
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
   }
