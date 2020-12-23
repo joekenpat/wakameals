@@ -17,7 +17,7 @@ class OrderController extends Controller
    */
   public function index_assigned()
   {
-    $orders = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('dispatched')->paginate(20);
+    $orders = Order::with(['user'])->whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('dispatched')->paginate(20);
     $response['status'] = 'success';
     $response['assigned_orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -30,7 +30,7 @@ class OrderController extends Controller
    */
   public function delivered()
   {
-    $orders = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('delivered')->paginate(20);
+    $orders = Order::with(['user'])->whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('delivered')->paginate(20);
     $response['status'] = 'success';
     $response['delivered_orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);

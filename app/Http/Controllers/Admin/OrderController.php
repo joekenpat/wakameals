@@ -31,7 +31,7 @@ class OrderController extends Controller
       $statuses = ['new'];
     }
 
-    $orders = Order::whereIn('status', $statuses)->paginate(20);
+    $orders = Order::with(['user'])->whereIn('status', $statuses)->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -47,7 +47,7 @@ class OrderController extends Controller
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:8|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
-      $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
+      $order = Order::with(['user'])->with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'completed';
       $order->update();
       Mail::to($order->user())->send(new OrderCompleted($order->user(), $order));
