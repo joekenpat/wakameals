@@ -60,8 +60,8 @@ class OrderController extends Controller
       'lga' => 'required_if:delivery_type,door_delivery|integer|exists:lgas,id',
       'address' => 'required_if:delivery_type,door_delivery|string|min:5|max:255',
       'recurring' => 'required|boolean',
-      'recurring_dates' => 'bail|required_unless:recurring,true|array|min:1',
-      'recurring_times' => 'bail|required_unless:recurring,true|array|min:1',
+      'recurring_dates' => 'exclude_if:recurring,false|array|min:1',
+      'recurring_times' => 'exclude_if:recurring,false|array|min:1',
       'recurring_dates.*' => 'date_format:Y-m-d|before_or_equal:7 days|after_or_equal:tomorrow',
       'recurring_times.*' => 'date_format:H:i|before_or_equal:17:15|after_or_equal:7:00',
       'meals' => 'required|array|min:0',
@@ -94,6 +94,7 @@ class OrderController extends Controller
       }
       $new_order->delivery_type = $request->delivery_type;
       $new_order->status = 'created';
+      $new_order->type = 'one_time';
       $new_order->user_id = Auth('user')->user()->id;
       $new_order->save();
 
@@ -143,6 +144,7 @@ class OrderController extends Controller
                   $new_order->address = $request->address;
                 }
                 $new_order->delivery_type = $request->delivery_type;
+                $new_order->type = 'recurring';
                 $new_order->status = 'created';
                 $new_order->user_id = Auth('user')->user()->id;
                 $new_order->created_at = Carbon::parse("{$date}")->startOfDay()->setTimeFrom(Carbon::parse("{$time}"));

@@ -24,6 +24,7 @@ class CreateOrdersTable extends Migration
       $table->unsignedBigInteger('town_id')->nullable()->default(null);
       $table->string('status', 40);
       $table->string('delivery_type', 40);
+      $table->string('type', 40);
       $table->text('address')->nullable();
       $table->timestamp('created_at', 6)->useCurrent();
       $table->timestamp('updated_at', 6)->useCurrent()->nullable();
