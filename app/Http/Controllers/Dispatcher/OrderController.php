@@ -41,10 +41,10 @@ class OrderController extends Controller
     $this->validate($request, [
       'dispatcher_code' => 'required:alpha_num|size:6|exists:dispatchers',
     ]);
-    $order = Order::whereDispatcherCode($request->dispatcher_code)->firstOrFail();
+    $order = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatcherCode($request->dispatcher_code)->firstOrFail();
     $order->status = 'completed';
     $order->update();
-    $order->user()->notify(new DispatchedOrder($order->user(), $order, $order->dispatcher_id = Auth('dispatcher')->user()));
+    // $order->user()->notify(new DispatchedOrder($order->user(), $order, $order->dispatcher_id = Auth('dispatcher')->user()));
     $response['status'] = 'success';
     $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
     return response()->json($response, Response::HTTP_OK);
