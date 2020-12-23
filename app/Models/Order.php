@@ -52,7 +52,7 @@ class Order extends Model
    * @var array
    */
 
-  protected $appends = [];
+  protected $appends = ['total'];
 
   /**
    * The relationships that are appendable.
@@ -61,7 +61,7 @@ class Order extends Model
    */
 
   protected $with = [
-    // 'ordered_meals',
+    'ordered_meals',
     'state',
     'lga',
     'town',
@@ -115,6 +115,15 @@ class Order extends Model
     return $this->belongsTo(User::class);
   }
 
+  public function getTotalAttribute()
+  {
+    $total = 0;
+    $ordered_meals = OrderedMeal::whereOrderId($this->id)->get();
+    foreach ($ordered_meals as $meal) {
+      $total += $meal->cost;
+    }
+    return $total;
+  }
 
   /**
    * The "booted" method of this model.

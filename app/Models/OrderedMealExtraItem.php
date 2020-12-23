@@ -47,6 +47,8 @@ class OrderedMealExtraItem extends Model
   protected $casts = [];
 
 
+  protected $appends = ['cost'];
+
   /**
    * appendable relationships
    *
@@ -68,4 +70,12 @@ class OrderedMealExtraItem extends Model
   {
     return $this->belongsTo(ExtraItem::class);
   }
+
+  public function getCostAttribute()
+  {
+    $extra_item = ExtraItem::whereId($this->meal_extra_item_id)->firstOrFail();
+    return $this->quantity * $extra_item->price;
+  }
+
+
 }

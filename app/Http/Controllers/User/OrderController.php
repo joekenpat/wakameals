@@ -187,6 +187,7 @@ class OrderController extends Controller
       $response['status'] = 'success';
       $response['message'] = 'Order Created';
       $response['order_codes'] = $order_codes;
+      $response['order_total'] = $this->get_total_amount($order_codes);
       return response()->json($response, Response::HTTP_OK);
     } catch (\Exception $e) {
       $response['status'] = 'error';
@@ -222,11 +223,16 @@ class OrderController extends Controller
     return response()->json($response, Response::HTTP_OK);
   }
 
-  public function test_order_mail($order_code)
+
+  public function get_total_amount($order_codes)
   {
-    $order = Order::with('ordered_meals')->whereCode($order_code)->firstOrFail();
-    $user = User::whereId(auth('user')->user()->id)->firstOrFail();
-    // return $order;
-    return new OrderSystemCancelled($user, $order, $dispatcher);
+    $total = 0;
+    foreach ($order_codes as $code) {
+      if (Order::whereCode($code)->exists()) {
+        $order = Order::whereCode($code)->firstOrFail();
+        $total += $order->total;
+      }
+    }
+    return $total;
   }
 }

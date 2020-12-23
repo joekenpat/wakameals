@@ -37,6 +37,8 @@ class OrderedMeal extends Model
     'meal', 'ordered_meal_extra_items',
   ];
 
+  protected $appends = ['cost'];
+
   /**
    * The attributes that should be hidden for arrays.
    *
@@ -71,5 +73,16 @@ class OrderedMeal extends Model
   public function ordered_meal_extra_items()
   {
     return $this->hasMany(OrderedMealExtraItem::class);
+  }
+
+  public function getCostAttribute()
+  {
+    $meal = Meal::whereId($this->meal_id)->firstOrFail();
+    $ordered_extra_items = OrderedMealExtraItem::whereOrderedMealId($this->id)->get();
+    $cost = $meal->price;
+    foreach ($ordered_extra_items as $item) {
+      $cost += $item->cost;
+    }
+    return $cost;
   }
 }
