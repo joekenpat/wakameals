@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Dispatcher;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderCompleted;
 use App\Models\Order;
+use App\Models\User;
 use App\Notifications\DispatchedOrder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -47,7 +48,8 @@ class OrderController extends Controller
     $order = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatchCode($request->dispatcher_code)->firstOrFail();
     $order->status = 'completed';
     $order->update();
-    Mail::to($order->user())->send(new OrderCompleted($order->user(), $order));
+    $order_user =User::whereId($order->user_id)->firstOrFail();
+    Mail::to($order_user)->send(new OrderCompleted($order_user, $order));
     $response['status'] = 'success';
     $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
     return response()->json($response, Response::HTTP_OK);

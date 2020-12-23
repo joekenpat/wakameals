@@ -8,6 +8,7 @@ use App\Mail\OrderConfirmed;
 use App\Mail\OrderSystemCancelled;
 use App\Models\Dispatcher;
 use App\Models\Order;
+use App\Models\User;
 use App\Services\OrderSearch;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -50,7 +51,8 @@ class OrderController extends Controller
       $order = Order::with(['user'])->with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'completed';
       $order->update();
-      Mail::to($order->user())->send(new OrderCompleted($order->user(), $order));
+      $order_user = User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderCompleted($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Completed';
       return response()->json($response, Response::HTTP_OK);
@@ -58,7 +60,8 @@ class OrderController extends Controller
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'cancelled';
       $order->update();
-      Mail::to($order->user())->send(new OrderSystemCancelled($order->user(), $order));
+      $order_user =User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderSystemCancelled($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been cancelled';
       return response()->json($response, Response::HTTP_OK);
@@ -73,7 +76,8 @@ class OrderController extends Controller
       $order->dispatcher_code = $dispatcher->code;
       $order->status = 'dispatched';
       $order->update();
-      Mail::to($order->user())->send(new OrderCompleted($order->user(), $order, $dispatcher));
+      $order_user =User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderCompleted($order_user, $order, $dispatcher));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
       return response()->json($response, Response::HTTP_OK);
@@ -81,7 +85,8 @@ class OrderController extends Controller
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'confirmed';
       $order->update();
-      Mail::to($order->user())->send(new OrderConfirmed($order->user(), $order));
+      $order_user =User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderConfirmed($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Confirmed';
       return response()->json($response, Response::HTTP_OK);
