@@ -14,14 +14,26 @@ class StateController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request)
+  public function index_enabled(Request $request)
   {
-    $states = State::get();
+    $states = State::whereEnabled(true)->get();
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);
   }
 
+   /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_disabled(Request $request)
+  {
+    $states = State::whereEnabled(true)->get();
+    $response['status'] = 'success';
+    $response['states'] = $states;
+    return response()->json($response, Response::HTTP_OK);
+  }
   public function enable($state_slug)
   {
     $state = State::whereSlug($state_slug)->firstOrFail();

@@ -97,9 +97,10 @@ Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('details', [DispatchController::class, 'show']);
   });
 
-  //user order route
+  //dispatcher order route
   Route::group(['prefix' => 'order', 'middleware' => ['auth:dispatcher']], function () {
-    Route::get('list', [DispatcherOrderController::class, 'index']);
+    Route::get('list/assigned', [DispatcherOrderController::class, 'index_assigned']);
+    Route::get('list/delivered', [DispatcherOrderController::class, 'index_delivered']);
     Route::post('confirm', [DispatcherOrderController::class, 'confirm']);
   });
 });
@@ -171,21 +172,24 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin state route
   Route::group(['prefix' => 'state', 'middleware' => ['auth:admin']], function () {
-    Route::get('list', [AdminStateController::class, 'index']);
+    Route::get('list/enabled', [AdminStateController::class, 'index_enabled']);
+    Route::get('list/disabled', [AdminStateController::class, 'index_disabled']);
     Route::get('enable/{state_slug}', [AdminStateController::class, 'enable'])->where('state_slug', '[a-z0-9-]+');
     Route::get('disable/{state_slug}', [AdminStateController::class, 'disable'])->where('state_slug', '[a-z0-9-]+');
   });
 
   //admin lga route
   Route::group(['prefix' => 'lga', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/{state_slug}', [AdminLgaController::class, 'index'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('list/enabled/{state_slug}', [AdminLgaController::class, 'index_enabled'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('list/disabled/{state_slug}', [AdminLgaController::class, 'index_disabled'])->where('state_slug', '[a-z0-9-]+');
     Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('lga_slug', '[a-z0-9-]+');
     Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('lga_slug', '[a-z0-9-]+');
   });
 
   //admin town route
   Route::group(['prefix' => 'town', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/{lga_slug}', [AdminTownController::class, 'index'])->where('lga_slug', '[a-z0-9-]+');
+    Route::get('list/enabled/{lga_slug}', [AdminTownController::class, 'index_enabled'])->where('lga_slug', '[a-z0-9-]+');
+    Route::get('list/disabled/{lga_slug}', [AdminTownController::class, 'index_disabled'])->where('lga_slug', '[a-z0-9-]+');
     Route::get('enable/{town_slug}', [AdminTownController::class, 'enable'])->where('town_slug', '[a-z0-9-]+');
     Route::get('disable/{town_slug}', [AdminTownController::class, 'disable'])->where('townslug', '[a-z0-9-]+');
   });

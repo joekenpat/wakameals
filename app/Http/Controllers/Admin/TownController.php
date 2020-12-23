@@ -10,12 +10,12 @@ use Illuminate\Support\Facades\Validator;
 
 class TownController extends Controller
 {
- /**
+  /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
    */
-  public function index($lga_id)
+  public function index_enabled($lga_id)
   {
     $rules = [
       'id' => 'required|alpha_dash|exists:lgas,id',
@@ -24,7 +24,32 @@ class TownController extends Controller
     $validator = Validator::make($valid_value, $rules);
     if (!$validator->fails()) {
       $lga = Lga::whereId($lga_id)->firstOrFail();
-      $towns = Town::whereLgaId($lga->id)->get();
+      $towns = Town::whereLgaId($lga->id)->whereEnabled(true)->get();
+      $response['status'] = 'success';
+      $response['towns'] = $towns;
+      return response()->json($response, Response::HTTP_OK);
+    } else {
+      $response['status'] = 'success';
+      $response['message'] = 'Invalid LGA';
+      return response()->json($response, Response::HTTP_OK);
+    }
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_disabled($lga_id)
+  {
+    $rules = [
+      'id' => 'required|alpha_dash|exists:lgas,id',
+    ];
+    $valid_value = ['id' => $lga_id];
+    $validator = Validator::make($valid_value, $rules);
+    if (!$validator->fails()) {
+      $lga = Lga::whereId($lga_id)->firstOrFail();
+      $towns = Town::whereLgaId($lga->id)->whereEnabled(false)->get();
       $response['status'] = 'success';
       $response['towns'] = $towns;
       return response()->json($response, Response::HTTP_OK);

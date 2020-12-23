@@ -58,6 +58,7 @@ class DispatcherController extends Controller
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
     $dispatcher->status = 'active';
+    $dispatcher->blocked_at = null;
     $dispatcher->update();
     $response['status'] = 'success';
     $response['message'] = $dispatcher->name . ' Dispatcher Account has been Activated';
@@ -67,7 +68,8 @@ class DispatcherController extends Controller
   public function block($dispatcher_code)
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
-    $dispatcher->status = 'block';
+    $dispatcher->status = 'blocked';
+    $dispatcher->blocked_at = now();
     $dispatcher->update();
     $response['status'] = 'success';
     $response['message'] = $dispatcher->name . ' Dispatcher Account has been Blocked';
