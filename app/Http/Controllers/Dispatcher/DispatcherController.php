@@ -162,9 +162,7 @@ class DispatchController extends Controller
         $dispatcher->avatar = $img_name;
       }
       $attribs = [
-        'first_name',
-        'last_name',
-        'title',
+        'name',
         'phone',
         'state',
         'lga',
