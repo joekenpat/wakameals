@@ -58,6 +58,16 @@ class Dispatcher extends Authenticatable
   ];
 
   /**
+   * Relationships that are countables
+   *
+   * @var array
+   */
+
+  protected $withCount = [
+    'deliveries',
+  ];
+
+  /**
    * The attributes that should be cast to native types.
    *
    * @var array
@@ -88,7 +98,7 @@ class Dispatcher extends Authenticatable
     $this->morphMany(PasswordReset::class, 'resetable');
   }
 
-  public function orders()
+  public function deliveries()
   {
     return $this->hasMany(Order::class)->whereIn('status', ['dispatched', 'completed']);
   }
