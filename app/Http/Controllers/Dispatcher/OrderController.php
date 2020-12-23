@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Dispatcher;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderCompleted;
 use App\Models\Order;
 use App\Notifications\DispatchedOrder;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -44,7 +46,7 @@ class OrderController extends Controller
     $order = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatcherCode($request->dispatcher_code)->firstOrFail();
     $order->status = 'completed';
     $order->update();
-    // $order->user()->notify(new DispatchedOrder($order->user(), $order, $order->dispatcher_id = Auth('dispatcher')->user()));
+    Mail::to($order->user())->send(new OrderCompleted($order->user(), $order));
     $response['status'] = 'success';
     $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
     return response()->json($response, Response::HTTP_OK);
