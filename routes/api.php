@@ -182,16 +182,16 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin lga route
   Route::group(['prefix' => 'lga', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/enabled/{state_slug}', [AdminLgaController::class, 'index_enabled'])->where('state_slug', '[a-z0-9-]+');
-    Route::get('list/disabled/{state_slug}', [AdminLgaController::class, 'index_disabled'])->where('state_slug', '[a-z0-9-]+');
+    Route::get('list/enabled/{state_id}', [AdminLgaController::class, 'index_enabled'])->where('state_id', '[a-z0-9-]+');
+    Route::get('list/disabled/{state_id}', [AdminLgaController::class, 'index_disabled'])->where('state_id', '[a-z0-9-]+');
     Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('lga_slug', '[a-z0-9-]+');
     Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('lga_slug', '[a-z0-9-]+');
   });
 
   //admin town route
   Route::group(['prefix' => 'town', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/enabled/{lga_slug}', [AdminTownController::class, 'index_enabled'])->where('lga_slug', '[a-z0-9-]+');
-    Route::get('list/disabled/{lga_slug}', [AdminTownController::class, 'index_disabled'])->where('lga_slug', '[a-z0-9-]+');
+    Route::get('list/enabled/{lga_id}', [AdminTownController::class, 'index_enabled'])->where('lga_id', '[a-z0-9-]+');
+    Route::get('list/disabled/{lga_id}', [AdminTownController::class, 'index_disabled'])->where('lga_id', '[a-z0-9-]+');
     Route::get('enable/{town_slug}', [AdminTownController::class, 'enable'])->where('town_slug', '[a-z0-9-]+');
     Route::get('disable/{town_slug}', [AdminTownController::class, 'disable'])->where('townslug', '[a-z0-9-]+');
   });
