@@ -72,6 +72,7 @@ class OrderController extends Controller
       'meals.*.meal.exists' => ':input is an invalid Meal identity',
     ]);
     $orders = [];
+    $order_ids = [];
 
     try {
       if ($request->has('recurring_dates') && is_array($request->recurring_dates) && count($request->recurring_dates)) {
@@ -128,9 +129,9 @@ class OrderController extends Controller
                 }
               }
               $orders[] = $new_order;
+              $order_ids[] = $new_order->id;
             }
           }
-          $response['orders'] = $orders;
         }
       } else {
         $new_order = new Order();
@@ -176,13 +177,15 @@ class OrderController extends Controller
             }
           }
         }
-        $response['order'] = $new_order->refresh();
+        $orders[] = $new_order->refresh();
+        $order_ids[] = $new_order->id;
       }
 
 
-
       $response['status'] = 'success';
-      $response['message'] = 'Order Has Been to sent to the kitchen';
+      $response['message'] = 'Order Created';
+      $response['orders'] = $orders;
+      $response['order_ids'] = $order_ids;
       return response()->json($response, Response::HTTP_OK);
     } catch (\Exception $e) {
       $response['status'] = 'error';

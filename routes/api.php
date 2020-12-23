@@ -58,7 +58,7 @@ Route::group([], function () {
   });
 
   //guest pickup  route
-  Route::get('avail_pickup/list/{lga_slug}/', [DispatcherController::class, 'index'])->where(['lga_slug' => '[a-z0-9-]+']);
+  Route::get('avail_pickup/list', [DispatcherController::class, 'index']);
   //guest meal route
   Route::get('meal/list', [MealController::class, 'index']);
 
