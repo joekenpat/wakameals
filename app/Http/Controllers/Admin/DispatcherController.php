@@ -15,9 +15,37 @@ class DispatcherController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index(Request $request)
+  public function index_pending()
   {
-    $dispatchers = DispatcherSearch::apply($request, 20);
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])->whereStatus('pending')->simplePaginate();
+    $response['status'] = 'success';
+    $response['dispatchers'] = $dispatchers;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_active()
+  {
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])->whereStatus('active')->simplePaginate();
+    $response['status'] = 'success';
+    $response['dispatchers'] = $dispatchers;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_blocked()
+  {
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])
+      ->whereStatus('blocked')->simplePaginate();
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
@@ -26,7 +54,8 @@ class DispatcherController extends Controller
   public function activate($dispatcher_code)
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
-    $dispatcher->activate();
+    $dispatcher->status = 'active';
+    $dispatcher->update();
     $response['status'] = 'success';
     $response['message'] = $dispatcher->name . ' Dispatcher Account has been Activated';
     return response()->json($response, Response::HTTP_OK);
@@ -35,7 +64,8 @@ class DispatcherController extends Controller
   public function block($dispatcher_code)
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
-    $dispatcher->block();
+    $dispatcher->status = 'block';
+    $dispatcher->update();
     $response['status'] = 'success';
     $response['message'] = $dispatcher->name . ' Dispatcher Account has been Blocked';
     return response()->json($response, Response::HTTP_OK);
@@ -43,7 +73,7 @@ class DispatcherController extends Controller
 
   public function delete($dispatcher_code)
   {
-    $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
+    $dispatcher = Dispatcher::whereCode($dispatcher_code)->whereStatus('pending')->firstOrFail();
     $dispatcher->delete();
     $response['status'] = 'success';
     $response['message'] = $dispatcher->name . ' Dispatcher Account has been Deleted';

@@ -123,7 +123,9 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin dispatcher route
   Route::group(['prefix' => 'dispatcher'], function () {
-    Route::get('list', [AdminDispatcherController::class, 'index']);
+    Route::get('list/active', [AdminDispatcherController::class, 'index_active']);
+    Route::get('list/pending', [AdminDispatcherController::class, 'index_pending']);
+    Route::get('list/blocked', [AdminDispatcherController::class, 'index_blocked']);
     Route::post('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->where('dispatcher_code', '[a-z0-9-]+');
     Route::post('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->where('dispatcher_code', '[a-z0-9-]+');
   });

@@ -69,7 +69,7 @@ class DispatchController extends Controller
       }
     }
 
-    $new_dispatcher->status = 'active';
+    $new_dispatcher->status = 'pending';
     $new_dispatcher->last_login = now()->format('Y-m-d H:i:s.u');
     $new_dispatcher->last_ip = request()->getClientIp();
     $new_dispatcher->save();
