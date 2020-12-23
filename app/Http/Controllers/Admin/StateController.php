@@ -29,7 +29,7 @@ class StateController extends Controller
    */
   public function index_disabled(Request $request)
   {
-    $states = State::whereEnabled(true)->get();
+    $states = State::whereEnabled(false)->get();
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);
