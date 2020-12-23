@@ -17,9 +17,7 @@ class CreateDispatchersTable extends Migration
       $table->uuid('id')->primary();
       $table->string('code', 6)->unique();
       $table->string('avatar')->nullable()->default(null);
-      $table->string('first_name')->nullable()->default(null);
-      $table->string('last_name')->nullable()->default(null);
-      $table->string('title')->nullable()->default(null); //mr,ms
+      $table->string('name')->nullable()->default(null);
       $table->string('phone', 11)->unique()->nullable()->default(null);
       $table->string('email')->unique();
       $table->string('status', 40);

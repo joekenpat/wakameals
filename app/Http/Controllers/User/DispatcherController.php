@@ -20,7 +20,9 @@ class DispatcherController extends Controller
     try {
       // $lga =  Lga::whereSlug($lga_slug)->firstOrFail();
       // $pickups = Dispatcher::whereLgaId($lga->id)->whereType("pickup")->get();
-      $pickups = Dispatcher::whereType("pickup")->get();
+      $pickups = Dispatcher::with(['state','lga','town'])->select(['code', 'name', 'state_id', 'lga_id', 'town_id', 'address'])
+        ->whereType("pickup")
+        ->whereStatus('active')->get();
       $response['status'] = 'success';
       $response['pickup_locations'] = $pickups;
       return response()->json($response, Response::HTTP_OK);

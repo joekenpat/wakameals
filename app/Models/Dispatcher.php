@@ -33,8 +33,7 @@ class Dispatcher extends Authenticatable
   protected $fillable = [
     'avatar',
     'code',
-    'first_name',
-    'last_name',
+    'name',
     'email',
     'password',
     'state_id',

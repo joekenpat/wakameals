@@ -37,9 +37,7 @@ class DispatchController extends Controller
   public function default_register(Request $request)
   {
     $this->validate($request, [
-      'title' => 'required|in:mr,ms',
-      'first_name' => 'required|alpha',
-      'last_name' => 'required|alpha',
+      'name' => 'required|string|between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
       'state' => 'required|integer|exists:states,id',
       'lga' => 'required|integer|exists:lgas,id',
@@ -51,9 +49,7 @@ class DispatchController extends Controller
     ]);
 
     $attribs = [
-      'first_name',
-      'last_name',
-      'title',
+      'name',
       'phone',
       'state',
       'lga',
@@ -138,10 +134,9 @@ class DispatchController extends Controller
   public function update(Request $request)
   {
     $this->validate($request, [
-      'first_name' => 'sometimes|nullable|alpha|max:25|min:2',
-      'last_name' => 'sometimes|nullable|alpha|max:25|min:2',
+      'name' => 'sometimes|nullable||between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8',
-      'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
+      'town' => 'sometimes|nullable|alpha_dash|exists:town,id',
       'state' => 'sometimes|nullable|alpha_dash|exists:states,id',
       'lga' => 'sometimes|nullable|alpha_dash|exists:lgas,id',
       'address' => 'sometimes|nullable|string',
