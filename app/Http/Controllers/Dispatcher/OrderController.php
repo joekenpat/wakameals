@@ -39,7 +39,7 @@ class OrderController extends Controller
   public function confirm(Request $request)
   {
     $this->validate($request, [
-      'dispatcher_code' => 'required:alpha_num|size:6|exists:dispatchers',
+      'dispatcher_code' => 'required:alpha_num|size:6|exists:orders',
     ]);
     $order = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatcherCode($request->dispatcher_code)->firstOrFail();
     $order->status = 'completed';
