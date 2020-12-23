@@ -31,7 +31,7 @@ class OrderController extends Controller
       $statuses = ['new'];
     }
 
-    $orders = Order::whereIn('status', $statuses);
+    $orders = Order::whereIn('status', $statuses)->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
