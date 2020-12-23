@@ -17,7 +17,12 @@ class DispatcherController extends Controller
    */
   public function index_pending()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])->whereStatus('pending')->simplePaginate();
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+      ->whereStatus('pending')->simplePaginate()->makeHidden([
+        'last_ip', 'created_at',
+        'updated_at', 'deleted_at',
+        'email_verified_at',
+      ]);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
@@ -31,7 +36,14 @@ class DispatcherController extends Controller
    */
   public function index_active()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])->whereStatus('active')->simplePaginate();
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+      ->whereStatus('active')
+      ->simplePaginate()
+      ->makeHidden([
+        'last_ip', 'created_at',
+        'updated_at', 'deleted_at',
+        'blocked_at', 'email_verified_at',
+      ]);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
@@ -44,8 +56,13 @@ class DispatcherController extends Controller
    */
   public function index_blocked()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])->select(['id', 'code', 'name', 'state_id', 'lga_id', 'town_id', 'address', 'type', 'status', 'created_at', 'phone', 'email'])
-      ->whereStatus('blocked')->simplePaginate();
+    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+      ->whereStatus('blocked')->simplePaginate()
+      ->makeHidden([
+        'last_ip', 'created_at',
+        'updated_at', 'deleted_at',
+        'blocked_at', 'email_verified_at',
+      ]);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
