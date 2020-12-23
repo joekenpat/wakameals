@@ -56,7 +56,7 @@ class OrderController extends Controller
   public function get_order_details($dispatch_code)
   {
     try {
-      $order = Order::with(['user'])->whereDispatcherCode(auth('dispatcher')->user()->id)->whereDispatchCode($dispatch_code)->firstOrFail();
+      $order = Order::with(['user'])->whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatchCode($dispatch_code)->firstOrFail();
       $response['status'] = 'success';
       $response['order'] = $order;
       return response()->json($response, Response::HTTP_OK);
