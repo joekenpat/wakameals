@@ -201,7 +201,7 @@ class OrderController extends Controller
   public function verify_paystack_transaction(Request $request)
   {
     $paystack_client = Http::withToken(config('paystack.secretKey'))->get("https://api.paystack.co/transaction/verify/" . $request->query('trxref'));
-    $payment_details = $paystack_client->json();
+    $payment_details = json_encode(mb_convert_encoding($paystack_client->body(), 'UTF-8', 'UTF-8'));
     if ($payment_details['data']['status'] === "success") {
       $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
       $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
@@ -242,6 +242,7 @@ class OrderController extends Controller
       }
     }
     $response['status'] = 'success';
+    $response['details'] = $payment_details;
     return response()->json($response, Response::HTTP_OK);
   }
 
