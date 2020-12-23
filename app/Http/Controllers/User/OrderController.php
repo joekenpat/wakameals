@@ -235,7 +235,7 @@ class OrderController extends Controller
             'reference' => $payment_details['data']['reference'],
           ]);
           $transaction->save();
-          $order->status = 'new';
+          $order->status = 'cancelled_failed_payment';
           $order->update();
         }
         $response['message'] = 'Order Payment Failed';
