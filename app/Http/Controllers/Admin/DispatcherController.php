@@ -18,11 +18,7 @@ class DispatcherController extends Controller
   public function index_pending()
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
-      ->whereStatus('pending')->paginate(20)->makeHidden([
-        'last_ip', 'created_at',
-        'updated_at', 'deleted_at',
-        'email_verified_at',
-      ]);
+      ->whereStatus('pending')->paginate(20);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
@@ -38,12 +34,7 @@ class DispatcherController extends Controller
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
       ->whereStatus('active')
-      ->paginate(20)
-      ->makeHidden([
-        'last_ip', 'created_at',
-        'updated_at', 'deleted_at',
-        'blocked_at', 'email_verified_at',
-      ]);
+      ->paginate(20);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
@@ -57,12 +48,7 @@ class DispatcherController extends Controller
   public function index_blocked()
   {
     $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
-      ->whereStatus('blocked')->paginate(20)
-      ->makeHidden([
-        'last_ip', 'created_at',
-        'updated_at', 'deleted_at',
-        'blocked_at', 'email_verified_at',
-      ]);
+      ->whereStatus('blocked')->paginate(20);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
     return response()->json($response, Response::HTTP_OK);
