@@ -122,6 +122,7 @@ Route::group(['prefix' => 'admin'], function () {
   //admin order route
   Route::group(['prefix' => 'order'], function () {
     Route::get('list/{status}', [AdminOrderController::class, 'index'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed']);
+    Route::post('set_status', [AdminOrderController::class, 'change_status']);
   });
 
 
