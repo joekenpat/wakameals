@@ -204,24 +204,44 @@ class OrderController extends Controller
     $payment_details = $paystack_client->json();
     if ($payment_details['data']['status'] === "success") {
       $order_user = User::whereEmail($payment_details['data']['metadata']['email']);
-      $order = Order::select('id', 'title', 'slug', 'plan', 'plan_id')
-        ->whereCode($payment_details['data']['metadata']['order_code'])
-        ->firstOrFail();
-      $transaction =  new Transaction([
-        'status' => 'created',
-        'total_amount' => 0,
-        'user_id' => $order_user->id,
-        'gateway' => 'paystack',
-        'reference' => $payment_details['data']['reference'],
-      ]);
-      $transaction->status = 'completed';
-      $transaction->save();
-
-      $order->transactions()->save($transaction);
-      $order->update();
+      $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
+        ->get();
+      foreach ($orders as $order) {
+        $transaction =  new Transaction([
+          'status' => 'completed',
+          'total_amount' => ($payment_details['data']['amount'] / 100),
+          'user_id' => $order_user->id,
+          'order_id' => $order->id,
+          'gateway' => 'paystack',
+          'reference' => $payment_details['data']['reference'],
+        ]);
+        $transaction->save();
+        $order->status = 'new';
+        $order->update();
+      }
+      $response['message'] = 'Order Payment Successfull';
+    } else {
+      if ($payment_details['data']['status'] === "failed") {
+        $order_user = User::whereEmail($payment_details['data']['metadata']['email']);
+        $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
+          ->get();
+        foreach ($orders as $order) {
+          $transaction =  new Transaction([
+            'status' => 'failed',
+            'total_amount' => ($payment_details['data']['amount'] / 100),
+            'user_id' => $order_user->id,
+            'order_id' => $order->id,
+            'gateway' => 'paystack',
+            'reference' => $payment_details['data']['reference'],
+          ]);
+          $transaction->save();
+          $order->status = 'new';
+          $order->update();
+        }
+        $response['message'] = 'Order Payment Failed';
+      }
     }
     $response['status'] = 'success';
-    $response['message'] = 'Product Updated';
     return response()->json($response, Response::HTTP_OK);
   }
 

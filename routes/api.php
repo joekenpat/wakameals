@@ -71,7 +71,7 @@ Route::group([], function () {
   Route::group(['prefix' => 'order', 'middleware' => ['auth:user']], function () {
     Route::get('list/open', [OrderController::class, 'index_open']);
     Route::get('list/closed', [OrderController::class, 'index_closed']);
-    Route::get('test_mail/{order_code}', [OrderController::class, 'test_order_mail'])->whereAlphaNumeric('order_code');
+    Route::get('verify_payment', [OrderController::class, 'verify_paystack_transaction']);
     Route::post('new', [OrderController::class, 'store']);
   });
   //guest state route
