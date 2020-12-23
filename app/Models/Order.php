@@ -112,7 +112,7 @@ class Order extends Model
 
   public function user()
   {
-    return $this->belongsTo(User::class)->select('first_name','last_name','phone','mr');
+    return $this->belongsTo(User::class)->select('first_name','last_name','phone','title');
   }
 
   public function getTotalAttribute()

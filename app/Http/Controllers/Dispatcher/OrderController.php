@@ -30,7 +30,7 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function delivered()
+  public function index_delivered()
   {
     $orders = Order::with(['user'])->whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('delivered')->paginate(20);
     $response['status'] = 'success';
