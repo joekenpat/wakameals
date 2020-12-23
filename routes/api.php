@@ -128,6 +128,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list/blocked', [AdminDispatcherController::class, 'index_blocked']);
     Route::post('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->where('dispatcher_code', '[a-z0-9-]+');
     Route::post('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->where('dispatcher_code', '[a-z0-9-]+');
+    Route::post('delete/{dispatcher_code}', [AdminDispatcherController::class, 'delete'])->where('dispatcher_code', '[a-z0-9-]+');
   });
 
 
