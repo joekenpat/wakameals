@@ -15,11 +15,24 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index_assigned()
   {
-    $orders = Auth('dispatcher')->user()->orders()->paginate(20);
+    $orders = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('dispatched')->paginate(20);
     $response['status'] = 'success';
     $response['assigned_orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function delivered()
+  {
+    $orders = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('delivered')->paginate(20);
+    $response['status'] = 'success';
+    $response['delivered_orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
   }
 
