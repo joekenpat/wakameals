@@ -95,6 +95,8 @@ Route::group(['prefix' => 'dispatcher'], function () {
   Route::group(['prefix' => 'profile', 'middleware' => ['auth:dispatcher']], function () {
     //user profile route
     Route::get('details', [DispatchController::class, 'show']);
+    Route::post('update', [DispatchController::class, 'update']);
+    Route::post('password/update', [DispatchController::class, 'update_password']);
   });
 
   //dispatcher order route
