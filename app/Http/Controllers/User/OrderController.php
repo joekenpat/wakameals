@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewOrderRecieved;
 use App\Mail\OrderPaymentCancelled;
 use App\Mail\OrderRecieved;
 use App\Mail\OrderSystemCancelled;
@@ -226,6 +227,9 @@ class OrderController extends Controller
             $order->update();
           }
           Mail::to($order_user)->send(new OrderRecieved($order_user, $order));
+          foreach (['wdcebenezer@gmail.com', 'joekenpat@gmail.com'] as $recipient) {
+            Mail::to($recipient)->send(new NewOrderRecieved($order_user, $order));
+        }
         }
         $response['message'] = 'Order Payment Successfull';
       } else {
