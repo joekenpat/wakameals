@@ -6,7 +6,9 @@ Tik tok tik tok!
 Your meal order **`{{$order->code}}`** has just been dispatched. Please take note of the delivery details below:
 
 > Dispatch Code: {{$order->dispatch_code}}.
+>
 > Dispatcher Name: {{$dispatcher->name}}.
+>
 > Dispatcher Phone: {{$dispatcher->phone}}.
 
 ## Order Details

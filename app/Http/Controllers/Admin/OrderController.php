@@ -49,7 +49,7 @@ class OrderController extends Controller
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:6|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
-      $order = Order::with(['user'])->with('ordered_meals')->whereId($request->order_id)->firstOrFail();
+      $order = Order::with(['user','ordered_meals'])->whereId($request->order_id)->firstOrFail();
       $order->status = 'completed';
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();
