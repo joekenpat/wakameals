@@ -1,5 +1,6 @@
 {
-    "/js/vendor.js": "/js/vendor.js?id=5a3996b2b3b6feddbe88",
-    "/js/manifest.js": "/js/manifest.js?id=d6be1a8a40bc5a2d2296",
-    "/js/user.min.js": "/js/user.min.js?id=4fec16de21b9b9224091"
+    "/js/dispatcher.min.js": "/js/dispatcher.min.js?id=129d02c071b4c14f4fec",
+    "/js/manifest.js": "/js/manifest.js?id=1bad812643ecbdba05d7",
+    "/js/user.min.js": "/js/user.min.js?id=6fbdea5250be46fcf04d",
+    "/js/vendor.js": "/js/vendor.js?id=5b0f4d7a6ee9b621d77d"
 }

@@ -1,5 +1,4 @@
-const mix = require("laravel-mix");
-require("laravel-mix-polyfill");
+const mix = require('laravel-mix');
 
 /*
  |--------------------------------------------------------------------------
@@ -12,65 +11,7 @@ require("laravel-mix-polyfill");
  |
  */
 
-let extractible = [
-  "axios",
-  "bootstrap",
-  "react",
-  "redux",
-  "jquery",
-  "query-string",
-  "react-dom",
-  "@material-ui/core",
-  "@material-ui/pickers",
-  "react-icons",
-  "react-moment",
-  "react-naira",
-  "react-paystack",
-  "react-redux",
-  "react-router-dom",
-  "react-toastify",
-  "uuid",
-  "web-vitals",
-  "html-react-parser",
-  "moment",
-  "react-modal",
-  "redux-thunk",
-];
-
-if (mix.inProduction()) {
-  mix.options({
-    terser: {
-      terserOptions: {
-        compress: {
-          drop_console: true,
-        },
-      },
-    },
-  });
-}
-mix
-  .react("resources/js/user.js", "public/js/user.min.js")
-  // .react("resources/js/superadmin.js", "public/js/secured_admin.min.js")
-  // .js("resources/js/messenger.js", "public/js/messenger.min.js")
-  .extract(extractible)
-  .polyfill({
-    enabled: true,
-    useBuiltIns: "usage",
-    // targets: { firefox: "40", ie: 11, safari: "9" },
-    targets: ">0.2%,not dead,not op_mini all",
-    corejs: 3,
-    debug: false,
-  })
-  // .webpackConfig({
-  //   node: {
-  //     fs: "empty",
-  //     child_process: "empty",
-  //     net: "empty",
-  //     tls: "empty"
-  //   }
-  // })
-  .version()
-  .browserSync("localhost:8033");
-mix.disableNotifications();
-
-// console.log(mix.config.babel());
+mix.js('resources/js/app.js', 'public/js')
+    .postCss('resources/css/app.css', 'public/css', [
+        //
+    ]);
