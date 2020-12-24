@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Traits\Sluggable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Town extends Model
 {
-  use Sluggable;
+  use Sluggable, SoftDeletes;
   const filterables = [
     'name', 'state', 'lga', 'enabled',
   ];
