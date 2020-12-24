@@ -5,12 +5,12 @@ Thanks for your patronage,
 your new order was received! One of our reps will call you shortly to confirm your order.
 > Order Code: **`{{$order->code}}`**
 
-## Order Details
+### Order Details
 
-|image|Meal|Additions|Sub Total|
+|image|Meal|Additions|Sub-total|
 |:---|---:|---:|---:|
 @foreach($order->ordered_meals as $ordered_meal)
-|![{{$ordered_meal->meal->name}}]({{$ordered_meal->meal->image}}) | {{$ordered_meal->meal->name}}|@if(count($ordered_meal->ordered_meal_extra_items)) @foreach($ordered_meal->ordered_meal_extra_items as $ordered_extra_item)`{{$loop->index+1}}. {{$ordered_extra_item->meal_extra_item->name}} ₦{{$ordered_extra_item->meal_extra_item->price * $ordered_extra_item->quantity}}` @endforeach @endif | ₦{{$ordered_meal->meal->price}} |
+|![{{$ordered_meal->meal->name}}]({{$ordered_meal->meal->image}}) | {{$ordered_meal->meal->name}}|@if(count($ordered_meal->ordered_meal_extra_items)) @foreach($ordered_meal->ordered_meal_extra_items as $ordered_extra_item)`{{$loop->index+1}}. {{$ordered_extra_item->meal_extra_item->name}} ₦{{$ordered_extra_item->cost}}` @endforeach @endif | ₦{{$ordered_meal->cost}} |
 @endforeach
 
 **More Details**

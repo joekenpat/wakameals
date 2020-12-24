@@ -5,10 +5,9 @@ Gosh!!!.
 
 Your order **`{{$order->code}}`** has been cancelled.
 
-If this wasn't intentional please place the order again and we'll be glad to serve you better.
 
 
-## Order Details
+### Order Details
 
 |image|Meal|Additions|Sub Total|
 |:---|---:|---:|---:|

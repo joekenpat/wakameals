@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderPaymentCancelled;
+use App\Mail\OrderRecieved;
 use App\Mail\OrderSystemCancelled;
 use App\Mail\OrderUserCancelled;
 use App\Models\Dispatcher;
@@ -15,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Mail;
 use Unicodeveloper\Paystack\Facades\Paystack;
 
 class OrderController extends Controller
@@ -222,6 +225,7 @@ class OrderController extends Controller
             $order->status = 'new';
             $order->update();
           }
+          Mail::to($order_user)->send(new OrderRecieved($order_user, $order));
         }
         $response['message'] = 'Order Payment Successfull';
       } else {
@@ -241,8 +245,9 @@ class OrderController extends Controller
             $transaction->save();
             $order->status = 'cancelled_failed_payment';
             $order->update();
+            Mail::to($order_user)->send(new OrderPaymentCancelled($order_user, $order));
           }
-          // $response['message'] = 'Order Payment Failed';
+          $response['message'] = 'Order Payment Failed';
         }
       }
       $response['status'] = 'success';

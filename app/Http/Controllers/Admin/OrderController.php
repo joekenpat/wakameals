@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderCompleted;
 use App\Mail\OrderConfirmed;
+use App\Mail\OrderDispatched;
 use App\Mail\OrderSystemCancelled;
 use App\Models\Dispatcher;
 use App\Models\Order;
@@ -77,7 +78,7 @@ class OrderController extends Controller
       $order->status = 'dispatched';
       $order->gen_dispatch_code();
       $order_user =User::whereId($order->user_id)->firstOrFail();
-      Mail::to($order_user)->send(new OrderCompleted($order_user, $order, $dispatcher));
+      Mail::to($order_user)->send(new OrderDispatched($order_user, $order, $dispatcher));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
       return response()->json($response, Response::HTTP_OK);
