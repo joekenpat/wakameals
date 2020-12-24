@@ -85,7 +85,7 @@ class State extends Model
     $this->update(['enabled' => false]);
   }
 
-  public function enabled()
+  public function enable()
   {
     $this->lgas()->update(['enabled' => true]);
     $this->update(['enabled' => true]);

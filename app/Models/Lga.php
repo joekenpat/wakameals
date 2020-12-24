@@ -86,7 +86,7 @@ class Lga extends Model
     $this->update(['enabled' => false]);
   }
 
-  public function enabled()
+  public function enable()
   {
     $this->towns()->update(['enabled' => true]);
     $this->update(['enabled' => true]);
