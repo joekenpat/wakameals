@@ -2095,6 +2095,11 @@ th:last-child {
 td {
   border-top: 1px solid #dcdcdc;
 }
+td img{
+  height: 65px;
+  width: 80px;
+  object-fit: cover;
+}
 mark {
   background-color: #f8f840;
 }
