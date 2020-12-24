@@ -125,6 +125,21 @@ class Order extends Model
     return $total;
   }
 
+  public function gen_dispatch_code()
+  {
+    $code = $this->gen_short_code(5);
+    if (!static::where('id', '!=', $this->id)->whereDispatchCode($code)->withTrashed()->exists()) {
+      $this->dispatch_code = $code;
+    } else {
+      $code = $this->gen_short_code(6);
+      while (static::where('id', '!=', $this->id)->whereDispatchCode($code)->withTrashed()->exists()) {
+        $code = $this->gen_short_code(6);
+      }
+      $this->dispatch_code = $code;
+    }
+    $this->update();
+  }
+
   /**
    * The "booted" method of this model.
    *

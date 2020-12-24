@@ -73,9 +73,9 @@ class OrderController extends Controller
       } else {
         $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
       }
-      $order->dispatcher_code = $dispatcher->code;
+      $order->dispatcher_id = $dispatcher->id;
       $order->status = 'dispatched';
-      $order->update();
+      $order->gen_dispatch_code();
       $order_user =User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderCompleted($order_user, $order, $dispatcher));
       $response['status'] = 'success';
