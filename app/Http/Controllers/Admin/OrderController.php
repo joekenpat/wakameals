@@ -45,7 +45,7 @@ class OrderController extends Controller
       'order_id' => 'required|uuid',
       'new_status' => 'required|alpha|in:completed,dispatched,confirmed,cancelled',
       'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
-      'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:8|exists:dispatchers,code',
+      'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:6|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
       $order = Order::with(['user'])->with('ordered_meals')->whereId($request->order_id)->firstOrFail();
