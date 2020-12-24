@@ -38,7 +38,7 @@ class UserController extends Controller
   public function default_register(Request $request)
   {
     $this->validate($request, [
-      'title' => 'sometimes|in:mr,ms',
+      'title' => 'sometimes|nullable|in:mr,ms',
       'first_name' => 'required|alpha',
       'last_name' => 'required|alpha',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone',
