@@ -76,7 +76,7 @@ class State extends Model
 
   public function towns()
   {
-    return $this->hasMany(town::class, 'state_id');
+    return $this->hasMany(Town::class, 'state_id');
   }
 
   public function disable()

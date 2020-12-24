@@ -72,7 +72,7 @@ class Lga extends Model
 
   public function towns()
   {
-    return $this->hasMany(town::class, 'lga_id');
+    return $this->hasMany(Town::class, 'lga_id');
   }
 
   public function state()
