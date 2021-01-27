@@ -13,7 +13,7 @@ A new order was received! you should call the user shortly to confirm the order.
 
 **More Details**
 
-- **Location:** {{$order->state->name}}, {{$order->lga->name}}, {{$order->town->name?:""}}.
+- **Location:** {{$order->place->name}}.
 - **Address:** {{$order->address}}.
 - **Delivery Type:** @if($order->delivery_type == 'door_delivery') Door @else Pickup @endif.
 - **Total:** ₦{{$order->total}}

@@ -22,9 +22,7 @@ class CreateDispatchersTable extends Migration
       $table->string('email')->unique();
       $table->string('status', 40);
       $table->string('type', 40);
-      $table->unsignedBigInteger('state_id')->nullable()->default(null);
-      $table->unsignedBigInteger('lga_id')->nullable()->default(null);
-      $table->unsignedBigInteger('town_id')->nullable()->default(null);
+      $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->timestamp('email_verified_at')->nullable();
       $table->ipAddress('last_ip');
       $table->string('password');

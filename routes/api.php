@@ -3,20 +3,16 @@
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
 use App\Http\Controllers\Admin\DispatcherController as AdminDispatcherController;
-use App\Http\Controllers\Admin\LgaController as AdminLgaController;
 use App\Http\Controllers\Admin\MealController as AdminMealController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
-use App\Http\Controllers\Admin\StateController as AdminStateController;
+use App\Http\Controllers\Admin\PlaceController as AdminPlaceController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
-use App\Http\Controllers\Admin\TownController as AdminTownController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Dispatcher\DispatchController;
 use App\Http\Controllers\Dispatcher\OrderController as DispatcherOrderController;
-use App\Http\Controllers\User\LgaController;
 use App\Http\Controllers\User\MealController;
 use App\Http\Controllers\User\OrderController;
-use App\Http\Controllers\User\StateController;
-use App\Http\Controllers\User\TownController;
+use App\Http\Controllers\User\PlaceController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\DispatcherController;
@@ -58,7 +54,7 @@ Route::group([], function () {
   });
 
   //guest pickup  route
-  Route::get('avail_pickup/list', [DispatcherController::class, 'index']);
+  Route::get('avail_pickup/{place_slug}/list', [DispatcherController::class, 'index'])->where('place_slug', '[a-z0-9-]+');
   //guest meal route
   Route::get('meal/list', [MealController::class, 'index']);
 
@@ -74,12 +70,8 @@ Route::group([], function () {
     Route::get('verify_payment', [OrderController::class, 'verify_paystack_transaction']);
     Route::post('new', [OrderController::class, 'store']);
   });
-  //guest state route
-  Route::get('state/list', [StateController::class, 'index']);
-  //guest lga route
-  Route::get('lga/list/{state_id}', [LgaController::class, 'index'])->where('state_id', '[0-9]+');
-  //guest town route
-  Route::get('town/list/{lga_id}', [TownController::class, 'index'])->where('lga_id', '[0-9]+');
+  //guest place route
+  Route::get('place/list', [PlaceController::class, 'index']);
 });
 
 //guest routes
@@ -174,27 +166,12 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('update/{subcategory_slug}', [AdminSubcategoryController::class, 'update'])->where('subcategory_slug', '[a-z0-9-]+');
   });
 
-  //admin state route
-  Route::group(['prefix' => 'state', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/enabled', [AdminStateController::class, 'index_enabled']);
-    Route::get('list/disabled', [AdminStateController::class, 'index_disabled']);
-    Route::get('enable/{state_slug}', [AdminStateController::class, 'enable'])->where('state_slug', '[a-z0-9-]+');
-    Route::get('disable/{state_slug}', [AdminStateController::class, 'disable'])->where('state_slug', '[a-z0-9-]+');
-  });
-
-  //admin lga route
-  Route::group(['prefix' => 'lga', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/enabled/{state_id}', [AdminLgaController::class, 'index_enabled'])->where('state_id', '[a-z0-9-]+');
-    Route::get('list/disabled/{state_id}', [AdminLgaController::class, 'index_disabled'])->where('state_id', '[a-z0-9-]+');
-    Route::get('enable/{lga_slug}', [AdminLgaController::class, 'enable'])->where('lga_slug', '[a-z0-9-]+');
-    Route::get('disable/{lga_slug}', [AdminLgaController::class, 'disable'])->where('lga_slug', '[a-z0-9-]+');
-  });
-
-  //admin town route
-  Route::group(['prefix' => 'town', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/enabled/{lga_id}', [AdminTownController::class, 'index_enabled'])->where('lga_id', '[a-z0-9-]+');
-    Route::get('list/disabled/{lga_id}', [AdminTownController::class, 'index_disabled'])->where('lga_id', '[a-z0-9-]+');
-    Route::get('enable/{town_slug}', [AdminTownController::class, 'enable'])->where('town_slug', '[a-z0-9-]+');
-    Route::get('disable/{town_slug}', [AdminTownController::class, 'disable'])->where('townslug', '[a-z0-9-]+');
+  //admin place route
+  Route::group(['prefix' => 'place', 'middleware' => ['auth:admin']], function () {
+    Route::post('new', [AdminPlaceController::class, 'store']);
+    Route::get('list/enabled', [AdminPlaceController::class, 'index_enabled']);
+    Route::get('list/disabled', [AdminPlaceController::class, 'index_disabled']);
+    Route::get('enable/{place_slug}', [AdminPlaceController::class, 'enable'])->where('place_slug', '[a-z0-9-]+');
+    Route::get('disable/{place_slug}', [AdminPlaceController::class, 'disable'])->where('placetown_slug', '[a-z0-9-]+');
   });
 });

@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use App\Traits\Sluggable;
+use Askedio\SoftCascade\Traits\SoftCascadeTrait;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Lga extends Model
+class Place extends Model
 {
-  use Sluggable, SoftDeletes;
+  use SoftDeletes, Sluggable;
 
   /**
    * set the attributes to slug from
@@ -18,15 +19,17 @@ class Lga extends Model
   public $sluggable = 'name';
 
   const filterables = [
-    'name', 'state', 'enabled',
+    'name', 'enabled',
   ];
+
+
   /**
    * The attributes that are mass assignable.
    *
    * @var array
    */
   protected $fillable = [
-    'name', 'slug', 'state_id', 'enabled',
+    'id', 'name', 'slug', 'enabled',
   ];
 
   /**
@@ -49,47 +52,31 @@ class Lga extends Model
 
   public function orders()
   {
-    return $this->hasMany(Order::class, 'lga_id');
+    return $this->hasMany(Order::class, 'place_id');
   }
 
   public function users()
   {
-    return $this->hasMany(User::class, 'lga_id');
+    return $this->hasMany(User::class, 'place_id');
   }
 
   public function admins()
   {
-    return $this->hasMany(Admin::class, 'lga_id');
+    return $this->hasMany(Admin::class, 'place_id');
   }
   public function dispatchers()
   {
-    return $this->hasMany(Dispatcher::class, 'lga_id');
+    return $this->hasMany(Dispatcher::class, 'place_id');
   }
 
-  public function lgas()
-  {
-    return $this->hasMany(Lga::class, 'lga_id');
-  }
-
-  public function towns()
-  {
-    return $this->hasMany(Town::class, 'lga_id');
-  }
-
-  public function state()
-  {
-    return $this->belongsTo(State::class, 'state_id');
-  }
 
   public function disable()
   {
-    $this->towns()->update(['enabled' => false]);
     $this->update(['enabled' => false]);
   }
 
   public function enable()
   {
-    $this->towns()->update(['enabled' => true]);
     $this->update(['enabled' => true]);
   }
 }

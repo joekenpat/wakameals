@@ -14,7 +14,7 @@ Your order:  **`{{$order->code}}`** has been confirmed and is presently being pr
 
 **More Details**
 
-- **Location:** {{$order->state->name}}, {{$order->lga->name}}, {{$order->town->name?:""}}.
+- **Location:** {{$order->place->name}}.
 - **Address:** {{$order->address}}.
 - **Delivery Type:** @if($order->delivery_type == 'door_delivery') Door @else Pickup @endif.
 - **Total:** ₦{{$order->total?:0}}

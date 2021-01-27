@@ -13,7 +13,7 @@ class User extends Authenticatable
   use UuidForKey, Notifiable, HasApiTokens;
 
   const filterables = [
-    'name', 'state', 'lga', 'blocked',
+    'name', 'place', 'blocked',
   ];
 
   /**
@@ -35,9 +35,7 @@ class User extends Authenticatable
     'email',
     'phone',
     'password',
-    'state_id',
-    'lga_id',
-    'town_id',
+    'place_id',
     'address',
     'last_ip',
     'last_login',
@@ -53,9 +51,7 @@ class User extends Authenticatable
   protected $hidden = [
     'password',
     'remember_token',
-    'state_id',
-    'lga_id',
-    'town_id',
+    'place_id',
     'last_ip',
     'blocked_at',
     'updated_at',
@@ -78,19 +74,9 @@ class User extends Authenticatable
     'blocked_at' => 'datetime',
   ];
 
-  public function state()
+  public function place()
   {
-    return $this->belongsTo(State::class, 'state_id');
-  }
-
-  public function lga()
-  {
-    return $this->belongsTo(Lga::class, 'lga_id');
-  }
-
-  public function town()
-  {
-    return $this->belongsTo(Town::class, 'town_id');
+    return $this->belongsTo(Place::class, 'place_id');
   }
 
   public function cart_items()

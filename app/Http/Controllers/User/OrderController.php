@@ -6,8 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Mail\NewOrderRecieved;
 use App\Mail\OrderPaymentCancelled;
 use App\Mail\OrderRecieved;
-use App\Mail\OrderSystemCancelled;
-use App\Mail\OrderUserCancelled;
 use App\Models\Dispatcher;
 use App\Models\Order;
 use App\Models\OrderedMeal;
@@ -19,7 +17,6 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Unicodeveloper\Paystack\Facades\Paystack;
 
 class OrderController extends Controller
 {
@@ -60,9 +57,7 @@ class OrderController extends Controller
     $this->validate($request, [
       'delivery_type' => 'required|in:door_delivery,pickup',
       'pickup_code' => 'required_if:delivery_type,pickup|nullable|exists:dispatchers,code',
-      'town' => 'required_if:delivery_type,door_delivery|integer|exists:towns,id',
-      'state' => 'required_if:delivery_type,door_delivery|integer|exists:states,id',
-      'lga' => 'required_if:delivery_type,door_delivery|integer|exists:lgas,id',
+      'place' => 'required_if:delivery_type,door_delivery|integer|exists:places,id',
       'address' => 'required_if:delivery_type,door_delivery|string|min:5|max:255',
       'recurring' => 'required|boolean',
       'recurring_dates' => 'exclude_if:recurring,false|array|min:1',
@@ -86,15 +81,11 @@ class OrderController extends Controller
       $new_order = new Order();
       if ($request->delivery_type == 'pickup') {
         $dispatcher = Dispatcher::whereCode($request->pickup_code)->firstOrFail();
-        $new_order->state_id = $dispatcher->state_id;
-        $new_order->lga_id = $dispatcher->lga_id;
-        $new_order->town_id = $dispatcher->town_id;
+        $new_order->place_id = $dispatcher->place_id;
         $new_order->address = $dispatcher->address;
         $new_order->dispatcher_id = $dispatcher->id;
       } else {
-        $new_order->state_id = $request->state;
-        $new_order->lga_id = $request->lga;
-        $new_order->town_id = $request->town;
+        $new_order->place_id = $request->place;
         $new_order->address = $request->address;
       }
       $new_order->delivery_type = $request->delivery_type;
@@ -137,15 +128,11 @@ class OrderController extends Controller
                 $new_order = new Order();
                 if ($request->delivery_type == 'pickup') {
                   $dispatcher = Dispatcher::whereCode($request->pickup_code)->firstOrFail();
-                  $new_order->state_id = $dispatcher->state_id;
-                  $new_order->lga_id = $dispatcher->lga_id;
-                  $new_order->town_id = $dispatcher->town_id;
+                  $new_order->place_id = $dispatcher->place_id;
                   $new_order->address = $dispatcher->address;
                   $new_order->dispatcher_id = $dispatcher->id;
                 } else {
-                  $new_order->state_id = $request->state;
-                  $new_order->lga_id = $request->lga;
-                  $new_order->town_id = $request->town;
+                  $new_order->place_id = $request->place;
                   $new_order->address = $request->address;
                 }
                 $new_order->delivery_type = $request->delivery_type;
@@ -229,7 +216,7 @@ class OrderController extends Controller
           Mail::to($order_user)->send(new OrderRecieved($order_user, $order));
           foreach (['wdcebenezer@gmail.com', 'joekenpat@gmail.com'] as $recipient) {
             Mail::to($recipient)->send(new NewOrderRecieved($order_user, $order));
-        }
+          }
         }
         $response['message'] = 'Order Payment Successfull';
       } else {

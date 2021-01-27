@@ -18,7 +18,7 @@ As a result of error in the payment process. If this wasn't intentional please p
 
 **More Details**
 
-- **Location:** {{$order->state->name}}, {{$order->lga->name}}, {{$order->town->name?:""}}.
+- **Location:** {{$order->place->name}}.
 - **Address:** {{$order->address}}.
 - **Delivery Type:** @if($order->delivery_type == 'door_delivery') Door @else Pickup @endif.
 - **Total:** ₦{{$order->total?:0}}

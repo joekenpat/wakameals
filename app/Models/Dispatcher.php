@@ -23,7 +23,7 @@ class Dispatcher extends Authenticatable
   ];
 
   const filterables = [
-    'name', 'state', 'lga', 'blocked',
+    'name', 'place', 'blocked',
   ];
 
   /**
@@ -37,9 +37,7 @@ class Dispatcher extends Authenticatable
     'name',
     'email',
     'password',
-    'state_id',
-    'lga_id',
-    'town_id',
+    'place_id',
     'address',
     'last_ip',
     'last_login',
@@ -83,19 +81,9 @@ class Dispatcher extends Authenticatable
     'blocked_at' => 'datetime',
   ];
 
-  public function state()
+  public function place()
   {
-    return $this->belongsTo(State::class, 'state_id');
-  }
-
-  public function lga()
-  {
-    return $this->belongsTo(Lga::class, 'lga_id');
-  }
-
-  public function town()
-  {
-    return $this->belongsTo(Town::class, 'town_id');
+    return $this->belongsTo(Place::class, 'place_id');
   }
 
   public function password_resets()

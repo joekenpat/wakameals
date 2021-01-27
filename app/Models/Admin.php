@@ -22,8 +22,7 @@ class Admin extends Authenticatable
     'last_name',
     'email',
     'password',
-    'state_id',
-    'lga_id',
+    'place_id',
     'last_ip',
     'last_login',
     'blocked_at',
@@ -57,14 +56,9 @@ class Admin extends Authenticatable
     'blocked_at' => 'datetime',
   ];
 
-  public function state()
+  public function place()
   {
-    return $this->belongsTo(State::class, 'state_id');
-  }
-
-  public function lga()
-  {
-    return $this->belongsTo(Lga::class, 'lga_id');
+    return $this->belongsTo(Place::class, 'place_id');
   }
 
   public function password_resets()

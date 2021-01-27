@@ -39,9 +39,7 @@ class DispatchController extends Controller
     $this->validate($request, [
       'name' => 'required|string|between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
-      'state' => 'required|integer|exists:states,id',
-      'lga' => 'required|integer|exists:lgas,id',
-      'town' => 'required|integer|exists:town,id',
+      'place' => 'required|integer|exists:places,id',
       'address' => 'required|string',
       'type' => 'required|in:door_delivery,pickup',
       'email' => 'required|email|unique:dispatchers,email',
@@ -51,9 +49,7 @@ class DispatchController extends Controller
     $attribs = [
       'name',
       'phone',
-      'state',
-      'lga',
-      'town',
+      'place',
       'address',
       'type',
       'email',
@@ -62,7 +58,7 @@ class DispatchController extends Controller
 
     $new_dispatcher = new Dispatcher();
     foreach ($attribs as $attrib) {
-      if (in_array($attrib, ['state', 'town', 'lga'])) {
+      if ($attrib == 'place') {
         $new_dispatcher->{$attrib . '_id'} = $request->{$attrib};
       } else {
         $new_dispatcher->{$attrib} = $request->{$attrib};
@@ -136,9 +132,7 @@ class DispatchController extends Controller
     $this->validate($request, [
       'name' => 'sometimes|nullable||between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8',
-      'town' => 'sometimes|nullable|alpha_dash|exists:town,id',
-      'state' => 'sometimes|nullable|alpha_dash|exists:states,id',
-      'lga' => 'sometimes|nullable|alpha_dash|exists:lgas,id',
+      'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'address' => 'sometimes|nullable|string',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
@@ -164,9 +158,7 @@ class DispatchController extends Controller
       $attribs = [
         'name',
         'phone',
-        'state',
-        'lga',
-        'town',
+        'place',
         'email',
         'password'
       ];
@@ -174,7 +166,7 @@ class DispatchController extends Controller
         if ($request->has($attrib) && $request->{$attrib} != (null || '')) {
           if ($attrib == 'dob') {
             $dispatcher->{$attrib} = Carbon::parse($request->{$attrib});
-          } elseif (in_array($attrib, ['state', 'town', 'lga'])) {
+          } elseif ($attrib == 'place') {
             $dispatcher->{$attrib . '_id'} = $request->{$attrib};
           } else {
             $dispatcher->{$attrib} = $request->{$attrib};

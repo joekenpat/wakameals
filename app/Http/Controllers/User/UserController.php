@@ -141,9 +141,7 @@ class UserController extends Controller
       'first_name' => 'sometimes|nullable|alpha|max:25|min:2',
       'last_name' => 'sometimes|nullable|alpha|max:25|min:2',
       'phone' => 'sometimes|nullable|string|max:15|min:8',
-      'town' => 'sometimes|nullable|alpha_dash|exists:towns,id',
-      'state' => 'sometimes|nullable|alpha_dash|exists:states,id',
-      'lga' => 'sometimes|nullable|alpha_dash|exists:lgas,id',
+      'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
@@ -170,9 +168,7 @@ class UserController extends Controller
         'last_name',
         'title',
         'phone',
-        'state',
-        'lga',
-        'town',
+        'place',
         'email',
         'password'
       ];
@@ -180,7 +176,7 @@ class UserController extends Controller
         if ($request->has($attrib) && $request->{$attrib} != (null || '')) {
           if ($attrib == 'dob') {
             $user->{$attrib} = Carbon::parse($request->{$attrib});
-          } elseif (in_array($attrib, ['state', 'town', 'lga'])) {
+          } elseif ($attrib == 'place') {
             $user->{$attrib . '_id'} = $request->{$attrib};
           } else {
             $user->{$attrib} = $request->{$attrib};

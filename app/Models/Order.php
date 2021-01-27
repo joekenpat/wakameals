@@ -30,9 +30,7 @@ class Order extends Model
     'code',
     'user_id',
     'delivery_type',
-    'state_id',
-    'lga_id',
-    'town_id',
+    'place_id',
     'address',
     'status',
     'dispatch_code',
@@ -62,9 +60,7 @@ class Order extends Model
 
   protected $with = [
     'ordered_meals',
-    'state',
-    'lga',
-    'town',
+    'place',
   ];
 
 
@@ -77,9 +73,7 @@ class Order extends Model
     'dispatcher_id',
     'deleted_at',
     'updated_at',
-    'state_id',
-    'lga_id',
-    'town_id',
+    'place_id',
   ];
 
   /**
@@ -90,19 +84,9 @@ class Order extends Model
 
   protected $casts = [];
 
-  public function state()
+  public function place()
   {
-    return $this->belongsTo(State::class, 'state_id');
-  }
-
-  public function lga()
-  {
-    return $this->belongsTo(Lga::class, 'lga_id');
-  }
-
-  public function town()
-  {
-    return $this->belongsTo(Town::class, 'town_id');
+    return $this->belongsTo(Place::class, 'place_id');
   }
 
   public function ordered_meals()

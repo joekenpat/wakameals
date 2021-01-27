@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\State;
+use App\Models\Place;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-class StateController extends Controller
+class PlaceController extends Controller
 {
   /**
    * Display a listing of the resource.
@@ -16,27 +16,27 @@ class StateController extends Controller
    */
   public function index_enabled(Request $request)
   {
-    $states = State::whereEnabled(true)->get();
+    $states = Place::whereEnabled(true)->get();
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);
   }
 
-   /**
+  /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
    */
   public function index_disabled(Request $request)
   {
-    $states = State::whereEnabled(false)->get();
+    $states = Place::whereEnabled(false)->get();
     $response['status'] = 'success';
     $response['states'] = $states;
     return response()->json($response, Response::HTTP_OK);
   }
   public function enable($state_slug)
   {
-    $state = State::whereSlug($state_slug)->firstOrFail();
+    $state = Place::whereSlug($state_slug)->firstOrFail();
     $state->enable();
     $response['status'] = 'success';
     $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been enabled for delivery';
@@ -45,7 +45,7 @@ class StateController extends Controller
 
   public function disable($state_slug)
   {
-    $state = State::whereSlug($state_slug)->firstOrFail();
+    $state = Place::whereSlug($state_slug)->firstOrFail();
     $state->disable();
     $response['status'] = 'success';
     $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been disabled for delivery';
