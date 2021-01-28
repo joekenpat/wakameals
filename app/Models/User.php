@@ -94,6 +94,21 @@ class User extends Authenticatable
     $this->morphMany(PasswordReset::class, 'resetable');
   }
 
+  public function pending_table_reservations()
+  {
+    return $this->hasMany(TableReservation::class)->where('status', 'pending');
+  }
+
+  public function cancelled_table_reservations()
+  {
+    return $this->hasMany(TableReservation::class)->where('status', 'cancelled');
+  }
+
+  public function approved_table_reservations()
+  {
+    return $this->hasMany(TableReservation::class)->where('status', 'approved');
+  }
+
   public function getAvatarAttribute($value)
   {
     return $value == null ? null : asset('images/users/' . $value);

@@ -22,7 +22,29 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index($status)
+  public function index_assigned($status)
+  {
+    $statuses = [];
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed'])) {
+      $statuses = [$status];
+    } elseif ($status == 'cancelled') {
+      $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
+    } else {
+      $statuses = ['new'];
+    }
+
+    $orders = Order::with(['user'])->wherePlaceId(auth('admin')->user()->place_id)->whereIn('status', $statuses)->paginate(20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_all($status)
   {
     $statuses = [];
     if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed'])) {
@@ -49,7 +71,7 @@ class OrderController extends Controller
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:6|exists:dispatchers,code',
     ]);
     if ($request->new_status == 'completed') {
-      $order = Order::with(['user','ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
       $order->status = 'completed';
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();
@@ -61,7 +83,7 @@ class OrderController extends Controller
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'cancelled';
       $order->update();
-      $order_user =User::whereId($order->user_id)->firstOrFail();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderSystemCancelled($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been cancelled';
@@ -77,7 +99,7 @@ class OrderController extends Controller
       $order->dispatcher_id = $dispatcher->id;
       $order->status = 'dispatched';
       $order->gen_dispatch_code();
-      $order_user =User::whereId($order->user_id)->firstOrFail();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderDispatched($order_user, $order, $dispatcher));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
@@ -86,7 +108,7 @@ class OrderController extends Controller
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       $order->status = 'confirmed';
       $order->update();
-      $order_user =User::whereId($order->user_id)->firstOrFail();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderConfirmed($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Confirmed';

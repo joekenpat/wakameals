@@ -9,7 +9,7 @@ class PasswordReset extends Model
 {
   use ShortCode;
   protected $fillable = [
-    'user_id', 'code', 'used', 'expires_at'
+    'resetable_id', 'resetable_type', 'code', 'used', 'expires_at'
   ];
 
   protected $shortCodeConfig = [

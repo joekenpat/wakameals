@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Dispatcher;
+namespace App\Http\Controllers\Chef;
 
 use App\Http\Controllers\Controller;
+use App\Models\Chef;
 use App\Models\Dispatcher;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
-class DispatchController extends Controller
+class ChefController extends Controller
 {
   /**
    * Display a resource.
@@ -23,7 +24,7 @@ class DispatchController extends Controller
    */
   public function show()
   {
-    $dispatcher = Dispatcher::whereId(Auth('dispatcher')->user()->id)->with(['place'])->firstOrFail();
+    $dispatcher = Chef::whereId(Auth('chef')->user()->id)->with(['place', 'dispatcher'])->firstOrFail();
     $response['status'] = 'success';
     $response['details'] = $dispatcher;
     return response()->json($response, Response::HTTP_OK);
@@ -40,9 +41,10 @@ class DispatchController extends Controller
       'name' => 'required|string|between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
       'place' => 'required|integer|exists:places,id',
+      'dispatcher' => 'required|integer|exists:dispatcher,code',
       'address' => 'required|string',
       'type' => 'required|in:door_delivery,pickup',
-      'email' => 'required|email|unique:dispatchers,email',
+      'email' => 'required|email|unique:chefs,email',
       'password' => 'required|string|',
     ]);
 
@@ -56,23 +58,25 @@ class DispatchController extends Controller
       'password'
     ];
 
-    $new_dispatcher = new Dispatcher();
+    $dispatcher = Dispatcher::whereCode($request->dispatcher)->firstOrFail();
+    $new_chef = new Chef();
+    $new_chef->dispatcher_id = $dispatcher->id;
     foreach ($attribs as $attrib) {
       if ($attrib == 'place') {
-        $new_dispatcher->{$attrib . '_id'} = $request->{$attrib};
+        $new_chef->{$attrib . '_id'} = $request->{$attrib};
       } else {
-        $new_dispatcher->{$attrib} = $request->{$attrib};
+        $new_chef->{$attrib} = $request->{$attrib};
       }
     }
 
-    $new_dispatcher->status = 'pending';
-    $new_dispatcher->last_login = now()->format('Y-m-d H:i:s.u');
-    $new_dispatcher->last_ip = request()->getClientIp();
-    $new_dispatcher->save();
-    $new_dispatcher->save();
+    $new_chef->status = 'pending';
+    $new_chef->last_login = now()->format('Y-m-d H:i:s.u');
+    $new_chef->last_ip = request()->getClientIp();
+    $new_chef->save();
+    $new_chef->save();
     $response['status'] = 'success';
     $response['message'] = 'Account has been created';
-    $response['token'] = $new_dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
+    $response['token'] = $new_chef->createToken(config('app.name') . '_personal_access_token', ['chef'])->accessToken;
     return response()->json($response, Response::HTTP_CREATED);
   }
 
@@ -96,16 +100,16 @@ class DispatchController extends Controller
     $this->validate($request, [
       'identifier' => 'required|string',
       'password' => 'required|string',
-      'email' => 'sometimes|string|exists:dispatchers,' . $auth_by,
+      'email' => 'sometimes|string|exists:chefs,' . $auth_by,
     ], $messages);
 
-    if (Dispatcher::where("$auth_by", $request->input('identifier'))->exists()) {
-      $dispatcher = Dispatcher::where($auth_by, $request->input('identifier'))->first();
-      if (password_verify($request->input('password'), $dispatcher->password)) {
-        $this->auth_success($dispatcher);
+    if (Chef::where("$auth_by", $request->input('identifier'))->exists()) {
+      $chef = Chef::where($auth_by, $request->input('identifier'))->first();
+      if (password_verify($request->input('password'), $chef->password)) {
+        $this->auth_success($chef);
         $response['status'] = 'success';
         $response['message'] = 'Log-in Successfull';
-        $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
+        $response['token'] = $chef->createToken(config('app.name') . '_personal_access_token', ['chef'])->accessToken;
         return response()->json($response, Response::HTTP_OK);
       } else {
         $response['message'] = 'Invalid Credentials';
@@ -138,7 +142,7 @@ class DispatchController extends Controller
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
     try {
-      $dispatcher = Dispatcher::where('id', Auth('dispatcher')->user()->id)->firstOrFail();
+      $chef = Chef::where('id', Auth('dispatcher')->user()->id)->firstOrFail();
       //adding images
       if ($request->hasFile('avatar') && $request->avatar != null) {
         $image = Image::make($request->file('avatar'))->encode('jpg', 1);
@@ -153,7 +157,7 @@ class DispatchController extends Controller
         $img_name = sprintf("DISPATCHER%s.jpg", strtolower(Str::random(15)));
         $image->save(public_path("images/dispatchers/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
-        $dispatcher->avatar = $img_name;
+        $chef->avatar = $img_name;
       }
       $attribs = [
         'name',
@@ -165,19 +169,19 @@ class DispatchController extends Controller
       foreach ($attribs as $attrib) {
         if ($request->has($attrib) && $request->{$attrib} != (null || '')) {
           if ($attrib == 'dob') {
-            $dispatcher->{$attrib} = Carbon::parse($request->{$attrib});
+            $chef->{$attrib} = Carbon::parse($request->{$attrib});
           } elseif ($attrib == 'place') {
-            $dispatcher->{$attrib . '_id'} = $request->{$attrib};
+            $chef->{$attrib . '_id'} = $request->{$attrib};
           } else {
-            $dispatcher->{$attrib} = $request->{$attrib};
+            $chef->{$attrib} = $request->{$attrib};
           }
         }
       }
-      $dispatcher->update();
+      $chef->update();
 
       $response['status'] = 'success';
       $response['message'] = 'Profile has been updated';
-      $response['dispatcher'] = $dispatcher;
+      $response['chef'] = $chef;
       return response()->json($response, Response::HTTP_OK);
     } catch (ModelNotFoundException $mnt) {
       $response['status'] = 'error';
@@ -192,26 +196,26 @@ class DispatchController extends Controller
 
   public function logout()
   {
-    Auth::guard('dispatcher')->token()->revoke();
-    Auth::guard('dispatcher')->logout();
+    Auth::guard('chef')->token()->revoke();
+    Auth::guard('chef')->logout();
     $response['status'] = 'success';
     $response['message'] = 'Dispatcher Logged Out';
     return response()->json($response, Response::HTTP_OK);
   }
 
-  public function list_dispatcher_notifications()
+  public function list_chef_notifications()
   {
-    $dispatcher = Dispatcher::find(Auth('dispatcher')->user()->id)->first();
-    $notifications = $dispatcher->unreadNotifications()->paginate(20);
+    $chef = Chef::find(Auth('chef')->user()->id)->first();
+    $notifications = $chef->unreadNotifications()->paginate(20);
     $response['status'] = 'success';
     $response['notifications'] = $notifications;
     return response()->json($response, Response::HTTP_OK);
   }
 
-  public function mark_dispatcher_notification_as_read($notification_id)
+  public function mark_chef_notification_as_read($notification_id)
   {
-    $dispatcher = Dispatcher::find(Auth('dispatcher')->user()->id)->first();
-    $notification = $dispatcher->notifications()->whereId($notification_id)->first();
+    $chef = Chef::find(Auth('chef')->user()->id)->first();
+    $notification = $chef->notifications()->whereId($notification_id)->first();
     $notification->markAsRead();
     $response['status'] = 'success';
     $response['messages'] = 'Notification marked as Read';
@@ -219,10 +223,10 @@ class DispatchController extends Controller
   }
 
 
-  public function mark_dispatcher_all_notification_as_read()
+  public function mark_chef_all_notification_as_read()
   {
-    $dispatcher = Dispatcher::find(Auth('dispatcher')->user()->id)->first();
-    $dispatcher->unreadNotifications()->update(['read_at' => now()]);
+    $chef = Dispatcher::find(Auth('chef')->user()->id)->first();
+    $chef->unreadNotifications()->update(['read_at' => now()]);
     $response['status'] = 'success';
     $response['messages'] = 'All notifications marked as Read';
     return response()->json($response, Response::HTTP_OK);
@@ -248,14 +252,14 @@ class DispatchController extends Controller
       'retype_new_password' => 'required|string|same:new_password',
     ]);
 
-    $dispatcher = Dispatcher::whereId(auth('dispatcher')->user()->id)->firstOrFail();
-    if (password_verify($request->input('current_password'), $dispatcher->password)) {
-      $dispatcher->password = Hash::make($request->input('new_password'));
-      $dispatcher->update;
-      $this->auth_success($dispatcher);
+    $chef = Chef::whereId(auth('chef')->user()->id)->firstOrFail();
+    if (password_verify($request->input('current_password'), $chef->password)) {
+      $chef->password = Hash::make($request->input('new_password'));
+      $chef->update;
+      $this->auth_success($chef);
       $response['status'] = 'success';
       $response['message'] = 'Password Change Successfull';
-      $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
+      $response['token'] = $chef->createToken(config('app.name') . '_personal_access_token', ['chef'])->accessToken;
       return response()->json($response, Response::HTTP_OK);
     } else {
       $response['message'] = 'Invalid Credentials';
@@ -264,9 +268,9 @@ class DispatchController extends Controller
     }
   }
 
-  protected function auth_success($dispatcher)
+  protected function auth_success($chef)
   {
-    $dispatcher->update([
+    $chef->update([
       'last_login' => now()->format('Y-m-d H:i:s.u'),
       'last_ip' => request()->getClientIp(),
     ]);

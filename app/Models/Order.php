@@ -34,6 +34,7 @@ class Order extends Model
     'address',
     'status',
     'dispatch_code',
+    'ched_id',
     'dispatcher_id',
   ];
 
@@ -97,6 +98,16 @@ class Order extends Model
   public function user()
   {
     return $this->belongsTo(User::class)->select('id', 'first_name', 'last_name', 'phone', 'title', 'email');
+  }
+
+  public function dispatcher()
+  {
+    return $this->belongsTo(Dispatcher::class)->select('id', 'name', 'phone', 'email');
+  }
+
+  public function chef()
+  {
+    return $this->belongsTo(Chef::class)->select('id', 'name', 'phone', 'email');
   }
 
   public function getTotalAttribute()

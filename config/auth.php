@@ -61,6 +61,10 @@ return [
       'driver' => 'passport',
       'provider' => 'users',
     ],
+    'chef' => [
+      'driver' => 'passport',
+      'provider' => 'chefs',
+    ],
   ],
 
   /*
@@ -94,6 +98,11 @@ return [
     'dispatchers' => [
       'driver' => 'eloquent',
       'model' =>  \App\Models\Dispatcher::class,
+    ],
+
+    'chefs' => [
+      'driver' => 'eloquent',
+      'model' =>  \App\Models\Chef::class,
     ],
 
     // 'users' => [

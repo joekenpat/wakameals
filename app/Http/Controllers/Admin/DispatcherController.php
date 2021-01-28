@@ -17,7 +17,7 @@ class DispatcherController extends Controller
    */
   public function index_pending()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+    $dispatchers = Dispatcher::with(['place'])
       ->whereStatus('pending')->paginate(20);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;
@@ -32,7 +32,7 @@ class DispatcherController extends Controller
    */
   public function index_active()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+    $dispatchers = Dispatcher::with(['place'])
       ->whereStatus('active')
       ->paginate(20);
     $response['status'] = 'success';
@@ -47,7 +47,7 @@ class DispatcherController extends Controller
    */
   public function index_blocked()
   {
-    $dispatchers = Dispatcher::with(['state', 'lga', 'town'])
+    $dispatchers = Dispatcher::with(['place'])
       ->whereStatus('blocked')->paginate(20);
     $response['status'] = 'success';
     $response['dispatchers'] = $dispatchers;

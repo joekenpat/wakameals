@@ -4,7 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dispatcher;
-use App\Models\Lga;
+use App\Models\Place;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Response;
 
@@ -15,12 +15,13 @@ class DispatcherController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index($place_slug)
   {
     try {
       // $lga =  Lga::whereSlug($lga_slug)->firstOrFail();
       // $pickups = Dispatcher::whereLgaId($lga->id)->whereType("pickup")->get();
-      $pickups = Dispatcher::with(['state','lga','town'])->select(['code', 'name', 'state_id', 'lga_id', 'town_id', 'address'])
+      $place = Place::whereSlug($place_slug)->firstOrFail();
+      $pickups = Dispatcher::wherePlaceId($place->id)->with(['place'])->select(['code', 'name', 'place_id', 'address'])
         ->whereType("pickup")
         ->whereStatus('active')->get();
       $response['status'] = 'success';

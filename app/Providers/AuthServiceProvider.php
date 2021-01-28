@@ -29,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
     Passport::tokensCan([
       'admin' => 'Access Admin Backend',
       'dispatcher' => 'Food Delivery Users',
+      'chef'=>'Food Preparing agents',
       'user' => 'Food Ordering Users',
     ]);
 

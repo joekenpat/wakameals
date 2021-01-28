@@ -2,7 +2,7 @@
 #### Dear {{$user->first_name}}
 
 Hurray!
-Your order:  **`{{$order->code}}`** has been confirmed. To monitor the status of your order kindly login to your account here and check the order status.
+Your order:  **`{{$order->code}}`** has been is currently being prepared by the chef and will be ready in 5 minutes. To monitor the status of your order kindly login to your account here and check the order status.
 
 ### Order Details
 
