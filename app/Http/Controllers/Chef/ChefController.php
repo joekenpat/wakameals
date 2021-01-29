@@ -136,20 +136,20 @@ class ChefController extends Controller
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
     try {
-      $chef = Chef::where('id', Auth('dispatcher')->user()->id)->firstOrFail();
+      $chef = Chef::where('id', Auth('chef')->user()->id)->firstOrFail();
       //adding images
       if ($request->hasFile('avatar') && $request->avatar != null) {
         $image = Image::make($request->file('avatar'))->encode('jpg', 1);
-        if (Auth('dispatcher')->user()->avatar != null) {
-          if (File::exists("images/dispatchers/" . Auth('dispatcher')->user()->avatar)) {
-            File::delete("images/dispatchers/" . Auth('dispatcher')->user()->avatar);
+        if (Auth('chef')->user()->avatar != null) {
+          if (File::exists("images/chefs/" . Auth('chef')->user()->avatar)) {
+            File::delete("images/chefs/" . Auth('chef')->user()->avatar);
           }
         }
-        if (!File::isDirectory(public_path("images/dispatchers/"))) {
-          File::makeDirectory(public_path("images/dispatchers"));
+        if (!File::isDirectory(public_path("images/chefs/"))) {
+          File::makeDirectory(public_path("images/chefs"));
         }
-        $img_name = sprintf("DISPATCHER%s.jpg", strtolower(Str::random(15)));
-        $image->save(public_path("images/dispatchers/") . $img_name, 70, 'jpg');
+        $img_name = sprintf("CHEF%s.jpg", strtolower(Str::random(15)));
+        $image->save(public_path("images/chefs/") . $img_name, 70, 'jpg');
         $request->avatar = $img_name;
         $chef->avatar = $img_name;
       }
