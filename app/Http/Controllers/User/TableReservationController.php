@@ -59,14 +59,14 @@ class TableReservationController extends Controller
       'dispatcher' => 'required|uuid|exists:dispatchers,id',
       'reserved_date' => 'date_format:Y-m-d|before_or_equal:2 weeks|after_or_equal:tomorrow',
       'reserved_time' => 'date_format:H:i|before_or_equal:17:00|after_or_equal:8:00',
-      'seat_quantity' => 'required|integer|digits_between:1,50',
+      'number_of_seat' => 'required|integer|min:1|max:50',
     ]);
 
-    $dispatcher = Dispatcher::whereId($request->dispatcher);
+    $dispatcher = Dispatcher::whereId($request->dispatcher)->firstOrFail();
     $new_reservation = TableReservation::create([
       'user_id' => auth('user')->user()->id,
-      'status' => 'created',
-      'seat_quantity' => $request->seat_quantity,
+      'status' => 'pending',
+      'seat_quantity' => $request->number_of_seat,
       'dispatcher_id' => $dispatcher->id,
       'place_id' => $dispatcher->place->id,
       'reserved_at' => Carbon::parse("{$request->reserved_date}")->startOfDay()->setTimeFrom(Carbon::parse("{$request->reserved_time}"))

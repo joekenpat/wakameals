@@ -131,7 +131,7 @@ class ChefController extends Controller
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable||between:3,240',
-      'phone' => 'sometimes|nullable|string|max:15|min:8',
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,'.auth('chef')->user()->id,
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);

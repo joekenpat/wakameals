@@ -82,7 +82,7 @@ class AdminController extends Controller
     $this->validate($request, [
       'first_name' => 'sometimes|nullable|alpha|max:25|min:2',
       'last_name' => 'sometimes|nullable|alpha|max:25|min:2',
-      'phone' => 'sometimes|nullable|string|max:15|min:8',
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,'.auth('admin')->user()->id,
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',

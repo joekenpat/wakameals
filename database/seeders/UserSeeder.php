@@ -20,7 +20,7 @@ class UserSeeder extends Seeder
       'first_name' => 'Joel',
       'last_name' => 'Patrick',
       'title' => 'mr',
-      'status' => 'created',
+      'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'phone' => '08174310668',
       'password' => Hash::make('joeslim1'),

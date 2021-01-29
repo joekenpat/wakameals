@@ -18,7 +18,7 @@ class DispatcherSeeder extends Seeder
   {
     Dispatcher::create([
       'name' => 'Joel Patrick',
-      'status' => 'created',
+      'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'type' => 'pickup',
       'phone' => '08174310668',

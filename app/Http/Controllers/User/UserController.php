@@ -23,7 +23,7 @@ class UserController extends Controller
    */
   public function show()
   {
-    $user = User::whereId(Auth('user')->user()->id)->with(['state', 'lga', 'town'])->firstOrFail();
+    $user = User::whereId(Auth('user')->user()->id)->with(['place'])->firstOrFail();
     $response['status'] = 'success';
     $response['details'] = $user;
     return response()->json($response, Response::HTTP_OK);
@@ -140,7 +140,7 @@ class UserController extends Controller
     $this->validate($request, [
       'first_name' => 'sometimes|nullable|alpha|max:25|min:2',
       'last_name' => 'sometimes|nullable|alpha|max:25|min:2',
-      'phone' => 'sometimes|nullable|string|max:15|min:8',
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,' . auth('user')->user()->id,
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
