@@ -169,7 +169,6 @@ class UserController extends Controller
         'title',
         'phone',
         'place',
-        'email',
         'password'
       ];
       foreach ($attribs as $attrib) {

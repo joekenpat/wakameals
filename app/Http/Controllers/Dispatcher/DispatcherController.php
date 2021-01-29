@@ -133,7 +133,6 @@ class DispatchController extends Controller
       'name' => 'sometimes|nullable||between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8',
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
-      'address' => 'sometimes|nullable|string',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
@@ -159,7 +158,7 @@ class DispatchController extends Controller
         'name',
         'phone',
         'place',
-        'email',
+        'address',
         'password'
       ];
       foreach ($attribs as $attrib) {

@@ -14,11 +14,11 @@ class PlaceController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index_enabled(Request $request)
+  public function index_enabled()
   {
-    $states = Place::whereEnabled(true)->get();
+    $places = Place::whereEnabled(true)->get();
     $response['status'] = 'success';
-    $response['states'] = $states;
+    $response['places'] = $places;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -27,28 +27,52 @@ class PlaceController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index_disabled(Request $request)
+  public function index_disabled()
   {
-    $states = Place::whereEnabled(false)->get();
+    $places = Place::whereEnabled(false)->get();
     $response['status'] = 'success';
-    $response['states'] = $states;
-    return response()->json($response, Response::HTTP_OK);
-  }
-  public function enable($state_slug)
-  {
-    $state = Place::whereSlug($state_slug)->firstOrFail();
-    $state->enable();
-    $response['status'] = 'success';
-    $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been enabled for delivery';
+    $response['places'] = $places;
     return response()->json($response, Response::HTTP_OK);
   }
 
-  public function disable($state_slug)
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function store(Request $request)
   {
-    $state = Place::whereSlug($state_slug)->firstOrFail();
-    $state->disable();
+    $this->validate($request, [
+      'name' => 'required|string|min:3|max:245'
+    ]);
+
+
+    $place = Place::create([
+      'name' => $request->name,
+      'enabled' => true,
+    ]);
+
     $response['status'] = 'success';
-    $response['message'] = $state->name . ' State and it\'s respective lgas & towns has been disabled for delivery';
+    $response['place'] = $place;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+
+  public function enable($place_slug)
+  {
+    $place = Place::whereSlug($place_slug)->firstOrFail();
+    $place->enable();
+    $response['status'] = 'success';
+    $response['message'] = $place->name . ' Place has been enabled for delivery';
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  public function disable($place_slug)
+  {
+    $place = Place::whereSlug($place_slug)->firstOrFail();
+    $place->disable();
+    $response['status'] = 'success';
+    $response['message'] = $place->name . ' State has been disabled for delivery';
     return response()->json($response, Response::HTTP_OK);
   }
 }

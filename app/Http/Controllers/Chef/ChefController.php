@@ -42,8 +42,6 @@ class ChefController extends Controller
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
       'place' => 'required|integer|exists:places,id',
       'dispatcher' => 'required|integer|exists:dispatcher,code',
-      'address' => 'required|string',
-      'type' => 'required|in:door_delivery,pickup',
       'email' => 'required|email|unique:chefs,email',
       'password' => 'required|string|',
     ]);
@@ -52,8 +50,6 @@ class ChefController extends Controller
       'name',
       'phone',
       'place',
-      'address',
-      'type',
       'email',
       'password'
     ];
@@ -137,8 +133,6 @@ class ChefController extends Controller
       'name' => 'sometimes|nullable||between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8',
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
-      'address' => 'sometimes|nullable|string',
-      'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
     try {
@@ -163,7 +157,6 @@ class ChefController extends Controller
         'name',
         'phone',
         'place',
-        'email',
         'password'
       ];
       foreach ($attribs as $attrib) {
@@ -221,7 +214,6 @@ class ChefController extends Controller
     $response['messages'] = 'Notification marked as Read';
     return response()->json($response, Response::HTTP_OK);
   }
-
 
   public function mark_chef_all_notification_as_read()
   {

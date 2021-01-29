@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReservationApproved;
+use App\Mail\ReservationRejected;
 use App\Models\TableReservation;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class TableReservationController extends Controller
 {
@@ -54,6 +57,7 @@ class TableReservationController extends Controller
       ->firstOrFail();
     $reservation->status = 'cancelled';
     $reservation->update();
+    Mail::to($reservation->user)->send(new ReservationRejected($reservation->user, $reservation));
     $response['status'] = 'success';
     $response['message'] = $reservation->code . ' Table Reservation has been Cancelled';
     return response()->json($response, Response::HTTP_OK);
@@ -65,6 +69,7 @@ class TableReservationController extends Controller
       ->firstOrFail();
     $reservation->status = 'approved';
     $reservation->update();
+    Mail::to($reservation->user)->send(new ReservationApproved($reservation->user, $reservation));
     $response['status'] = 'success';
     $response['message'] = $reservation->code . ' Table Reservation has been Approved';
     return response()->json($response, Response::HTTP_OK);

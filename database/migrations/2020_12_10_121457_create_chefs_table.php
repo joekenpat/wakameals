@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateDispatchersTable extends Migration
+class CreateChefsTable extends Migration
 {
   /**
    * Run the migrations.
@@ -20,13 +20,11 @@ class CreateDispatchersTable extends Migration
       $table->string('phone', 11)->unique()->nullable()->default(null);
       $table->string('email')->unique();
       $table->string('status', 40);
-      $table->string('type', 40);
-      $table->unsignedBigInteger('dispatcher_id')->nullable()->default(null);
+      $table->uuid('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->timestamp('email_verified_at')->nullable();
       $table->ipAddress('last_ip');
       $table->string('password');
-      $table->text('address')->nullable()->default(null);
       $table->rememberToken();
       $table->timestamp('last_login', 6)->nullable()->default(null);
       $table->timestamp('blocked_at', 6)->nullable()->default(null);

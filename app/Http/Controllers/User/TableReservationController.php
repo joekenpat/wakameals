@@ -3,7 +3,13 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ReservationRequestReceived;
+use App\Models\Dispatcher;
+use App\Models\TableReservation;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Mail;
 
 class TableReservationController extends Controller
 {
@@ -44,6 +50,32 @@ class TableReservationController extends Controller
     $table_reservations = auth('user')->user()->approved_table_reservations()->paginate(20);
     $response['status'] = 'success';
     $response['table_reservations'] = $table_reservations;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  public function store(Request $request)
+  {
+    $this->validate($request, [
+      'dispatcher' => 'required|uuid|exists:dispatchers,id',
+      'reserved_date' => 'date_format:Y-m-d|before_or_equal:2 weeks|after_or_equal:tomorrow',
+      'reserved_time' => 'date_format:H:i|before_or_equal:17:00|after_or_equal:8:00',
+      'seat_quantity' => 'required|integer|digits_between:1,50',
+    ]);
+
+    $dispatcher = Dispatcher::whereId($request->dispatcher);
+    $new_reservation = TableReservation::create([
+      'user_id' => auth('user')->user()->id,
+      'status' => 'created',
+      'seat_quantity' => $request->seat_quantity,
+      'dispatcher_id' => $dispatcher->id,
+      'place_id' => $dispatcher->place->id,
+      'reserved_at' => Carbon::parse("{$request->reserved_date}")->startOfDay()->setTimeFrom(Carbon::parse("{$request->reserved_time}"))
+    ]);
+    foreach (['wdcebenezer@gmail.com', 'joekenpat@gmail.com'] as $recipient) {
+      Mail::to($recipient)->send(new ReservationRequestReceived(auth('user')->user(), $new_reservation));
+    }
+    $response['status'] = 'success';
+    $response['reservation'] = $new_reservation;
     return response()->json($response, Response::HTTP_OK);
   }
 }

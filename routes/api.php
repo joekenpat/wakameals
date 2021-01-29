@@ -79,6 +79,7 @@ Route::group([], function () {
 
   //user table reservation route
   Route::group(['prefix' => 'reservation', 'middleware' => ['auth:user']],  function () {
+    Route::post('new', [TableReservationController::class, 'store']);
     Route::get('list/approved', [TableReservationController::class, 'index_approved']);
     Route::get('list/pending', [TableReservationController::class, 'index_pending']);
     Route::get('list/cancelled', [TableReservationController::class, 'index_cancelled']);
@@ -245,6 +246,6 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list/enabled', [AdminPlaceController::class, 'index_enabled']);
     Route::get('list/disabled', [AdminPlaceController::class, 'index_disabled']);
     Route::get('enable/{place_slug}', [AdminPlaceController::class, 'enable'])->where('place_slug', '[a-z0-9-]+');
-    Route::get('disable/{place_slug}', [AdminPlaceController::class, 'disable'])->where('placetown_slug', '[a-z0-9-]+');
+    Route::get('disable/{place_slug}', [AdminPlaceController::class, 'disable'])->where('place_slug', '[a-z0-9-]+');
   });
 });

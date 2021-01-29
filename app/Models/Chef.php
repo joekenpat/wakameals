@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\ShortCode;
 use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
@@ -28,13 +27,12 @@ class Chef extends Authenticatable
     'name',
     'email',
     'password',
+    'status',
     'place_id',
     'dispatcher_id',
-    'address',
     'last_ip',
     'last_login',
     'blocked_at',
-    'type'
   ];
 
   /**
@@ -59,7 +57,7 @@ class Chef extends Authenticatable
    */
 
   protected $withCount = [
-    'prepares',
+    // 'prepares',
   ];
 
   /**

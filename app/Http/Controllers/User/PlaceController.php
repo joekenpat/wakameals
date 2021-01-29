@@ -16,9 +16,9 @@ class PlaceController extends Controller
    */
   public function index(Request $request)
   {
-    $states = Place::get();
+    $places = Place::whereEnabled(true)->get();
     $response['status'] = 'success';
-    $response['states'] = $states;
+    $response['places'] = $places;
     return response()->json($response, Response::HTTP_OK);
   }
 }

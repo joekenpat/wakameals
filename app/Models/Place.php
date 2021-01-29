@@ -38,6 +38,7 @@ class Place extends Model
    * @var array
    */
   protected $hidden = [
+    'enabled',
     'created_at',
     'updated_at',
     'deleted_at',
