@@ -78,7 +78,7 @@ class Chef extends Authenticatable
 
   public function dispatcher()
   {
-    return $this->belongsTo(Dispatcher::class, 'dispatcher_id');
+    return $this->belongsTo(Dispatcher::class)->select('id', 'name', 'phone', 'email', 'address');
   }
 
   public function password_resets()
@@ -102,7 +102,7 @@ class Chef extends Authenticatable
   }
 
 
-  public function getAvatarAttribute($value): string
+  public function getAvatarAttribute($value)
   {
     return $value == null ? null : asset('images/chefs/' . $value);
   }
