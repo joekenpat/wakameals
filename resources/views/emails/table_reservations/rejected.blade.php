@@ -10,6 +10,6 @@ Your Reservation Request:  **`{{$reservation->code}}`** has was Declined.
 - **Location:** {{$reservation->place->name}}.
 - **Address:** {{$reservation->dispatcher->address}}.
 - **No of Seats:** {{$reservation->seat_quantity}}
-- **Proposed Time:** {{$reservation->reserved_at->format('Y-m-d H:i')}}
+- **Proposed Time:** {{$reservation->reserved_at->toDayDateTimeString()}}
 
 @endmarkdown

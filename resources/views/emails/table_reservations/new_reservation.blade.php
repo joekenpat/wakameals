@@ -13,6 +13,6 @@ A new table reservation request was received! you should call the user shortly t
 - **Location:** {{$reservation->place->name}}.
 - **Address:** {{$reservation->dispatcher->address}}.
 - **No of Seats:** {{$reservation->seat_quantity}}
-- **Proposed Time:** {{$reservation->reserved_at->format('Y-m-d H:i')}}
+- **Proposed Time:** {{$reservation->reserved_at->toDayDateTimeString()}}
 
 @endmarkdown

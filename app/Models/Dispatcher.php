@@ -97,7 +97,7 @@ class Dispatcher extends Authenticatable
   }
 
 
-  public function getAvatarAttribute($value): string
+  public function getAvatarAttribute($value)
   {
     return $value == null ? null : asset('images/dispatchers/' . $value);
   }

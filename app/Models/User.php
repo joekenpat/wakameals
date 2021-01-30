@@ -109,6 +109,11 @@ class User extends Authenticatable
     return $this->hasMany(TableReservation::class)->where('status', 'approved');
   }
 
+  public function closed_table_reservations()
+  {
+    return $this->hasMany(TableReservation::class)->where('status', 'closed');
+  }
+
   public function getAvatarAttribute($value)
   {
     return $value == null ? null : asset('images/users/' . $value);

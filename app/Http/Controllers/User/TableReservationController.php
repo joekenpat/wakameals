@@ -45,6 +45,19 @@ class TableReservationController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
+  public function index_closed()
+  {
+    $table_reservations = auth('user')->user()->closed_table_reservations()->paginate(20);
+    $response['status'] = 'success';
+    $response['table_reservations'] = $table_reservations;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
   public function index_approved()
   {
     $table_reservations = auth('user')->user()->approved_table_reservations()->paginate(20);

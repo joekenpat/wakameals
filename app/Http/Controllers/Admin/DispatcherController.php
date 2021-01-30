@@ -57,22 +57,32 @@ class DispatcherController extends Controller
   public function activate($dispatcher_code)
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
-    $dispatcher->status = 'active';
-    $dispatcher->blocked_at = null;
-    $dispatcher->update();
-    $response['status'] = 'success';
-    $response['message'] = $dispatcher->name . ' Dispatcher Account has been Activated';
+    if ($dispatcher->status == "active") {
+      $response['status'] = 'success';
+      $response['message'] = $dispatcher->name . ' Dispatcher Account is Already Active ';
+    } else {
+      $dispatcher->status = 'active';
+      $dispatcher->blocked_at = null;
+      $dispatcher->update();
+      $response['status'] = 'success';
+      $response['message'] = $dispatcher->name . ' Dispatcher Account has been Activated';
+    }
     return response()->json($response, Response::HTTP_OK);
   }
 
   public function block($dispatcher_code)
   {
     $dispatcher = Dispatcher::whereCode($dispatcher_code)->firstOrFail();
-    $dispatcher->status = 'blocked';
-    $dispatcher->blocked_at = now();
-    $dispatcher->update();
-    $response['status'] = 'success';
-    $response['message'] = $dispatcher->name . ' Dispatcher Account has been Blocked';
+    if ($dispatcher->status == "blocked") {
+      $response['status'] = 'success';
+      $response['message'] = $dispatcher->name . ' Dispatcher Account is Already Blocked ';
+    } else {
+      $dispatcher->status = 'blocked';
+      $dispatcher->blocked_at = now();
+      $dispatcher->update();
+      $response['status'] = 'success';
+      $response['message'] = $dispatcher->name . ' Dispatcher Account has been Blocked';
+    }
     return response()->json($response, Response::HTTP_OK);
   }
 

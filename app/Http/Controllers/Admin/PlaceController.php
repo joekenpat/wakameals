@@ -53,6 +53,27 @@ class PlaceController extends Controller
     ]);
 
     $response['status'] = 'success';
+    $response['message'] = 'New Place Added';
+    $response['place'] = $place;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function update(Request $request, $place_slug)
+  {
+    $this->validate($request, [
+      'name' => 'required|string|min:3|max:245',
+    ]);
+
+    $place = Place::whereSlug($place_slug)->firstOrFail();
+    $place->name = $request->name;
+
+    $response['status'] = 'success';
+    $response['message'] = 'Place updated with new name';
     $response['place'] = $place;
     return response()->json($response, Response::HTTP_OK);
   }

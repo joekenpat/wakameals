@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class TableReservation extends Model
 {
-  use ShortCode, SoftDeletes,UuidForKey;
+  use ShortCode, SoftDeletes, UuidForKey;
 
 
   protected $shortCodeConfig = [
@@ -42,7 +42,6 @@ class TableReservation extends Model
    */
   protected $dateFormat = 'Y-m-d H:i:s.u';
 
-
   /**
    * The relationships that are appendable.
    *
@@ -63,8 +62,9 @@ class TableReservation extends Model
    */
 
   protected $casts = [
-    'reserved_at'
+    'reserved_at' => 'datetime',
   ];
+
 
   public function place()
   {
@@ -78,7 +78,7 @@ class TableReservation extends Model
 
   public function dispatcher()
   {
-    return $this->belongsTo(Dispatcher::class)->select('id', 'name', 'phone', 'email');
+    return $this->belongsTo(Dispatcher::class)->select('id', 'name', 'phone', 'email', 'address');
   }
 
   /**

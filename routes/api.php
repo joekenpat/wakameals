@@ -81,6 +81,7 @@ Route::group([], function () {
   Route::group(['prefix' => 'reservation', 'middleware' => ['auth:user']],  function () {
     Route::post('new', [TableReservationController::class, 'store']);
     Route::get('list/approved', [TableReservationController::class, 'index_approved']);
+    Route::get('list/closed', [TableReservationController::class, 'index_closed']);
     Route::get('list/pending', [TableReservationController::class, 'index_pending']);
     Route::get('list/cancelled', [TableReservationController::class, 'index_cancelled']);
     Route::get('cancel/{reservation_code}', [TableReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
@@ -186,6 +187,7 @@ Route::group(['prefix' => 'admin'], function () {
   //admin table reservation route
   Route::group(['prefix' => 'reservation'], function () {
     Route::get('list/approved', [AdminTableReservationController::class, 'index_approved']);
+    Route::get('list/closed', [AdminTableReservationController::class, 'index_closed']);
     Route::get('list/pending', [AdminTableReservationController::class, 'index_pending']);
     Route::get('list/cancelled', [AdminTableReservationController::class, 'index_cancelled']);
     Route::get('approve/{reservation_code}', [AdminTableReservationController::class, 'approve'])->whereAlphaNumeric(['reservation_code']);
@@ -243,6 +245,7 @@ Route::group(['prefix' => 'admin'], function () {
   //admin place route
   Route::group(['prefix' => 'place', 'middleware' => ['auth:admin']], function () {
     Route::post('new', [AdminPlaceController::class, 'store']);
+    Route::post('update/{place_slug}', [AdminPlaceController::class, 'update'])->where('place_slug', '[a-z0-9-]+');
     Route::get('list/enabled', [AdminPlaceController::class, 'index_enabled']);
     Route::get('list/disabled', [AdminPlaceController::class, 'index_disabled']);
     Route::get('enable/{place_slug}', [AdminPlaceController::class, 'enable'])->where('place_slug', '[a-z0-9-]+');
