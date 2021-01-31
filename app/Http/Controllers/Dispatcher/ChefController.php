@@ -45,7 +45,7 @@ class ChefController extends Controller
     $chef = Chef::whereId($chef_id)
       ->whereDispatcherId(auth('dispatcher')->user()->id)
       ->firstOrFail();
-    if ($chef->status == 'active') {
+    if ($chef->status == 'blocked') {
       $response['status'] = 'success';
       $response['message'] = $chef->name . ' Chef Account is already Blocked';
     } else {
@@ -71,7 +71,7 @@ class ChefController extends Controller
       $chef->blocked_at = now();
       $chef->update();
       $response['status'] = 'success';
-      $response['message'] = $chef->name . ' Chef Account has been Blocked';
+      $response['message'] = $chef->name . ' Chef Account is  now Active';
     }
     return response()->json($response, Response::HTTP_OK);
   }

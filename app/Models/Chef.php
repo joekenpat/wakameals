@@ -57,7 +57,7 @@ class Chef extends Authenticatable
    */
 
   protected $withCount = [
-    // 'prepares',
+    'prepared_orders',
   ];
 
   /**
@@ -93,7 +93,7 @@ class Chef extends Authenticatable
 
   public function processing_orders()
   {
-    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->whereIn('status', ['in_kitchen', '5_more_minutes']);
+    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->whereIn('status', ['in_kitchen', 'almost_ready']);
   }
 
   public function open_orders()

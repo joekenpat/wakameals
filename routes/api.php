@@ -167,15 +167,15 @@ Route::group(['prefix' => 'admin'], function () {
   });
 
   //admin order route
-  Route::group(['prefix' => 'order'], function () {
-    Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed']);
-    Route::get('list/all/{status}', [AdminOrderController::class, 'index_all'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed']);
+  Route::group(['prefix' => 'order', 'middleware' => ['auth:admin']], function () {
+    Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
+    Route::get('list/all/{status}', [AdminOrderController::class, 'index_all'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
     Route::post('set_status', [AdminOrderController::class, 'change_status']);
   });
 
 
   //admin dispatcher route
-  Route::group(['prefix' => 'dispatcher'], function () {
+  Route::group(['prefix' => 'dispatcher', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminDispatcherController::class, 'index_active']);
     Route::get('list/pending', [AdminDispatcherController::class, 'index_pending']);
     Route::get('list/blocked', [AdminDispatcherController::class, 'index_blocked']);
@@ -185,7 +185,7 @@ Route::group(['prefix' => 'admin'], function () {
   });
 
   //admin table reservation route
-  Route::group(['prefix' => 'reservation'], function () {
+  Route::group(['prefix' => 'reservation', 'middleware' => ['auth:admin']], function () {
     Route::get('list/approved', [AdminTableReservationController::class, 'index_approved']);
     Route::get('list/closed', [AdminTableReservationController::class, 'index_closed']);
     Route::get('list/pending', [AdminTableReservationController::class, 'index_pending']);
@@ -196,17 +196,17 @@ Route::group(['prefix' => 'admin'], function () {
   });
 
   //admin chef route
-  Route::group(['prefix' => 'chef'], function () {
+  Route::group(['prefix' => 'chef', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminChefController::class, 'index_active']);
     Route::get('list/blocked', [AdminChefController::class, 'index_blocked']);
-    Route::get('block/{chef_id}', [AdminChefController::class, 'block'])->whereAlphaNumeric(['chef_id']);
-    Route::get('activate/{chef_id}', [AdminChefController::class, 'unblock'])->whereAlphaNumeric(['chef_id']);
-    Route::get('delete/{chef_id}', [AdminDispatcherController::class, 'delete'])->whereAlphaNumeric(['chef_id']);
+    Route::get('block/{chef_id}', [AdminChefController::class, 'block'])->whereUuid(['chef_id']);
+    Route::get('activate/{chef_id}', [AdminChefController::class, 'unblock'])->whereUuid(['chef_id']);
+    Route::get('delete/{chef_id}', [AdminDispatcherController::class, 'delete'])->whereUuid(['chef_id']);
   });
 
 
   //admin user route
-  Route::group(['prefix' => 'user'], function () {
+  Route::group(['prefix' => 'user', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminUserController::class, 'index_active']);
     Route::get('list/blocked', [AdminUserController::class, 'index_blocked']);
     Route::get('block/{user_id}', [AdminUserController::class, 'block'])->whereUuid(['user_id']);

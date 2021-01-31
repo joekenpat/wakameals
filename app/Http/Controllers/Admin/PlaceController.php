@@ -71,6 +71,7 @@ class PlaceController extends Controller
 
     $place = Place::whereSlug($place_slug)->firstOrFail();
     $place->name = $request->name;
+    $place->update();
 
     $response['status'] = 'success';
     $response['message'] = 'Place updated with new name';

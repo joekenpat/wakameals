@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Chef;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderAlmostReady;
 use App\Mail\OrderInKitchen;
 use App\Mail\OrderPrepareCompleted;
 use App\Models\Dispatcher;
@@ -79,10 +80,10 @@ class OrderController extends Controller
     ]);
     $dispatcher = Dispatcher::whereId($request->dispatcher)->firstOrFail();
     $order = Order::whereDispatcherId($dispatcher->id)->whereCode($request->order_code)->firstOrFail();
-    $order->status = '5_more_minutes';
+    $order->status = 'almost_ready';
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
-    Mail::to($order_user)->send(new OrderInKitchen($order_user, $order));
+    Mail::to($order_user)->send(new OrderAlmostReady($order_user, $order));
     $response['status'] = 'success';
     $response['messages'] = 'Order #' . $order->code . ' status set to: In Kitchen 5 more minutes';
     return response()->json($response, Response::HTTP_OK);

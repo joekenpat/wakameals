@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Mail\OrderAlmostReady;
 use App\Mail\OrderCompleted;
 use App\Mail\OrderConfirmed;
 use App\Mail\OrderDispatched;
+use App\Mail\OrderInKitchen;
+use App\Mail\OrderPrepareCompleted;
 use App\Mail\OrderSystemCancelled;
 use App\Models\Dispatcher;
 use App\Models\Order;
@@ -25,7 +28,7 @@ class OrderController extends Controller
   public function index_assigned($status)
   {
     $statuses = [];
-    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed'])) {
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready'])) {
       $statuses = [$status];
     } elseif ($status == 'cancelled') {
       $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
@@ -47,7 +50,7 @@ class OrderController extends Controller
   public function index_all($status)
   {
     $statuses = [];
-    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed'])) {
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready'])) {
       $statuses = [$status];
     } elseif ($status == 'cancelled') {
       $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
@@ -65,8 +68,8 @@ class OrderController extends Controller
   public function change_status(Request $request)
   {
     $this->validate($request, [
-      'order_id' => 'required|uuid',
-      'new_status' => 'required|alpha|in:completed,dispatched,confirmed,cancelled',
+      'order_id' => 'required|uuid|exists:orders,id',
+      'new_status' => 'required|alpha|in:confirmed,cancelled,dispatched,completed,in_kitchen,prepare_completed,almost_ready',
       'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|alpha_num|size:6|exists:dispatchers,code',
     ]);
@@ -78,6 +81,33 @@ class OrderController extends Controller
       Mail::to($order_user)->send(new OrderCompleted($order_user, $order));
       $response['status'] = 'success';
       $response['messages'] = 'Order #' . $order->code . ' has been Completed';
+      return response()->json($response, Response::HTTP_OK);
+    } elseif ($request->new_status == 'in_kitchen') {
+      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order->status = 'in_kitchen';
+      $order->update();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderInKitchen($order_user, $order));
+      $response['status'] = 'success';
+      $response['messages'] = 'Order #' . $order->code . ' status set to: Now in Kitchen';
+      return response()->json($response, Response::HTTP_OK);
+    } elseif ($request->new_status == 'prepare_completed') {
+      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order->status = 'prepare_completed';
+      $order->update();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderPrepareCompleted($order_user, $order));
+      $response['status'] = 'success';
+      $response['messages'] = 'Order #' . $order->code . ' status set to: Prepare Complete';
+      return response()->json($response, Response::HTTP_OK);
+    } elseif ($request->new_status == 'almost_ready') {
+      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order->status = 'almost_ready';
+      $order->update();
+      $order_user = User::whereId($order->user_id)->firstOrFail();
+      Mail::to($order_user)->send(new OrderAlmostReady($order_user, $order));
+      $response['status'] = 'success';
+      $response['messages'] = 'Order #' . $order->code . ' status set to: Almost Ready';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'cancelled') {
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
