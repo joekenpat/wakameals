@@ -22,7 +22,7 @@ use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PlaceController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\UserDispatcherController;
+use App\Http\Controllers\User\DispatcherController as UserDispatcherController;
 use App\Http\Controllers\User\PasswordResetController;
 use App\Http\Controllers\User\TableReservationController;
 use Illuminate\Http\Request;
