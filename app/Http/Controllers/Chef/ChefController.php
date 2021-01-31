@@ -24,9 +24,9 @@ class ChefController extends Controller
    */
   public function show()
   {
-    $dispatcher = Chef::whereId(Auth('chef')->user()->id)->with(['place', 'dispatcher'])->firstOrFail();
+    $chef = Chef::whereId(Auth('chef')->user()->id)->with(['place', 'dispatcher'])->firstOrFail();
     $response['status'] = 'success';
-    $response['details'] = $dispatcher;
+    $response['details'] = $chef;
     return response()->json($response, Response::HTTP_OK);
   }
   /**

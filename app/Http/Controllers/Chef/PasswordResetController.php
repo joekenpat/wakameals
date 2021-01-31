@@ -27,7 +27,8 @@ class PasswordResetController extends Controller
         'used' => false,
         'expires_at' => now()->addMinutes(30)
       ]);
-      $chef->password_resets()->save($new_password_reset);
+      $new_password_reset->resetable()->associate($chef);
+      $new_password_reset->save();
       $chef->notify(new PasswordResetCodeSent($chef, $new_password_reset));
       $response['status'] = 'success';
       $response['message'] = 'A reset code has been sent to email, please follow the instructions there.';
@@ -38,15 +39,11 @@ class PasswordResetController extends Controller
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     }
   }
-
   public function validate_password_reset_token(Request $request)
   {
     $this->validate($request, [
       'id' => 'required|string',
       'token' => 'required|string',
-    ], [
-      'id.alpha_num' => 'Invalid Dispatcher',
-      'token.alpha_num' => 'Invalid Token'
     ]);
 
     $identity['email'] = Crypt::decryptString($request->id);
@@ -61,7 +58,7 @@ class PasswordResetController extends Controller
       ]);
       if (!$validator->fails()) {
 
-        $password_reset = $chef->password_resets()->whereCode($credentials['code'])->whereUsed(false)->firstOrFail();
+        $password_reset = $chef->password_resets()->where('code',$credentials['code'])->whereUsed(false)->firstOrFail();
         if (!now()->greaterThan($password_reset->expires_at)) {
           $response['status'] = 'success';
           $response['message'] = 'You can now enter a new password';
@@ -90,14 +87,14 @@ class PasswordResetController extends Controller
     $this->validate($request, [
       'email' => 'required|email|exists:chefs',
       'code' => 'required|alpha_num|exists:password_resets',
-      'password' => 'required|string|min:5|max:15',
-      'c_password' => 'required|same:password',
+      'new_password' => 'required|string|min:5|max:15',
+      're_password' => 'required|same:new_password',
     ]);
 
     $chef = Chef::whereEmail($request->email)->firstOrFail();
     $chef_password_reset = $chef->password_resets()->whereCode($request->code)->whereUsed(false)->firstOrFail();
     if (!now()->greaterThan($chef_password_reset->expires_at)) {
-      $chef->password = Hash::make($request->password);
+      $chef->password = Hash::make($request->new_password);
       $chef->update();
       $chef_password_reset->used = true;
       $chef_password_reset->update();

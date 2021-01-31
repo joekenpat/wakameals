@@ -4,10 +4,11 @@ namespace App\Models;
 
 use App\Traits\ShortCode;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PasswordReset extends Model
 {
-  use ShortCode;
+  use ShortCode,SoftDeletes;
   protected $fillable = [
     'resetable_id', 'resetable_type', 'code', 'used', 'expires_at'
   ];

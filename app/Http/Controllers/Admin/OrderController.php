@@ -119,7 +119,6 @@ class OrderController extends Controller
       $response['messages'] = 'Order #' . $order->code . ' has been cancelled';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'dispatched') {
-
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
       if ($request->dispatch_type == 'pickup') {
         $dispatcher = Dispatcher::whereId($order->dispatcher_id)->firstOrFail();

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Str;
 
-class DispatchController extends Controller
+class DispatcherController extends Controller
 {
   /**
    * Display a resource.

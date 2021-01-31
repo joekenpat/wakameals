@@ -12,15 +12,18 @@ use App\Http\Controllers\Admin\TableReservationController as AdminTableReservati
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Chef\ChefController;
 use App\Http\Controllers\Chef\OrderController as ChefOrderController;
+use App\Http\Controllers\Chef\PasswordResetController as ChefPasswordResetController;
 use App\Http\Controllers\Dispatcher\ChefController as DispatcherChefController;
-use App\Http\Controllers\Dispatcher\DispatchController;
+use App\Http\Controllers\Dispatcher\DispatcherController;
 use App\Http\Controllers\Dispatcher\OrderController as DispatcherOrderController;
+use App\Http\Controllers\Dispatcher\PasswordResetController as DispatcherPasswordResetController;
 use App\Http\Controllers\User\MealController;
 use App\Http\Controllers\User\OrderController;
 use App\Http\Controllers\User\PlaceController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
-use App\Http\Controllers\User\DispatcherController;
+use App\Http\Controllers\User\UserDispatcherController;
+use App\Http\Controllers\User\PasswordResetController;
 use App\Http\Controllers\User\TableReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -50,6 +53,9 @@ Route::group([], function () {
     Route::post('register/default', [UserController::class, 'default_register']);
     //user login route
     Route::post('login/default', [UserController::class, 'default_login']);
+    Route::post('password/reset/request', [PasswordResetController::class, 'password_reset_request']);
+    Route::post('password/reset/validate_token', [PasswordResetController::class, 'validate_password_reset_token']);
+    Route::post('password/reset/new_password', [PasswordResetController::class, 'password_reset']);
   });
   Route::group(['prefix' => 'profile', 'middleware' => ['auth:user']], function () {
     //user profile route
@@ -60,7 +66,7 @@ Route::group([], function () {
   });
 
   //guest pickup  route
-  Route::get('avail_pickup/{place_slug}/list', [DispatcherController::class, 'index'])->where('place_slug', '[a-z0-9-]+');
+  Route::get('avail_pickup/{place_slug}/list', [UserDispatcherController::class, 'index'])->where('place_slug', '[a-z0-9-]+');
   //guest meal route
   Route::get('meal/list', [MealController::class, 'index']);
 
@@ -97,15 +103,18 @@ Route::group(['prefix' => 'dispatcher'], function () {
   //user auth route
   Route::group(['prefix' => 'auth'], function () {
     //user registration route
-    Route::post('register/default', [DispatchController::class, 'default_register']);
+    Route::post('register/default', [DispatcherController::class, 'default_register']);
     //user login route
-    Route::post('login/default', [DispatchController::class, 'default_login']);
+    Route::post('login/default', [DispatcherController::class, 'default_login']);
+    Route::post('password/reset/request', [DispatcherPasswordResetController::class, 'password_reset_request']);
+    Route::post('password/reset/validate_token', [DispatcherPasswordResetController::class, 'validate_password_reset_token']);
+    Route::post('password/reset/new_password', [DispatcherPasswordResetController::class, 'password_reset']);
   });
   Route::group(['prefix' => 'profile', 'middleware' => ['auth:dispatcher']], function () {
     //user profile route
-    Route::get('details', [DispatchController::class, 'show']);
-    Route::post('update', [DispatchController::class, 'update']);
-    Route::post('password/update', [DispatchController::class, 'update_password']);
+    Route::get('details', [DispatcherController::class, 'show']);
+    Route::post('update', [DispatcherController::class, 'update']);
+    Route::post('password/update', [DispatcherController::class, 'update_password']);
   });
 
   //dispatcher order route
@@ -136,6 +145,9 @@ Route::group(['prefix' => 'chef'], function () {
     Route::post('register/default', [ChefController::class, 'default_register']);
     //chef login route
     Route::post('login/default', [ChefController::class, 'default_login']);
+    Route::post('password/reset/request', [ChefPasswordResetController::class, 'password_reset_request']);
+    Route::post('password/reset/validate_token', [ChefPasswordResetController::class, 'validate_password_reset_token']);
+    Route::post('password/reset/new_password', [ChefPasswordResetController::class, 'password_reset']);
   });
   Route::group(['prefix' => 'profile', 'middleware' => ['auth:chef']], function () {
     //chef profile route
@@ -149,9 +161,9 @@ Route::group(['prefix' => 'chef'], function () {
     Route::get('list/open', [ChefOrderController::class, 'index_open']);
     Route::get('list/processing', [ChefOrderController::class, 'index_processing']);
     Route::get('list/prepared', [ChefOrderController::class, 'index_prepared']);
-    Route::post('mark-as/in_kitchen', [ChefOrderController::class, 'mark_as_in_kitchen']);
-    Route::post('mark-as/almost_ready', [ChefOrderController::class, 'mark_as_almost_ready']);
-    Route::post('mark-as/prepare_completed', [ChefOrderController::class, 'mark_as_prepare_completed']);
+    Route::post('set_status/in_kitchen', [ChefOrderController::class, 'mark_as_in_kitchen']);
+    Route::post('set_status/almost_ready', [ChefOrderController::class, 'mark_as_almost_ready']);
+    Route::post('set_status/prepare_completed', [ChefOrderController::class, 'mark_as_prepare_completed']);
     Route::get('get_order_details/{order_code}', [ChefOrderController::class, 'get_order_details'])->whereAlphaNumeric(['order_code']);
   });
 });

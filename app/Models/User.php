@@ -91,7 +91,7 @@ class User extends Authenticatable
 
   public function password_resets()
   {
-    $this->morphMany(PasswordReset::class, 'resetable');
+    return $this->morphMany(PasswordReset::class, 'resetable');
   }
 
   public function pending_table_reservations()

@@ -58,11 +58,12 @@ class OrderController extends Controller
   public function mark_as_in_kitchen(Request $request)
   {
     $this->validate($request, [
-      'dispatcher' => 'required|uuid|exists:dispatchers,id',
       'order_code' => 'required|alpha_num|size:8|exists:orders,code',
     ]);
-    $dispatcher = Dispatcher::whereId($request->dispatcher)->firstOrFail();
-    $order = Order::whereDispatcherId($dispatcher->id)->whereCode($request->order_code)->firstOrFail();
+    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
+      ->whereCode($request->order_code)
+      ->whereStatus('confirmed')
+      ->firstOrFail();
     $order->status = 'in_kitchen';
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
@@ -75,11 +76,12 @@ class OrderController extends Controller
   public function mark_as_almost_ready(Request $request)
   {
     $this->validate($request, [
-      'dispatcher' => 'required|uuid|exists:dispatchers,id',
       'order_code' => 'required|alpha_num|size:8|exists:orders,code',
     ]);
-    $dispatcher = Dispatcher::whereId($request->dispatcher)->firstOrFail();
-    $order = Order::whereDispatcherId($dispatcher->id)->whereCode($request->order_code)->firstOrFail();
+    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
+      ->whereCode($request->order_code)
+      ->whereStatus('in_kitchen')
+      ->firstOrFail();
     $order->status = 'almost_ready';
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
@@ -92,11 +94,12 @@ class OrderController extends Controller
   public function mark_as_prepare_completed(Request $request)
   {
     $this->validate($request, [
-      'dispatcher' => 'required|uuid|exists:dispatchers,id',
       'order_code' => 'required|alpha_num|size:8|exists:orders,code',
     ]);
-    $dispatcher = Dispatcher::whereId($request->dispatcher)->firstOrFail();
-    $order = Order::whereDispatcherId($dispatcher->id)->whereCode($request->order_code)->firstOrFail();
+    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
+      ->whereCode($request->order_code)
+      ->whereIn('status', ['in_kitchen', 'almost_ready'])
+      ->firstOrFail();
     $order->status = 'prepare_completed';
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();

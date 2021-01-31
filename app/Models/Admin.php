@@ -63,7 +63,7 @@ class Admin extends Authenticatable
 
   public function password_resets()
   {
-    $this->morphMany(PasswordReset::class, 'resetable');
+    return $this->morphMany(PasswordReset::class, 'resetable');
   }
 
   public function getAvatarAttribute($value): string

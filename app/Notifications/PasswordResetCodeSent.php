@@ -48,7 +48,6 @@ class PasswordResetCodeSent extends Notification
   public function toMail($notifiable)
   {
     return (new MailMessage)
-      ->from('support@bellefu.com', 'Bellefu Support')
       ->subject('Confirm your password change!')
       ->greeting('Hello ' . $this->account->first_name ?? $this->account->name)
       ->line('Please, confirm the change of your password by clicking the button below:')
