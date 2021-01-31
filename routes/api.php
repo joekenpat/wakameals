@@ -120,6 +120,7 @@ Route::group(['prefix' => 'dispatcher'], function () {
   Route::group(['prefix' => 'chef'], function () {
     Route::get('list/active', [DispatcherChefController::class, 'index_active']);
     Route::get('list/blocked', [DispatcherChefController::class, 'index_blocked']);
+    Route::get('list/pending', [DispatcherChefController::class, 'index_pending']);
     Route::get('block/{chef_id}', [DispatcherChefController::class, 'block'])->whereAlphaNumeric(['chef_id']);
     Route::get('activate/{chef_id}', [DispatcherChefController::class, 'unblock'])->whereAlphaNumeric(['chef_id']);
     Route::get('delete/{chef_id}', [DispatcherChefController::class, 'delete'])->whereAlphaNumeric(['chef_id']);
@@ -199,6 +200,7 @@ Route::group(['prefix' => 'admin'], function () {
   Route::group(['prefix' => 'chef', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminChefController::class, 'index_active']);
     Route::get('list/blocked', [AdminChefController::class, 'index_blocked']);
+    Route::get('list/pending', [AdminChefController::class, 'index_pending']);
     Route::get('block/{chef_id}', [AdminChefController::class, 'block'])->whereUuid(['chef_id']);
     Route::get('activate/{chef_id}', [AdminChefController::class, 'unblock'])->whereUuid(['chef_id']);
     Route::get('delete/{chef_id}', [AdminDispatcherController::class, 'delete'])->whereUuid(['chef_id']);

@@ -28,6 +28,21 @@ class ChefController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
+  public function index_pending()
+  {
+    $chefs = Chef::with(['place', 'dispatcher'])
+      ->whereStatus('pending')
+      ->paginate(20);
+    $response['status'] = 'success';
+    $response['chefs'] = $chefs;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
   public function index_blocked()
   {
     $chefs = Chef::with(['place', 'dispatcher'])

@@ -40,6 +40,22 @@ class ChefController extends Controller
     return response()->json($response, Response::HTTP_OK);
   }
 
+  /**
+   * Display a resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_pending()
+  {
+    $chefs = Chef::with(['place'])
+      ->whereDispatcherId(auth('dispatcher')->user()->id)
+      ->whereStatus('pending')
+      ->paginate(20);
+    $response['status'] = 'success';
+    $response['chefs'] = $chefs;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
   public function block($chef_id)
   {
     $chef = Chef::whereId($chef_id)

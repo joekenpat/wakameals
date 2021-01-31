@@ -39,22 +39,32 @@ class UserController extends Controller
   public function activate($user_id)
   {
     $user = User::whereId($user_id)->firstOrFail();
-    $user->status = 'active';
-    $user->blocked_at = null;
-    $user->update();
-    $response['status'] = 'success';
-    $response['message'] = $user->first_name . ' User Account has been Activated';
+    if ($user->status == 'active') {
+      $response['status'] = 'success';
+      $response['message'] = $user->first_name . ' User Account is already Active';
+    } else {
+      $user->status = 'active';
+      $user->blocked_at = null;
+      $user->update();
+      $response['status'] = 'success';
+      $response['message'] = $user->first_name . ' User Account has been Activated';
+    }
     return response()->json($response, Response::HTTP_OK);
   }
 
   public function block($user_id)
   {
     $user = User::whereId($user_id)->firstOrFail();
-    $user->status = 'blocked';
-    $user->blocked_at = now();
-    $user->update();
-    $response['status'] = 'success';
-    $response['message'] = $user->first_name . ' User Account has been Blocked';
+    if ($user->status == 'blocked') {
+      $response['status'] = 'success';
+      $response['message'] = $user->first_name . ' User Account is already Blocked';
+    } else {
+      $user->status = 'blocked';
+      $user->blocked_at = now();
+      $user->update();
+      $response['status'] = 'success';
+      $response['message'] = $user->first_name . ' User Account has been Blocked';
+    }
     return response()->json($response, Response::HTTP_OK);
   }
 

@@ -171,7 +171,7 @@ class MealController extends Controller
       $updateable_meal->update();
 
 
-      //adding images
+      //adding image
       if ($request->hasFile('image') && $request->file('image') != null) {
         $image = Image::make($request->file('image'))->encode('jpg', 1);
         if ($updateable_meal->image != null) {

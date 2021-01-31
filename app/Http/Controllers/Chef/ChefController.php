@@ -41,7 +41,7 @@ class ChefController extends Controller
       'name' => 'required|string|between:3,240',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:dispatchers,phone',
       'place' => 'required|integer|exists:places,id',
-      'dispatcher' => 'required|integer|exists:dispatcher,code',
+      'dispatcher_code' => 'required|alpha_num|size:6|exists:dispatchers,code',
       'email' => 'required|email|unique:chefs,email',
       'password' => 'required|string|',
     ]);
@@ -54,7 +54,7 @@ class ChefController extends Controller
       'password'
     ];
 
-    $dispatcher = Dispatcher::whereCode($request->dispatcher)->firstOrFail();
+    $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->whereType('pickup')->firstOrFail();
     $new_chef = new Chef();
     $new_chef->dispatcher_id = $dispatcher->id;
     foreach ($attribs as $attrib) {
@@ -131,7 +131,7 @@ class ChefController extends Controller
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable||between:3,240',
-      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,'.auth('chef')->user()->id,
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,' . auth('chef')->user()->id,
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
     ]);
