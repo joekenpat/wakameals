@@ -58,7 +58,7 @@ class OrderController extends Controller
       'delivery_type' => 'required|in:door_delivery,pickup',
       'pickup_code' => 'required_if:delivery_type,pickup|nullable|exists:dispatchers,code',
       'place' => 'required_if:delivery_type,door_delivery|integer|exists:places,id',
-      'address' => 'required_if:delivery_type,door_delivery|string|min:5|max:255',
+      'address' => 'required_if:delivery_type,door_delivery|nullable|string|min:5|max:255',
       'recurring' => 'required|boolean',
       'recurring_dates' => 'exclude_if:recurring,false|array|min:1',
       'recurring_times' => 'exclude_if:recurring,false|array|min:1',
