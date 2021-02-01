@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Chef;
 use App\Http\Controllers\Controller;
 use App\Models\Chef;
 use App\Models\PasswordReset;
-use App\Notifications\PasswordResetCodeSent;
+use App\Notifications\ChefPasswordResetCodeSent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
@@ -29,7 +29,7 @@ class PasswordResetController extends Controller
       ]);
       $new_password_reset->resetable()->associate($chef);
       $new_password_reset->save();
-      $chef->notify(new PasswordResetCodeSent($chef, $new_password_reset));
+      $chef->notify(new ChefPasswordResetCodeSent($chef, $new_password_reset));
       $response['status'] = 'success';
       $response['message'] = 'A reset code has been sent to email, please follow the instructions there.';
       return response()->json($response, Response::HTTP_OK);

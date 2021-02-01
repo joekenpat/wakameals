@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dispatcher;
 use App\Http\Controllers\Controller;
 use App\Models\Dispatcher;
 use App\Models\PasswordReset;
-use App\Notifications\PasswordResetCodeSent;
+use App\Notifications\DispatcherPasswordResetCodeSent;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Crypt;
@@ -28,7 +28,7 @@ class PasswordResetController extends Controller
         'expires_at' => now()->addMinutes(30)
       ]);
       $dispatcher->password_resets()->save($new_password_reset);
-      $dispatcher->notify(new PasswordResetCodeSent($dispatcher, $new_password_reset));
+      $dispatcher->notify(new DispatcherPasswordResetCodeSent($dispatcher, $new_password_reset));
       $response['status'] = 'success';
       $response['message'] = 'A reset code has been sent to email, please follow the instructions there.';
       return response()->json($response, Response::HTTP_OK);

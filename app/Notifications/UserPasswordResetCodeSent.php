@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\Crypt;
 
-class PasswordResetCodeSent extends Notification
+class UserPasswordResetCodeSent extends Notification
 {
   use Queueable;
 
@@ -52,7 +52,7 @@ class PasswordResetCodeSent extends Notification
       ->greeting('Hello ' . $this->account->first_name ?? $this->account->name)
       ->line('Please, confirm the change of your password by clicking the button below:')
       ->action('RESET', sprintf(
-        '%s/auth/set-password?id=%s&token=%s',
+        '%s/set-password?id=%s&token=%s',
         config('app.url'),
         Crypt::encryptString($this->account->email),
         Crypt::encryptString($this->password_reset->code)
