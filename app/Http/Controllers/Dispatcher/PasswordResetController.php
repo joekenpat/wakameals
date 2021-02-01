@@ -44,9 +44,6 @@ class PasswordResetController extends Controller
     $this->validate($request, [
       'id' => 'required|string',
       'token' => 'required|string',
-    ], [
-      'id.alpha_num' => 'Invalid Dispatcher',
-      'token.alpha_num' => 'Invalid Token'
     ]);
 
     $identity['email'] = Crypt::decryptString($request->id);
@@ -90,14 +87,14 @@ class PasswordResetController extends Controller
     $this->validate($request, [
       'email' => 'required|email|exists:dispatchers',
       'code' => 'required|alpha_num|exists:password_resets',
-      'password' => 'required|string|min:5|max:15',
-      'c_password' => 'required|same:password',
+      'new_password' => 'required|string|min:5|max:15',
+      're_password' => 'required|same:password',
     ]);
 
     $dispatcher = Dispatcher::whereEmail($request->email)->firstOrFail();
     $dispatcher_password_reset = $dispatcher->password_resets()->whereCode($request->code)->whereUsed(false)->firstOrFail();
     if (!now()->greaterThan($dispatcher_password_reset->expires_at)) {
-      $dispatcher->password = Hash::make($request->password);
+      $dispatcher->password = Hash::make($request->new_password);
       $dispatcher->update();
       $dispatcher_password_reset->used = true;
       $dispatcher_password_reset->update();
