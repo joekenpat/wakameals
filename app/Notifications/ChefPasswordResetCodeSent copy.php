@@ -53,7 +53,6 @@ class ChefPasswordResetCodeSent extends Notification
       ->line('Please, confirm the change of your password by clicking the button below:')
       ->action('RESET', sprintf(
         'https://chef.wakameals.validprofits.xyz/set-password?id=%s&token=%s',
-        config('app.url'),
         Crypt::encryptString($this->account->email),
         Crypt::encryptString($this->password_reset->code)
       ))
