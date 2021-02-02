@@ -104,8 +104,8 @@ class Chef extends Authenticatable
 
   public function almost_ready_orders()
   {
-    return Order::where('place_id', $this->place_id)
-      ->where('chef_id', $this->id)
+    return $this->hasMany(Order::class)
+      ->where('place_id', $this->place_id)
       ->where('status', 'almost_ready')
       ->whereDate('created_at', '<=', now());;
   }
