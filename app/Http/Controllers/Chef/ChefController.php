@@ -58,13 +58,14 @@ class ChefController extends Controller
     $new_chef = new Chef();
     $new_chef->dispatcher_id = $dispatcher->id;
     foreach ($attribs as $attrib) {
-      if ($attrib == 'place') {
+      if ($attrib == 'password') {
+        $new_chef->{$attrib} = Hash::make($request->{$attrib});
+      } else if ($attrib == 'place') {
         $new_chef->{$attrib . '_id'} = $request->{$attrib};
       } else {
         $new_chef->{$attrib} = $request->{$attrib};
       }
     }
-
     $new_chef->status = 'pending';
     $new_chef->last_login = now()->format('Y-m-d H:i:s.u');
     $new_chef->last_ip = request()->getClientIp();
