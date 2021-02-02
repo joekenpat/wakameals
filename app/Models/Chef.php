@@ -89,6 +89,7 @@ class Chef extends Authenticatable
   public function prepared_orders()
   {
     return $this->hasMany(Order::class)
+      ->with(['user:id,first_name,last_name,email,phone'])
       ->where('place_id', $this->place_id)
       ->whereIn('status', ['prepare_completed', 'completed', 'dispatched'])
       ->whereDate('created_at', '<=', now());;
@@ -97,6 +98,7 @@ class Chef extends Authenticatable
   public function in_kitchen_orders()
   {
     return $this->hasMany(Order::class)
+      ->with(['user:id,first_name,last_name,email,phone'])
       ->where('place_id', $this->place_id)
       ->whereIn('status', 'in_kitchen')
       ->whereDate('created_at', '<=', now());
@@ -104,7 +106,7 @@ class Chef extends Authenticatable
 
   public function almost_ready_orders()
   {
-    return $this->hasMany(Order::class)
+    return $this->hasMany(Order::class)->with(['user:id,first_name,last_name,email,phone'])
       ->where('place_id', $this->place_id)
       ->where('status', 'almost_ready')
       ->whereDate('created_at', '<=', now());;
@@ -112,7 +114,8 @@ class Chef extends Authenticatable
 
   public function open_orders()
   {
-    return Order::where('place_id', $this->place_id)
+    return Order::with(['user:id,first_name,last_name,email,phone'])
+      ->where('place_id', $this->place_id)
       ->where('status', 'confirmed')
       ->whereDate('created_at', '<=', now());;
   }
