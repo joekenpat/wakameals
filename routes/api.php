@@ -161,7 +161,7 @@ Route::group(['prefix' => 'chef'], function () {
   Route::group(['prefix' => 'order', 'middleware' => ['auth:chef']], function () {
     Route::get('list/open', [ChefOrderController::class, 'index_open']);
     Route::get('list/in_kitchen', [ChefOrderController::class, 'index_in_kitchen']);
-    Route::get('list/almost_ready', [ChefOrderController::class, 'almost_ready_order']);
+    Route::get('list/almost_ready', [ChefOrderController::class, 'index_almost_ready']);
     Route::get('list/prepared', [ChefOrderController::class, 'index_prepared']);
     Route::post('set_status/in_kitchen', [ChefOrderController::class, 'mark_as_in_kitchen']);
     Route::post('set_status/almost_ready', [ChefOrderController::class, 'mark_as_almost_ready']);
