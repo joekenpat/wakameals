@@ -27,7 +27,10 @@ class OrderController extends Controller
    */
   public function index_open()
   {
-    $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['dispatched', 'created', 'pending', 'new'])->paginate(20);
+    $orders = Order::whereUserId(Auth('user')->user()->id)
+      ->whereIn('status', ['dispatched', 'created', 'pending', 'new'])
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -40,7 +43,25 @@ class OrderController extends Controller
    */
   public function index_closed()
   {
-    $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])->paginate(20);
+    $orders = Order::whereUserId(Auth('user')->user()->id)
+      ->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_future()
+  {
+    $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])
+      ->whereDate('created_at', '=>', now()->addDay())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -197,7 +218,7 @@ class OrderController extends Controller
       $payment_details = $paystack_client->json();
       if ($payment_details['data']['status'] === "success") {
         $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
-        $orders = Order::whereIn('code',$payment_details['data']['metadata']['order_codes'])
+        $orders = Order::whereIn('code', $payment_details['data']['metadata']['order_codes'])
           ->get();
         foreach ($orders as $order) {
           if (($payment_details['data']['amount'] / 100) == $order->total) {
@@ -222,7 +243,7 @@ class OrderController extends Controller
       } else {
         if ($payment_details['data']['status'] === "failed") {
           $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
-          $orders = Order::whereIn('code',$payment_details['data']['metadata']['order_codes'])
+          $orders = Order::whereIn('code', $payment_details['data']['metadata']['order_codes'])
             ->get();
           foreach ($orders as $order) {
             $transaction =  new Transaction([

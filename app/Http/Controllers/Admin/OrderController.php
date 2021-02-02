@@ -28,15 +28,26 @@ class OrderController extends Controller
   public function index_assigned($status)
   {
     $statuses = [];
-    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready'])) {
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready', 'future'])) {
       $statuses = [$status];
     } elseif ($status == 'cancelled') {
       $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
     } else {
       $statuses = ['new'];
     }
-
-    $orders = Order::with(['user'])->wherePlaceId(auth('admin')->user()->place_id)->whereIn('status', $statuses)->paginate(20);
+    if ($status == 'future') {
+      $orders = Order::with(['user'])
+        ->wherePlaceId(auth('admin')->user()->place_id)
+        ->where('status', 'confirmed')
+        ->whereDate('created_at', '=>', now()->addDay())
+        ->paginate(20);
+    } else {
+      $orders = Order::with(['user'])
+        ->wherePlaceId(auth('admin')->user()->place_id)
+        ->whereIn('status', $statuses)
+        ->whereDate('created_at', '<=', now())
+        ->paginate(20);
+    }
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -50,15 +61,23 @@ class OrderController extends Controller
   public function index_all($status)
   {
     $statuses = [];
-    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready'])) {
+    if (in_array($status, ['new', 'confirmed', 'dispatched', 'completed', 'in_kitchen', 'prepare_completed', 'almost_ready', 'future'])) {
       $statuses = [$status];
     } elseif ($status == 'cancelled') {
       $statuses = ['cancelled', 'cancelled_failed_payment', 'cancelled_system', 'cancelled_user'];
     } else {
       $statuses = ['new'];
     }
-
-    $orders = Order::with(['user'])->whereIn('status', $statuses)->paginate(20);
+    if ($status == 'future') {
+      $orders = Order::with(['user'])->where('status', 'confirmed')
+        ->whereDate('created_at', '=>', now()->addDay())
+        ->paginate(20);
+    } else {
+      $orders = Order::with(['user'])
+        ->whereIn('status', $statuses)
+        ->whereDate('created_at', '<=', now())
+        ->paginate(20);
+    }
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
