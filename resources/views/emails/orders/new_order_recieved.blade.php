@@ -13,6 +13,8 @@ A new order was received! you should call the user shortly to confirm the order.
 
 **More Details**
 
+- **User Name:** {{$order->user->first_name." ".$order->user->last_name}}.
+- **User Phone:** {{$order->user->phone}}.
 - **Location:** {{$order->place->name}}.
 - **Address:** {{$order->address}}.
 - **Delivery Type:** @if($order->delivery_type == 'door_delivery') Door @else Pickup @endif.

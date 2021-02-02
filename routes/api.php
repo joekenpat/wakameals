@@ -159,7 +159,8 @@ Route::group(['prefix' => 'chef'], function () {
   //chef order route
   Route::group(['prefix' => 'order', 'middleware' => ['auth:chef']], function () {
     Route::get('list/open', [ChefOrderController::class, 'index_open']);
-    Route::get('list/processing', [ChefOrderController::class, 'index_processing']);
+    Route::get('list/in_kitchen', [ChefOrderController::class, 'index_in_kitchen']);
+    Route::get('list/almost_ready', [ChefOrderController::class, 'almost_ready_orders']);
     Route::get('list/prepared', [ChefOrderController::class, 'index_prepared']);
     Route::post('set_status/in_kitchen', [ChefOrderController::class, 'mark_as_in_kitchen']);
     Route::post('set_status/almost_ready', [ChefOrderController::class, 'mark_as_almost_ready']);
@@ -181,8 +182,8 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin order route
   Route::group(['prefix' => 'order', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
-    Route::get('list/all/{status}', [AdminOrderController::class, 'index_all'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
+    // Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
+    Route::get('list/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
     Route::post('set_status', [AdminOrderController::class, 'change_status']);
   });
 

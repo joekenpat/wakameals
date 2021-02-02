@@ -92,7 +92,7 @@ class OrderController extends Controller
       $response['messages'] = 'Order #' . $order->code . ' status set to: Now in Kitchen';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'prepare_completed') {
-      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order = Order::with(['user', 'ordered_meals'])->whereStatus('almost_ready')->whereId($request->order_id)->firstOrFail();
       $order->status = 'prepare_completed';
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();
@@ -101,7 +101,7 @@ class OrderController extends Controller
       $response['messages'] = 'Order #' . $order->code . ' status set to: Prepare Complete';
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'almost_ready') {
-      $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
+      $order = Order::with(['user', 'ordered_meals'])->whereStatus('in_kitchen')->whereId($request->order_id)->firstOrFail();
       $order->status = 'almost_ready';
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Mail\NewOrderRecieved;
+use App\Mail\NewOrderReceived;
 use App\Mail\OrderPaymentCancelled;
 use App\Mail\OrderRecieved;
 use App\Models\Dispatcher;
@@ -137,7 +137,7 @@ class OrderController extends Controller
                 }
                 $new_order->delivery_type = $request->delivery_type;
                 $new_order->type = 'recurring';
-                $new_order->status = 'created';
+                $new_order->status = 'new';
                 $new_order->user_id = Auth('user')->user()->id;
                 $new_order->created_at = Carbon::parse("{$date}")->startOfDay()->setTimeFrom(Carbon::parse("{$time}"));
                 $new_order->updated_at = $new_order->created_at;
@@ -194,7 +194,7 @@ class OrderController extends Controller
   {
     try {
       $paystack_client = Http::withToken(config('paystack.secretKey'))->get("https://api.paystack.co/transaction/verify/" . $request->query('trxref'));
-      $payment_details = $paystack_client->json();
+      return $payment_details = $paystack_client->json();
       if ($payment_details['data']['status'] === "success") {
         $order_user = User::whereEmail($payment_details['data']['metadata']['email'])->firstOrFail();
         $orders = Order::whereCode($payment_details['data']['metadata']['order_codes'])
@@ -215,7 +215,7 @@ class OrderController extends Controller
           }
           Mail::to($order_user)->send(new OrderRecieved($order_user, $order));
           foreach (['wdcebenezer@gmail.com', 'joekenpat@gmail.com'] as $recipient) {
-            Mail::to($recipient)->send(new NewOrderRecieved($order_user, $order));
+            Mail::to($recipient)->send(new NewOrderReceived($order));
           }
         }
         $response['message'] = 'Order Payment Successfull';

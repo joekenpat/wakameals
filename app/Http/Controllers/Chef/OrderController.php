@@ -25,7 +25,7 @@ class OrderController extends Controller
   {
     $orders = auth('chef')->user()->open_orders()->paginate(20);
     $response['status'] = 'success';
-    $response['open_orders'] = $orders;
+    $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -34,11 +34,24 @@ class OrderController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index_processing()
+  public function index_in_kitchen()
   {
-    $orders = auth('chef')->user()->processing_orders()->paginate(20);
+    $orders = auth('chef')->user()->in_kitchen_orders()->paginate(20);
     $response['status'] = 'success';
-    $response['processing_orders'] = $orders;
+    $response['orders'] = $orders;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
+  /**
+   * Display a listing of the resource.
+   *
+   * @return \Illuminate\Http\Response
+   */
+  public function index_almost_ready()
+  {
+    $orders = auth('chef')->user()->almost_ready_orders()->paginate(20);
+    $response['status'] = 'success';
+    $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -51,7 +64,7 @@ class OrderController extends Controller
   {
     $orders = auth('chef')->user()->prepared_orders()->paginate(20);
     $response['status'] = 'success';
-    $response['prepared_orders'] = $orders;
+    $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
   }
 
