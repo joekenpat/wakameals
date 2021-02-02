@@ -58,7 +58,9 @@ class DispatcherController extends Controller
 
     $new_dispatcher = new Dispatcher();
     foreach ($attribs as $attrib) {
-      if ($attrib == 'place') {
+      if ($attrib == 'password') {
+        $new_dispatcher->{$attrib} = Hash::make($request->{$attrib});
+      } else if ($attrib == 'place') {
         $new_dispatcher->{$attrib . '_id'} = $request->{$attrib};
       } else {
         $new_dispatcher->{$attrib} = $request->{$attrib};
@@ -131,7 +133,7 @@ class DispatcherController extends Controller
   {
     $this->validate($request, [
       'name' => 'sometimes|nullable||between:3,240',
-      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,'.auth('dispatcher')->user()->id,
+      'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone,' . auth('dispatcher')->user()->id,
       'place' => 'sometimes|nullable|alpha_dash|exists:places,id',
       'address' => 'sometimes|nullable|string|min:5|max:255',
       'avatar' => 'sometimes|nullable|image|mimes:jpg,jpeg,png,gif|max:2048',
