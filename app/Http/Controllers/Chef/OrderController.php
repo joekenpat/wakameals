@@ -90,6 +90,7 @@ class OrderController extends Controller
       ->whereStatus('confirmed')
       ->firstOrFail();
     $order->status = 'in_kitchen';
+    $order->chef_id = auth('chef')->user()->id;
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
     Mail::to($order_user)->send(new OrderInKitchen($order_user, $order));
@@ -108,6 +109,7 @@ class OrderController extends Controller
       ->whereStatus('in_kitchen')
       ->firstOrFail();
     $order->status = 'almost_ready';
+    $order->chef_id = auth('chef')->user()->id;
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
     Mail::to($order_user)->send(new OrderAlmostReady($order_user, $order));
@@ -126,6 +128,7 @@ class OrderController extends Controller
       ->whereIn('status', ['in_kitchen', 'almost_ready'])
       ->firstOrFail();
     $order->status = 'prepare_completed';
+    $order->chef_id = auth('chef')->user()->id;
     $order->update();
     $order_user = User::whereId($order->user_id)->firstOrFail();
     Mail::to($order_user)->send(new OrderPrepareCompleted($order_user, $order));
