@@ -88,16 +88,16 @@ class Chef extends Authenticatable
 
   public function prepared_orders()
   {
-    return Order::where('place_id', $this->place_id)
-      ->where('chef_id', $this->id)
+    return $this->hasMany(Order::class)
+      ->where('place_id', $this->place_id)
       ->whereIn('status', ['prepare_completed', 'completed', 'dispatched'])
       ->whereDate('created_at', '<=', now());;
   }
 
   public function in_kitchen_orders()
   {
-    return Order::where('place_id', $this->place_id)
-      ->where('chef_id', $this->id)
+    return $this->hasMany(Order::class)
+      ->where('place_id', $this->place_id)
       ->whereIn('status', 'in_kitchen')
       ->whereDate('created_at', '<=', now());
   }
