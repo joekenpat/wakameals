@@ -21,7 +21,11 @@ class OrderController extends Controller
    */
   public function index_assigned()
   {
-    $orders = Order::with(['user'])->whereDispatcherId(auth('dispatcher')->user()->id)->whereStatus('dispatched')->paginate(20);
+    $orders = Order::with(['user'])
+      ->whereDispatcherId(auth('dispatcher')->user()->id)
+      ->whereStatus('dispatched')
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['assigned_orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -48,7 +52,7 @@ class OrderController extends Controller
     $order = Order::whereDispatcherId(auth('dispatcher')->user()->id)->whereDispatchCode($request->dispatcher_code)->firstOrFail();
     $order->status = 'completed';
     $order->update();
-    $order_user =User::whereId($order->user_id)->firstOrFail();
+    $order_user = User::whereId($order->user_id)->firstOrFail();
     Mail::to($order_user)->send(new OrderCompleted($order_user, $order));
     $response['status'] = 'success';
     $response['messages'] = 'Order #' . $order->code . ' has been Dispatched';
@@ -67,9 +71,9 @@ class OrderController extends Controller
       $response['message'] = $mnf->getMessage();
       return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
     } catch (\Exception $e) {
-    $response['status'] = 'error';
-    $response['message'] = $e->getMessage();
-    return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
-  }
+      $response['status'] = 'error';
+      $response['message'] = $e->getMessage();
+      return response()->json($response, Response::HTTP_INTERNAL_SERVER_ERROR);
+    }
   }
 }

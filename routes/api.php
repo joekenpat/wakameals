@@ -79,6 +79,7 @@ Route::group([], function () {
   Route::group(['prefix' => 'order', 'middleware' => ['auth:user']], function () {
     Route::get('list/open', [OrderController::class, 'index_open']);
     Route::get('list/closed', [OrderController::class, 'index_closed']);
+    Route::get('list/future', [OrderController::class, 'index_future']);
     Route::get('verify_payment', [OrderController::class, 'verify_paystack_transaction']);
     Route::post('new', [OrderController::class, 'store']);
   });
@@ -183,7 +184,7 @@ Route::group(['prefix' => 'admin'], function () {
   //admin order route
   Route::group(['prefix' => 'order', 'middleware' => ['auth:admin']], function () {
     // Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
-    Route::get('list/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
+    Route::get('list/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready|future']);
     Route::post('set_status', [AdminOrderController::class, 'change_status']);
   });
 

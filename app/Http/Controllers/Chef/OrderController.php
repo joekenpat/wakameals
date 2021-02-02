@@ -23,7 +23,11 @@ class OrderController extends Controller
    */
   public function index_open()
   {
-    $orders = auth('chef')->user()->open_orders()->paginate(20);
+    $orders = auth('chef')
+      ->user()
+      ->open_orders()
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -36,7 +40,11 @@ class OrderController extends Controller
    */
   public function index_in_kitchen()
   {
-    $orders = auth('chef')->user()->in_kitchen_orders()->paginate(20);
+    $orders = auth('chef')
+      ->user()
+      ->in_kitchen_orders()
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -49,7 +57,9 @@ class OrderController extends Controller
    */
   public function index_almost_ready()
   {
-    $orders = auth('chef')->user()->almost_ready_orders()->paginate(20);
+    $orders = auth('chef')->user()->almost_ready_orders()
+      ->whereDate('created_at', '<=', now())
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
