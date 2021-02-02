@@ -23,10 +23,10 @@ class OrderController extends Controller
    */
   public function index_open()
   {
-    $orders = auth('chef')
+    return $orders = auth('chef')
       ->user()
       ->open_orders()
-      ->paginate(20);
+      ->toSql();
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
