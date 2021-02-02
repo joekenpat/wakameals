@@ -93,17 +93,17 @@ class Chef extends Authenticatable
 
   public function in_kitchen_orders()
   {
-    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->whereIn('status', 'in_kitchen')->whereDate('created_at', '<=', now());
+    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->whereIn('status', 'in_kitchen');
   }
 
   public function almost_ready_orders()
   {
-    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->where('status', 'almost_ready')->whereDate('created_at', '<=', now());
+    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('chef_id', $this->id)->where('status', 'almost_ready');
   }
 
   public function open_orders()
   {
-    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('status', 'confirmed')->whereDate('created_at', '<=', now());
+    return $this->hasMany(Order::class)->where('dispatcher_id', $this->dispatcher_id)->where('status', 'confirmed');
   }
 
 
