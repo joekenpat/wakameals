@@ -89,7 +89,7 @@ class OrderController extends Controller
         $new_order->address = $request->address;
       }
       $new_order->delivery_type = $request->delivery_type;
-      $new_order->status = 'created';
+      $new_order->status = 'new';
       $new_order->type = 'one_time';
       $new_order->user_id = Auth('user')->user()->id;
       $new_order->save();
