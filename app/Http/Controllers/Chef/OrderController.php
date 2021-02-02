@@ -26,7 +26,7 @@ class OrderController extends Controller
     return $orders = auth('chef')
       ->user()
       ->open_orders()
-      ->toSql();
+      ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
     return response()->json($response, Response::HTTP_OK);
@@ -42,7 +42,6 @@ class OrderController extends Controller
     $orders = auth('chef')
       ->user()
       ->in_kitchen_orders()
-      ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
@@ -59,7 +58,6 @@ class OrderController extends Controller
     $orders = auth('chef')
       ->user()
       ->almost_ready_orders()
-      ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
@@ -76,7 +74,6 @@ class OrderController extends Controller
     $orders = auth('chef')
       ->user()
       ->prepared_orders()
-      ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
