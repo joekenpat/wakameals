@@ -88,22 +88,22 @@ class Chef extends Authenticatable
 
   public function prepared_orders()
   {
-    return $this->hasMany(Order::class)->where('place_id', $this->place_id)->where('chef_id', $this->id)->whereIn('status', ['prepare_completed', 'completed', 'dispatched']);
+    return $this->hasMany(Order::class)->where('place_id', $this->attributes['place_id'])->where('chef_id', $this->attributes['id'])->whereIn('status', ['prepare_completed', 'completed', 'dispatched']);
   }
 
   public function in_kitchen_orders()
   {
-    return $this->hasMany(Order::class)->where('place_id', $this->place_id)->where('chef_id', $this->id)->whereIn('status', 'in_kitchen');
+    return $this->hasMany(Order::class)->where('place_id', $this->attributes['place_id'])->where('chef_id', $this->attributes['id'])->whereIn('status', 'in_kitchen');
   }
 
   public function almost_ready_orders()
   {
-    return $this->hasMany(Order::class)->where('place_id', $this->place_id)->where('chef_id', $this->id)->where('status', 'almost_ready');
+    return $this->hasMany(Order::class)->where('place_id', $this->attributes['place_id'])->where('chef_id', $this->attributes['id'])->where('status', 'almost_ready');
   }
 
   public function open_orders()
   {
-    return $this->hasMany(Order::class)->where('place_id', $this->place_id)->where('status', 'confirmed');
+    return $this->hasMany(Order::class)->where('place_id', $this->attributes['place_id'])->where('status', 'confirmed');
   }
 
 
