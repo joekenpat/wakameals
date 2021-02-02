@@ -60,7 +60,7 @@ class OrderController extends Controller
   public function index_future()
   {
     $orders = Order::whereUserId(Auth('user')->user()->id)->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])
-      ->whereDate('created_at', '>=', now()->addDay())
+      ->whereDate('created_at', '=>', now()->addDay())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;

@@ -39,7 +39,7 @@ class OrderController extends Controller
       $orders = Order::with(['user'])
         ->wherePlaceId(auth('admin')->user()->place_id)
         ->where('status', 'confirmed')
-        ->whereDate('created_at', '>=', now()->addDay())
+        ->whereDate('created_at', '=>', now()->addDay())
         ->paginate(20);
     } else {
       $orders = Order::with(['user'])
@@ -70,7 +70,7 @@ class OrderController extends Controller
     }
     if ($status == 'future') {
       $orders = Order::with(['user'])->where('status', 'confirmed')
-        ->whereDate('created_at', '>=', now()->addDay())
+        ->whereDate('created_at', '=>', now()->addDay())
         ->paginate(20);
     } else {
       $orders = Order::with(['user'])

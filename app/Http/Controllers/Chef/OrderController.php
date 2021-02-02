@@ -43,6 +43,7 @@ class OrderController extends Controller
     $orders = auth('chef')
       ->user()
       ->in_kitchen_orders()
+      ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
@@ -57,6 +58,7 @@ class OrderController extends Controller
   public function index_almost_ready()
   {
     $orders = auth('chef')->user()->almost_ready_orders()
+      ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
