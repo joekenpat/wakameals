@@ -29,5 +29,18 @@ class DispatcherSeeder extends Seeder
       'last_login' => now(),
       'blocked_at' => null,
     ]);
+    Dispatcher::create([
+      'name' => 'Inmotion Hub',
+      'status' => 'active',
+      'email' => 'inmotionicthub@gmail.com',
+      'type' => 'pickup',
+      'phone' => '09060400096',
+      'password' => Hash::make('$1qaz2wsx#'),
+      'place_id' => Place::first()->id,
+      'address' => 'Rivers State, Port Harcourt, Nkpolu',
+      'last_ip' => '127.0.0.1',
+      'last_login' => now(),
+      'blocked_at' => null,
+    ]);
   }
 }

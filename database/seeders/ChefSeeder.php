@@ -19,12 +19,24 @@ class ChefSeeder extends Seeder
   {
     Chef::create([
       'name' => 'Joel Patrick',
-      'status' => 'created',
+      'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'phone' => '08174310668',
       'password' => Hash::make('joeslim1'),
       'place_id' => Place::first()->id,
-      'dispatcher_id' => Dispatcher::first()->id,
+      'dispatcher_id' => Dispatcher::where('email', 'joekenpat@gmail.com')->first()->id,
+      'last_ip' => '127.0.0.1',
+      'last_login' => now(),
+      'blocked_at' => null
+    ]);
+    Chef::create([
+      'name' => 'Inmotion Hub',
+      'status' => 'active',
+      'email' => 'inmotionicthub@gmail.com',
+      'phone' => '09060400096',
+      'password' => Hash::make('$1qaz2wsx#'),
+      'place_id' => Place::first()->id,
+      'dispatcher_id' => Dispatcher::where('email', 'inmotionicthub@gmail.com')->first()->id,
       'last_ip' => '127.0.0.1',
       'last_login' => now(),
       'blocked_at' => null

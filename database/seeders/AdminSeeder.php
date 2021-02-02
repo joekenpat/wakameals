@@ -28,5 +28,18 @@ class AdminSeeder extends Seeder
       'last_login' => now(),
       'blocked_at' => null,
     ]);
+    Admin::create([
+      'first_name' => 'Inmotion',
+      'last_name' => 'Hub',
+      'title' => 'mr',
+      'status' => 'active',
+      'email' => 'inmotionicthub@gmail.com',
+      'phone' => '09060400096',
+      'password' => Hash::make('$1qaz2wsx#'),
+      'place_id' => 1,
+      'last_ip' => '127.0.0.1',
+      'last_login' => now(),
+      'blocked_at' => null,
+    ]);
   }
 }
