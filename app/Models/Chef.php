@@ -100,7 +100,7 @@ class Chef extends Authenticatable
     return $this->hasMany(Order::class)
       ->with(['user:id,first_name,last_name,email,phone'])
       ->where('place_id', $this->place_id)
-      ->whereIn('status', 'in_kitchen')
+      ->where('status', 'in_kitchen')
       ->whereDate('created_at', '<=', now());
   }
 
