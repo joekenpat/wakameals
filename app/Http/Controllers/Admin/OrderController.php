@@ -88,7 +88,7 @@ class OrderController extends Controller
   {
     $this->validate($request, [
       'order_id' => 'required|uuid|exists:orders,id',
-      'new_status' => 'required|alpha|in:confirmed,cancelled,dispatched,completed,in_kitchen,prepare_completed,almost_ready',
+      'new_status' => 'required|alpha_dash|in:confirmed,cancelled,dispatched,completed,in_kitchen,prepare_completed,almost_ready',
       'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
       'dispatcher_code' => 'required_if:dispatch_type,door_delivery|nullable|alpha_num|size:6|exists:dispatchers,code',
     ]);
