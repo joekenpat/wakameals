@@ -23,7 +23,7 @@ class OrderController extends Controller
    */
   public function index_open()
   {
-    return $orders = auth('chef')
+    $orders = auth('chef')
       ->user()
       ->open_orders()
       ->paginate(20);
