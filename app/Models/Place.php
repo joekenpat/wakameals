@@ -29,7 +29,8 @@ class Place extends Model
    * @var array
    */
   protected $fillable = [
-    'id', 'name', 'slug', 'enabled',
+    'id', 'name', 'slug', 'delivery_available',
+    'pickup_available', 'enabled',
   ];
 
   /**
@@ -38,11 +39,24 @@ class Place extends Model
    * @var array
    */
   protected $hidden = [
-    'enabled',
+    // 'enabled',
     'created_at',
     'updated_at',
     'deleted_at',
   ];
+
+  /**
+   * The attributes that should be cast to native types.
+   *
+   * @var array
+   */
+
+  protected $casts = [
+    'enabled' => 'boolean',
+    'delivery_available' => 'boolean',
+    'pickup_available' => 'boolean',
+  ];
+
 
   /**
    * The datetime format for this model.
@@ -79,5 +93,15 @@ class Place extends Model
   public function enable()
   {
     $this->update(['enabled' => true]);
+  }
+
+  public function toggle_pickup_availabilty()
+  {
+    $this->update(['pickup_available' => !$this->pickup_available]);
+  }
+
+  public function toggle_delivery_availabilty()
+  {
+    $this->update(['delivery_available' => !$this->delivery_available]);
   }
 }

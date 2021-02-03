@@ -43,12 +43,16 @@ class PlaceController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required|string|min:3|max:245'
+      'name' => 'required|string|min:3|max:245',
+      'delivery_available' => 'required|boolean',
+      'pickup_available' => 'required|boolean',
     ]);
 
 
     $place = Place::create([
       'name' => $request->name,
+      'delivery_available' => $request->delivery_available,
+      'pickup_available' => $request->pickup_available,
       'enabled' => true,
     ]);
 
@@ -67,14 +71,18 @@ class PlaceController extends Controller
   {
     $this->validate($request, [
       'name' => 'required|string|min:3|max:245',
+      'delivery_available' => 'required|boolean',
+      'pickup_available' => 'required|boolean',
     ]);
 
     $place = Place::whereSlug($place_slug)->firstOrFail();
     $place->name = $request->name;
+    $place->delivery_available = $request->delivery_available;
+    $place->pickup_available = $request->pickup_available;
     $place->update();
 
     $response['status'] = 'success';
-    $response['message'] = 'Place updated with new name';
+    $response['message'] = 'Place updated';
     $response['place'] = $place;
     return response()->json($response, Response::HTTP_OK);
   }

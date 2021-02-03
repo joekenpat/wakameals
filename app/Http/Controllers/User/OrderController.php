@@ -28,7 +28,7 @@ class OrderController extends Controller
   public function index_open()
   {
     $orders = Order::whereUserId(Auth('user')->user()->id)
-      ->whereIn('status', ['dispatched', 'created', 'pending', 'new'])
+      ->whereIn('status', ['dispatched', 'new','confirmed','in_ktichen','almost_ready','prepare_completed'])
       ->whereDate('created_at', '<=', now())
       ->paginate(20);
     $response['status'] = 'success';
@@ -158,7 +158,7 @@ class OrderController extends Controller
                 }
                 $new_order->delivery_type = $request->delivery_type;
                 $new_order->type = 'recurring';
-                $new_order->status = 'new';
+                $new_order->status = 'created';
                 $new_order->user_id = Auth('user')->user()->id;
                 $new_order->created_at = Carbon::parse("{$date}")->startOfDay()->setTimeFrom(Carbon::parse("{$time}"));
                 $new_order->updated_at = $new_order->created_at;
