@@ -23,7 +23,7 @@ class DispatcherController extends Controller
    */
   public function show()
   {
-    $dispatcher = Dispatcher::whereId(Auth('dispatcher')->user()->id)->with(['place'])->firstOrFail();
+    $dispatcher = Dispatcher::whereId(auth('dispatcher')->user()->id)->with(['place'])->firstOrFail();
     $response['status'] = 'success';
     $response['details'] = $dispatcher;
     return response()->json($response, Response::HTTP_OK);

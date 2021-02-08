@@ -127,7 +127,7 @@ Route::group(['prefix' => 'dispatcher'], function () {
   });
 
   //dispatcher chef route
-  Route::group(['prefix' => 'chef'], function () {
+  Route::group(['prefix' => 'chef', 'middleware' => ['auth:dispatcher']], function () {
     Route::get('list/active', [DispatcherChefController::class, 'index_active']);
     Route::get('list/blocked', [DispatcherChefController::class, 'index_blocked']);
     Route::get('list/pending', [DispatcherChefController::class, 'index_pending']);
