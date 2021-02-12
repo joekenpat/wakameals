@@ -103,16 +103,22 @@ class DispatcherController extends Controller
 
     if (Dispatcher::where("$auth_by", $request->input('identifier'))->exists()) {
       $dispatcher = Dispatcher::where($auth_by, $request->input('identifier'))->first();
-      if (password_verify($request->input('password'), $dispatcher->password)) {
-        $this->auth_success($dispatcher);
-        $response['status'] = 'success';
-        $response['message'] = 'Log-in Successfull';
-        $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
-        return response()->json($response, Response::HTTP_OK);
-      } else {
+      if ($dispatcher->status == 'blocked' || $dispatcher->blocked_at != NULL) {
         $response['message'] = 'Invalid Credentials';
-        $response['errors'] = ['password' => ['Password Incorrect']];
+        $response['errors'] = ["$auth_by" => ['Account Has Been Disabled']];
         return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+      } else {
+        if (password_verify($request->input('password'), $dispatcher->password)) {
+          $this->auth_success($dispatcher);
+          $response['status'] = 'success';
+          $response['message'] = 'Log-in Successfull';
+          $response['token'] = $dispatcher->createToken(config('app.name') . '_personal_access_token', ['dispatcher'])->accessToken;
+          return response()->json($response, Response::HTTP_OK);
+        } else {
+          $response['message'] = 'Invalid Credentials';
+          $response['errors'] = ['password' => ['Password Incorrect']];
+          return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
       }
     } else {
       $response['message'] = 'Invalid Credentials';

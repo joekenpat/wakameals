@@ -102,16 +102,22 @@ class ChefController extends Controller
 
     if (Chef::where("$auth_by", $request->input('identifier'))->exists()) {
       $chef = Chef::where($auth_by, $request->input('identifier'))->first();
-      if (password_verify($request->input('password'), $chef->password)) {
-        $this->auth_success($chef);
-        $response['status'] = 'success';
-        $response['message'] = 'Log-in Successfull';
-        $response['token'] = $chef->createToken(config('app.name') . '_personal_access_token', ['chef'])->accessToken;
-        return response()->json($response, Response::HTTP_OK);
-      } else {
+      if ($chef->status == 'blocked' || $chef->blocked_at != NULL) {
         $response['message'] = 'Invalid Credentials';
-        $response['errors'] = ['password' => ['Password Incorrect']];
+        $response['errors'] = ["$auth_by" => ['Account Has Been Disabled']];
         return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+      } else {
+        if (password_verify($request->input('password'), $chef->password)) {
+          $this->auth_success($chef);
+          $response['status'] = 'success';
+          $response['message'] = 'Log-in Successfull';
+          $response['token'] = $chef->createToken(config('app.name') . '_personal_access_token', ['chef'])->accessToken;
+          return response()->json($response, Response::HTTP_OK);
+        } else {
+          $response['message'] = 'Invalid Credentials';
+          $response['errors'] = ['password' => ['Password Incorrect']];
+          return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
+        }
       }
     } else {
       $response['message'] = 'Invalid Credentials';

@@ -103,9 +103,9 @@ class UserController extends Controller
 
     if (User::where("$auth_by", $request->input('identifier'))->exists()) {
       $user = User::where($auth_by, $request->input('identifier'))->first();
-      if ($user->status == 'blocked') {
+      if ($user->status == 'blocked' || $user->blocked_at != NULL) {
         $response['message'] = 'Invalid Credentials';
-        $response['errors'] = ["$auth_by" => ['No account with that ' . "$auth_by"]];
+        $response['errors'] = ["$auth_by" => ['Account Has Been Disabled']];
         return response()->json($response, Response::HTTP_UNPROCESSABLE_ENTITY);
       } else {
         if (password_verify($request->input('password'), $user->password)) {
