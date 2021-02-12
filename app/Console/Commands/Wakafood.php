@@ -4,14 +4,14 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class Wakameal extends Command
+class Wakafood extends Command
 {
   /**
    * The name and signature of the console command.
    *
    * @var string
    */
-  protected $signature = 'wakameal:install';
+  protected $signature = 'wakafood:install';
 
   /**
    * The console command description.

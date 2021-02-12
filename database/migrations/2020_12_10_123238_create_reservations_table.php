@@ -20,7 +20,6 @@ class CreateReservationsTable extends Migration
       $table->string('phone');
       $table->string('email');
       $table->text('address')->nullable()->default(null);
-      $table->string('place_id');
       $table->text('event_address')->nullable()->default(null);
       $table->string('event_type')->nullable()->default(null);;
       $table->string('service_type');
