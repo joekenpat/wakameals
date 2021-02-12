@@ -83,6 +83,21 @@ class OrderController extends Controller
     return response()->json($response, Response::HTTP_OK);
   }
 
+  public function assign_dispatcher(Request $request)
+  {
+    $this->validate($request, [
+      'order_id' => 'required|uuid|exists:orders,id',
+      'dispatcher_id' => 'required_if:dispatch_type,door_delivery|nullable|alpha_num|size:6|exists:dispatchers,code',
+    ]);
+    $order = Order::whereId($request->order_id)->firstOrFail();
+    $dispatcher = Dispatcher::whereId($request->dispatcher_id)->firstOrFail();
+    $order->dispatcher_id = $dispatcher->id;
+    $order->update();
+    $response['status'] = 'success';
+    $response['messages'] = 'Order #' . $order->code . ' has been Assigned To: ' . $dispatcher->name;
+    return response()->json($response, Response::HTTP_OK);
+  }
+
 
   public function change_status(Request $request)
   {

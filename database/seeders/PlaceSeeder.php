@@ -17,6 +17,8 @@ class PlaceSeeder extends Seeder
     Place::create([
       'name' => 'Port Harcourt',
       'enabled' => true,
+      "delivery_available" => true,
+      "pickup_available" => true,
     ]);
   }
 }

@@ -17,7 +17,7 @@ class DispatcherSeeder extends Seeder
   public function run()
   {
     Dispatcher::create([
-      'name' => 'Joel Patrick',
+      'name' => 'Test Dispatcher 1',
       'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'type' => 'pickup',

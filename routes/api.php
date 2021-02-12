@@ -186,6 +186,7 @@ Route::group(['prefix' => 'admin'], function () {
     // Route::get('list/assigned/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready']);
     Route::get('list/{status}', [AdminOrderController::class, 'index_assigned'])->where(['status' => 'new|confirmed|cancelled|dispatched|completed|in_kitchen|prepare_completed|almost_ready|future']);
     Route::post('set_status', [AdminOrderController::class, 'change_status']);
+    Route::post('assign_dispatcher', [AdminOrderController::class, 'assign_dispatcher']);
   });
 
 
@@ -199,7 +200,7 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('delete/{dispatcher_code}', [AdminDispatcherController::class, 'delete'])->whereAlphaNumeric(['dispatcher_code']);
   });
 
-  //admin table reservation route
+  //admin reservation route
   Route::group(['prefix' => 'reservation', 'middleware' => ['auth:admin']], function () {
     Route::get('list/approved', [AdminReservationController::class, 'index_approved']);
     Route::get('list/closed', [AdminReservationController::class, 'index_closed']);

@@ -18,7 +18,7 @@ class ChefSeeder extends Seeder
   public function run()
   {
     Chef::create([
-      'name' => 'Joel Patrick',
+      'name' => 'Test Chef',
       'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'phone' => '08174310668',
