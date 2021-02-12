@@ -17,7 +17,7 @@ class CreatePasswordResetsTable extends Migration
       $table->id();
       $table->string('resetable_type');
       $table->uuid('resetable_id');
-      $table->char('code', 6);
+      $table->char('code', 10);
       $table->boolean('used');
       $table->timestamp('expires_at', 6)->nullable()->default(null);
       $table->timestamp('created_at', 6)->useCurrent();

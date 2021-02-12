@@ -15,8 +15,8 @@ class CreateOrdersTable extends Migration
   {
     Schema::create('orders', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->string('code', 8)->unique();
-      $table->string('dispatch_code', 8)->unique()->nullable()->default(null);
+      $table->string('code', 10)->unique();
+      $table->string('dispatch_code', 10)->unique()->nullable()->default(null);
       $table->uuid('user_id');
       $table->uuid('chef_id')->nullable()->default(null);
       $table->uuid('dispatcher_id')->nullable()->default(null);

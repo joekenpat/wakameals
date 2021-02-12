@@ -17,6 +17,7 @@ use App\Services\OrderSearch;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Validation\Rule;
 
 class OrderController extends Controller
 {
@@ -105,7 +106,7 @@ class OrderController extends Controller
       'order_id' => 'required|uuid|exists:orders,id',
       'new_status' => 'required|alpha_dash|in:confirmed,cancelled,dispatched,completed,in_kitchen,prepare_completed,almost_ready',
       'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
-      'dispatcher_code' => 'required_if:dispatch_type,door_delivery|nullable|alpha_num|size:6|exists:dispatchers,code',
+      'dispatcher_code' => [Rule::requiredIf($request->dispatch_type == 'door_delivery' || $request->new_status == 'confirmed'), 'nullable', 'alpha_num', 'size:6', 'exists:dispatchers,code'],
     ]);
     if ($request->new_status == 'completed') {
       $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
@@ -169,7 +170,9 @@ class OrderController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'confirmed') {
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
+      $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
       $order->status = 'confirmed';
+      $order->dispatcher_id = $dispatcher->id;
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderConfirmed($order_user, $order));

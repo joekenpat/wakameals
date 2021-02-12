@@ -15,7 +15,7 @@ class PasswordReset extends Model
 
   protected $shortCodeConfig = [
     [
-      'length' => 6,
+      'length' => 8,
       'column_name' => 'code',
       'unique' => true
     ]
