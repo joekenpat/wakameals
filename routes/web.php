@@ -14,5 +14,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('{any}', function () {
-  return redirect()->away('https://wakameals.validprofit.xyz');
+  return redirect()->away('https://wakafoods.com');
 })->where('any', '^((?!api).)*$');
