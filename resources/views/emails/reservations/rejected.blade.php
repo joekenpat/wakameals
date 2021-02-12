@@ -1,15 +1,15 @@
 @markdown
-#### Dear {{$user->first_name}}
+#### Dear {{$user->name}}
 
 
-Hurray!
-Your Reservation Request:  **`{{$reservation->code}}`** has been Approved.
+Too Bad!
+Your Reservation Request:  **`{{$reservation->code}}`** has was Declined.
 
 
 #### Reservation Details
 - **Location:** {{$reservation->place->name}}.
-- **Address:** {{$reservation->dispatcher->address}}.
-- **No of Seats:** {{$reservation->seat_quantity}}
+- **Address:** {{$reservation->event_address}}.
+- **No of Seats:** {{$reservation->no_of_persons}}
 - **Proposed Time:** {{$reservation->reserved_at->toDayDateTimeString()}}
 
 At your service,

@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Dispatcher;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Response;
 
-class TableReservationController extends Controller
+class ReservationController extends Controller
 {
 
   /**
@@ -15,9 +15,9 @@ class TableReservationController extends Controller
    */
   public function index_pending()
   {
-    $table_reservations = auth('user')->user()->pending_table_reservations()->paginate(20);
+    $reservations = auth('user')->user()->pending_reservations()->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -28,9 +28,9 @@ class TableReservationController extends Controller
    */
   public function index_cancelled()
   {
-    $table_reservations = auth('user')->user()->cancelled_table_reservations()->paginate(20);
+    $reservations = auth('user')->user()->cancelled_reservations()->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -41,9 +41,9 @@ class TableReservationController extends Controller
    */
   public function index_approved()
   {
-    $table_reservations = auth('user')->user()->approved_table_reservations()->paginate(20);
+    $reservations = auth('user')->user()->approved_reservations()->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 }

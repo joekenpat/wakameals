@@ -5,11 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\ReservationApproved;
 use App\Mail\ReservationRejected;
-use App\Models\TableReservation;
+use App\Models\Reservation;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Mail;
 
-class TableReservationController extends Controller
+class ReservationController extends Controller
 {
 
   /**
@@ -19,9 +19,9 @@ class TableReservationController extends Controller
    */
   public function index_pending()
   {
-    $table_reservations = TableReservation::where('status', 'pending')->paginate(20);
+    $reservations = Reservation::where('status', 'pending')->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -32,9 +32,9 @@ class TableReservationController extends Controller
    */
   public function index_cancelled()
   {
-    $table_reservations = TableReservation::where('status', 'cancelled')->paginate(20);
+    $reservations = Reservation::where('status', 'cancelled')->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -45,9 +45,9 @@ class TableReservationController extends Controller
    */
   public function index_approved()
   {
-    $table_reservations = TableReservation::where('status', 'approved')->paginate(20);
+    $reservations = Reservation::where('status', 'approved')->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
@@ -58,15 +58,15 @@ class TableReservationController extends Controller
    */
   public function index_closed()
   {
-    $table_reservations = TableReservation::where('status', 'close')->paginate(20);
+    $reservations = Reservation::where('status', 'close')->paginate(20);
     $response['status'] = 'success';
-    $response['table_reservations'] = $table_reservations;
+    $response['reservations'] = $reservations;
     return response()->json($response, Response::HTTP_OK);
   }
 
   public function cancel($reservation_code)
   {
-    $reservation = TableReservation::whereCode($reservation_code)
+    $reservation = Reservation::whereCode($reservation_code)
       ->firstOrFail();
     if ($reservation->status == 'cancelled') {
       $response['status'] = 'success';
@@ -83,7 +83,7 @@ class TableReservationController extends Controller
 
   public function approve($reservation_code)
   {
-    $reservation = TableReservation::whereCode($reservation_code)
+    $reservation = Reservation::whereCode($reservation_code)
       ->firstOrFail();
     if ($reservation->status == 'approve') {
       $response['status'] = 'success';
@@ -100,7 +100,7 @@ class TableReservationController extends Controller
 
   public function close($reservation_code)
   {
-    $reservation = TableReservation::whereCode($reservation_code)
+    $reservation = Reservation::whereCode($reservation_code)
       ->firstOrFail();
     if ($reservation->status == 'closed') {
       $response['status'] = 'success';
@@ -117,7 +117,7 @@ class TableReservationController extends Controller
 
   public function delete($reservation_code)
   {
-    $reservation = TableReservation::whereCode($reservation_code)
+    $reservation = Reservation::whereCode($reservation_code)
       ->firstOrFail();
     $reservation->delete();
     $response['status'] = 'success';

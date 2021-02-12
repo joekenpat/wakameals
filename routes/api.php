@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\MealController as AdminMealController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\PlaceController as AdminPlaceController;
 use App\Http\Controllers\Admin\SubcategoryController as AdminSubcategoryController;
-use App\Http\Controllers\Admin\TableReservationController as AdminTableReservationController;
+use App\Http\Controllers\Admin\ReservationController as AdminReservationController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Chef\ChefController;
 use App\Http\Controllers\Chef\OrderController as ChefOrderController;
@@ -24,7 +24,7 @@ use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\CartController;
 use App\Http\Controllers\User\DispatcherController as UserDispatcherController;
 use App\Http\Controllers\User\PasswordResetController;
-use App\Http\Controllers\User\TableReservationController;
+use App\Http\Controllers\User\ReservationController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -86,13 +86,13 @@ Route::group([], function () {
 
   //user table reservation route
   Route::group(['prefix' => 'reservation', 'middleware' => ['auth:user']],  function () {
-    Route::post('new', [TableReservationController::class, 'store']);
-    Route::get('list/approved', [TableReservationController::class, 'index_approved']);
-    Route::get('list/closed', [TableReservationController::class, 'index_closed']);
-    Route::get('list/pending', [TableReservationController::class, 'index_pending']);
-    Route::get('list/cancelled', [TableReservationController::class, 'index_cancelled']);
-    Route::get('cancel/{reservation_code}', [TableReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('delete/{reservation_code}', [TableReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
+    Route::post('new', [ReservationController::class, 'store']);
+    Route::get('list/approved', [ReservationController::class, 'index_approved']);
+    Route::get('list/closed', [ReservationController::class, 'index_closed']);
+    Route::get('list/pending', [ReservationController::class, 'index_pending']);
+    Route::get('list/cancelled', [ReservationController::class, 'index_cancelled']);
+    Route::get('cancel/{reservation_code}', [ReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('delete/{reservation_code}', [ReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
   });
   //guest place route
   Route::get('place/list', [PlaceController::class, 'index']);
@@ -201,13 +201,13 @@ Route::group(['prefix' => 'admin'], function () {
 
   //admin table reservation route
   Route::group(['prefix' => 'reservation', 'middleware' => ['auth:admin']], function () {
-    Route::get('list/approved', [AdminTableReservationController::class, 'index_approved']);
-    Route::get('list/closed', [AdminTableReservationController::class, 'index_closed']);
-    Route::get('list/pending', [AdminTableReservationController::class, 'index_pending']);
-    Route::get('list/cancelled', [AdminTableReservationController::class, 'index_cancelled']);
-    Route::get('approve/{reservation_code}', [AdminTableReservationController::class, 'approve'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('cancel/{reservation_code}', [AdminTableReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('delete/{reservation_code}', [AdminTableReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('list/approved', [AdminReservationController::class, 'index_approved']);
+    Route::get('list/closed', [AdminReservationController::class, 'index_closed']);
+    Route::get('list/pending', [AdminReservationController::class, 'index_pending']);
+    Route::get('list/cancelled', [AdminReservationController::class, 'index_cancelled']);
+    Route::get('approve/{reservation_code}', [AdminReservationController::class, 'approve'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('cancel/{reservation_code}', [AdminReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('delete/{reservation_code}', [AdminReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
   });
 
   //admin chef route

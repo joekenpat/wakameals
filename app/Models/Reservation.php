@@ -7,7 +7,7 @@ use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class TableReservation extends Model
+class Reservation extends Model
 {
   use ShortCode, SoftDeletes, UuidForKey;
 
@@ -27,11 +27,19 @@ class TableReservation extends Model
    */
   protected $fillable = [
     'code',
-    'user_id',
+    'name',
+    'phone',
+    'email',
+    'address',
     'place_id',
+    'event_address',
+    'event_type',
+    'service_type',
+    'crowd_type',
+    'menu_type',
     'reserved_at',
     'status',
-    'seat_quantity',
+    'no_of_persons',
     'dispatcher_id',
   ];
 
@@ -51,7 +59,6 @@ class TableReservation extends Model
   protected $with = [
     'place',
     'dispatcher',
-    'user',
   ];
 
 

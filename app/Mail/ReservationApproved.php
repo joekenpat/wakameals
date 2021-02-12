@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\TableReservation;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +19,7 @@ class ReservationApproved extends Mailable
    *
    * @return void
    */
-  public function __construct(User $user, TableReservation $reservation)
+  public function __construct(User $user, Reservation $reservation)
   {
     $this->user = $user;
     $this->reservation = $reservation;
@@ -32,7 +32,7 @@ class ReservationApproved extends Mailable
    */
   public function build()
   {
-    return $this->markdown('emails.table_reservations.approved', [
+    return $this->markdown('emails.reservations.approved', [
       'user' => $this->user,
       'reservation' => $this->reservation,
     ]);

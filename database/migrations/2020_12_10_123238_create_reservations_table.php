@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateTableReservationsTable extends Migration
+class CreateReservationsTable extends Migration
 {
   /**
    * Run the migrations.
@@ -13,11 +13,20 @@ class CreateTableReservationsTable extends Migration
    */
   public function up()
   {
-    Schema::create('table_reservations', function (Blueprint $table) {
+    Schema::create('reservations', function (Blueprint $table) {
       $table->uuid('id')->primary();
       $table->string('code', 6)->unique();
-      $table->uuid('user_id');
-      $table->integer('seat_quantity')->default(2);
+      $table->string('name');
+      $table->string('phone');
+      $table->string('email');
+      $table->text('address')->nullable()->default(null);
+      $table->string('place_id');
+      $table->text('event_address')->nullable()->default(null);
+      $table->string('event_type')->nullable()->default(null);;
+      $table->string('service_type');
+      $table->string('crowd_type')->nullable();
+      $table->string('menu_type')->nullable()->default(null);;
+      $table->integer('no_of_persons')->default(1);
       $table->uuid('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->string('status', 40);
@@ -35,6 +44,6 @@ class CreateTableReservationsTable extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('orders');
+    Schema::dropIfExists('reservations');
   }
 }

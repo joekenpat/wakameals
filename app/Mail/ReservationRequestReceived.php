@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\TableReservation;
+use App\Models\Reservation;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,15 +13,15 @@ class ReservationRequestReceived extends Mailable
 {
   use Queueable, SerializesModels;
 
-  protected $user, $reservation;
+  protected $reserver, $reservation;
   /**
    * Create a new message instance.
    *
    * @return void
    */
-  public function __construct(User $user, TableReservation $reservation)
+  public function __construct($reserver, Reservation $reservation)
   {
-    $this->user = $user;
+    $this->reserver = $reserver;
     $this->reservation = $reservation;
   }
 
@@ -32,8 +32,8 @@ class ReservationRequestReceived extends Mailable
    */
   public function build()
   {
-    return $this->markdown('emails.table_reservations.new_reservation', [
-      'user' => $this->user,
+    return $this->markdown('emails.reservations.new_reservation', [
+      'user' => $this->reserver,
       'reservation' => $this->reservation,
     ]);
   }

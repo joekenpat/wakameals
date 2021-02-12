@@ -30,6 +30,7 @@ class OrderController extends Controller
     $orders = Order::whereUserId(Auth('user')->user()->id)
       ->whereIn('status', ['dispatched', 'new', 'confirmed', 'in_ktichen', 'almost_ready', 'prepare_completed'])
       ->whereDate('created_at', '<=', now())
+      ->latest()
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
@@ -46,6 +47,7 @@ class OrderController extends Controller
     $orders = Order::whereUserId(Auth('user')->user()->id)
       ->whereIn('status', ['completed', 'cancelled_user', 'cancelled_system', 'cancelled_failed_payment'])
       ->whereDate('created_at', '<=', now())
+      ->latest()
       ->paginate(20);
     $response['status'] = 'success';
     $response['orders'] = $orders;
