@@ -38,7 +38,8 @@ trait ShortCode
    */
   public static function gen_short_code($length = 6): string
   {
-    $allowed_char = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    return substr(str_shuffle($allowed_char), 0, $length);
+    $min = ("1" . str_repeat(0, ($length - 1)));
+    $max = ("9" . str_repeat(0, ($length - 1)));
+    return random_int($min, $max);
   }
 }
