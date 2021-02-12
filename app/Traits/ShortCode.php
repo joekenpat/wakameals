@@ -36,7 +36,7 @@ trait ShortCode
    * Generate short Alphanumeric codes.
    * @return String
    */
-  public static function gen_short_code($length = 6): string
+  public static function gen_short_code($length = 8): string
   {
     $min = ("1" . str_repeat(0, ($length - 1)));
     $max = ("9" . str_repeat(0, ($length - 1)));

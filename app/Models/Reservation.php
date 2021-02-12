@@ -96,13 +96,13 @@ class Reservation extends Model
   protected static function booted()
   {
     static::creating(function ($order) {
-      $code = $order->gen_short_code(6);
+      $code = $order->gen_short_code(8);
       if (!static::where('id', '!=', $order->id)->whereCode($code)->withTrashed()->exists()) {
         $order->code = $code;
       } else {
-        $code = $order->gen_short_code(6);
+        $code = $order->gen_short_code(8);
         while (static::where('id', '!=', $order->id)->whereCode($code)->withTrashed()->exists()) {
-          $code = $order->gen_short_code(6);
+          $code = $order->gen_short_code(8);
         }
         $order->code = $code;
       }

@@ -91,8 +91,8 @@ Route::group([], function () {
     Route::get('list/closed', [ReservationController::class, 'index_closed']);
     Route::get('list/pending', [ReservationController::class, 'index_pending']);
     Route::get('list/cancelled', [ReservationController::class, 'index_cancelled']);
-    Route::get('cancel/{reservation_code}', [ReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('delete/{reservation_code}', [ReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('cancel/{reservation_code}', [ReservationController::class, 'cancel'])->whereNumber(['reservation_code']);
+    Route::get('delete/{reservation_code}', [ReservationController::class, 'delete'])->whereNumber(['reservation_code']);
   });
   //guest place route
   Route::get('place/list', [PlaceController::class, 'index']);
@@ -123,7 +123,7 @@ Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('list/assigned', [DispatcherOrderController::class, 'index_assigned']);
     Route::get('list/delivered', [DispatcherOrderController::class, 'index_delivered']);
     Route::post('confirm', [DispatcherOrderController::class, 'confirm']);
-    Route::get('get_order_details/{dispatch_code}', [DispatcherOrderController::class, 'get_order_details'])->whereAlphaNumeric(['dispatch_code']);
+    Route::get('get_order_details/{dispatch_code}', [DispatcherOrderController::class, 'get_order_details'])->whereNumber(['dispatch_code']);
   });
 
   //dispatcher chef route
@@ -131,9 +131,9 @@ Route::group(['prefix' => 'dispatcher'], function () {
     Route::get('list/active', [DispatcherChefController::class, 'index_active']);
     Route::get('list/blocked', [DispatcherChefController::class, 'index_blocked']);
     Route::get('list/pending', [DispatcherChefController::class, 'index_pending']);
-    Route::get('block/{chef_id}', [DispatcherChefController::class, 'block'])->whereAlphaNumeric(['chef_id']);
-    Route::get('activate/{chef_id}', [DispatcherChefController::class, 'unblock'])->whereAlphaNumeric(['chef_id']);
-    Route::get('delete/{chef_id}', [DispatcherChefController::class, 'delete'])->whereAlphaNumeric(['chef_id']);
+    Route::get('block/{chef_id}', [DispatcherChefController::class, 'block'])->whereNumber(['chef_id']);
+    Route::get('activate/{chef_id}', [DispatcherChefController::class, 'unblock'])->whereNumber(['chef_id']);
+    Route::get('delete/{chef_id}', [DispatcherChefController::class, 'delete'])->whereNumber(['chef_id']);
   });
 });
 
@@ -166,7 +166,7 @@ Route::group(['prefix' => 'chef'], function () {
     Route::post('set_status/in_kitchen', [ChefOrderController::class, 'mark_as_in_kitchen']);
     Route::post('set_status/almost_ready', [ChefOrderController::class, 'mark_as_almost_ready']);
     Route::post('set_status/prepare_completed', [ChefOrderController::class, 'mark_as_prepare_completed']);
-    Route::get('get_order_details/{order_code}', [ChefOrderController::class, 'get_order_details'])->whereAlphaNumeric(['order_code']);
+    Route::get('get_order_details/{order_code}', [ChefOrderController::class, 'get_order_details'])->whereNumber(['order_code']);
   });
 });
 
@@ -195,9 +195,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list/active', [AdminDispatcherController::class, 'index_active']);
     Route::get('list/pending', [AdminDispatcherController::class, 'index_pending']);
     Route::get('list/blocked', [AdminDispatcherController::class, 'index_blocked']);
-    Route::get('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->whereAlphaNumeric(['dispatcher_code']);
-    Route::get('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->whereAlphaNumeric(['dispatcher_code']);
-    Route::get('delete/{dispatcher_code}', [AdminDispatcherController::class, 'delete'])->whereAlphaNumeric(['dispatcher_code']);
+    Route::get('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->whereNumber(['dispatcher_code']);
+    Route::get('activate/{dispatcher_code}', [AdminDispatcherController::class, 'activate'])->whereNumber(['dispatcher_code']);
+    Route::get('delete/{dispatcher_code}', [AdminDispatcherController::class, 'delete'])->whereNumber(['dispatcher_code']);
   });
 
   //admin reservation route
@@ -206,9 +206,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list/closed', [AdminReservationController::class, 'index_closed']);
     Route::get('list/pending', [AdminReservationController::class, 'index_pending']);
     Route::get('list/cancelled', [AdminReservationController::class, 'index_cancelled']);
-    Route::get('approve/{reservation_code}', [AdminReservationController::class, 'approve'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('cancel/{reservation_code}', [AdminReservationController::class, 'cancel'])->whereAlphaNumeric(['reservation_code']);
-    Route::get('delete/{reservation_code}', [AdminReservationController::class, 'delete'])->whereAlphaNumeric(['reservation_code']);
+    Route::get('approve/{reservation_code}', [AdminReservationController::class, 'approve'])->whereNumber(['reservation_code']);
+    Route::get('cancel/{reservation_code}', [AdminReservationController::class, 'cancel'])->whereNumber(['reservation_code']);
+    Route::get('delete/{reservation_code}', [AdminReservationController::class, 'delete'])->whereNumber(['reservation_code']);
   });
 
   //admin chef route
