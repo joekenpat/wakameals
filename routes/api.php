@@ -85,7 +85,7 @@ Route::group([], function () {
   });
 
   //user table reservation route
-  Route::group(['prefix' => 'reservation', 'middleware' => ['auth:user']],  function () {
+  Route::group(['prefix' => 'reservation'],  function () {
     Route::post('new', [ReservationController::class, 'store']);
     Route::get('list/approved', [ReservationController::class, 'index_approved']);
     Route::get('list/closed', [ReservationController::class, 'index_closed']);
