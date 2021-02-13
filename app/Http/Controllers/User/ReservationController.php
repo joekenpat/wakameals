@@ -70,7 +70,7 @@ class ReservationController extends Controller
   public function store(Request $request)
   {
     $this->validate($request, [
-      'name' => 'required|alpha|min:3|max:50',
+      'name' => 'required|string|min:3|max:50',
       'email' => 'required|email',
       'address' => 'sometimes|string|nullable',
       'phone' => 'required|string|size:11',
@@ -95,6 +95,7 @@ class ReservationController extends Controller
       'crowd_type' => $request->crowd_type,
       'menu_type' => $request->menu_type,
       'status' => 'pending',
+      'service_type' => $request->service_type,
       'no_of_persons' => $request->number_of_seat,
       'dispatcher_id' => $dispatcher->id,
       'place_id' => $dispatcher->place->id,
