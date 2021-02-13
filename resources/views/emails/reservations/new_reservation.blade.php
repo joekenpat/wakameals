@@ -9,8 +9,8 @@ A new table reservation request was received! you should call the user shortly t
 
 #### Reservation Details
 - **Name:** {{$reservation->name}}.
-- **Phone:** {{$reservation->user->phone}}.
-- **Email:** {{$reservation->user->email}}.
+- **Phone:** {{$reservation->phone}}.
+- **Email:** {{$reservation->email}}.
 - **Location:** {{$reservation->place->name}}.
 - **Address:** {{$reservation->dispatcher->address}}.
 - **No of Persons:** {{$reservation->no_of_persons}}

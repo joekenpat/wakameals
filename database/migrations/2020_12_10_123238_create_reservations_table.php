@@ -15,7 +15,7 @@ class CreateReservationsTable extends Migration
   {
     Schema::create('reservations', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->string('code', 6)->unique();
+      $table->string('code', 10)->unique();
       $table->string('name');
       $table->string('phone');
       $table->string('email');
