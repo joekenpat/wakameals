@@ -96,7 +96,7 @@ class ReservationController extends Controller
       'menu_type' => $request->menu_type,
       'status' => 'pending',
       'service_type' => $request->service_type,
-      'no_of_persons' => $request->number_of_seat,
+      'no_of_persons' => $request->no_of_persons,
       'dispatcher_id' => $dispatcher->id,
       'place_id' => $dispatcher->place->id,
       'reserved_at' => Carbon::parse("{$request->reserved_date}")->startOfDay()->setTimeFrom(Carbon::parse("{$request->reserved_time}"))
