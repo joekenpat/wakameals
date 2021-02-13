@@ -15,7 +15,7 @@ class Order extends Model
 
   protected $shortCodeConfig = [
     [
-      'length' => 6,
+      'length' => 8,
       'column_name' => 'dispatcher_code',
       'unique' => true
     ]
