@@ -23,7 +23,7 @@ class UserController extends Controller
    */
   public function show()
   {
-    $user = User::whereId(Auth('user')->user()->id)->with(['place'])->firstOrFail();
+    $user = User::whereId(auth('user')->user()->id)->with(['place'])->firstOrFail();
     $response['status'] = 'success';
     $response['details'] = $user;
     return response()->json($response, Response::HTTP_OK);
