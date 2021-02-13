@@ -1,8 +1,8 @@
 @markdown
-New Table Reservation Request Received,
+New Reservation Request Received,
 
 
-A new table reservation request was received! you should call the user shortly to confirm the request.
+A new reservation request was received! you should call the user shortly to confirm the request.
 
 > Request Code: **`{{$reservation->code}}`**
 
