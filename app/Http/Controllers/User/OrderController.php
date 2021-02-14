@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\NewOrderReceived;
 use App\Mail\OrderPaymentCancelled;
 use App\Mail\OrderRecieved;
+use App\Models\Admin;
 use App\Models\Dispatcher;
 use App\Models\Order;
 use App\Models\OrderedMeal;
@@ -237,8 +238,9 @@ class OrderController extends Controller
             $order->update();
           }
           Mail::to($order_user)->send(new OrderRecieved($order_user, $order));
-          foreach (['wdcebenezer@gmail.com', 'joekenpat@gmail.com'] as $recipient) {
-            Mail::to($recipient)->send(new NewOrderReceived($order));
+          $admins = Admin::where('place_id', $order->place_id)->get();
+          foreach ($admins as $recipient) {
+            Mail::to($recipient->email)->send(new NewOrderReceived($order));
           }
         }
         $response['message'] = 'Order Payment Successfull';
