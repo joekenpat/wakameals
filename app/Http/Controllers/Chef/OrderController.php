@@ -83,10 +83,9 @@ class OrderController extends Controller
   public function mark_as_in_kitchen(Request $request)
   {
     $this->validate($request, [
-      'order_code' => 'required|alpha_num|size:8|exists:orders,code',
+      'order_code' => 'required|alpha_num|max:10|exists:orders,code',
     ]);
-    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
-      ->whereCode($request->order_code)
+    $order = Order::whereCode($request->order_code)
       ->whereStatus('confirmed')
       ->firstOrFail();
     $order->status = 'in_kitchen';
@@ -104,8 +103,7 @@ class OrderController extends Controller
     $this->validate($request, [
       'order_code' => 'required|alpha_num|size:8|exists:orders,code',
     ]);
-    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
-      ->whereCode($request->order_code)
+    $order = Order::whereCode($request->order_code)
       ->whereStatus('in_kitchen')
       ->firstOrFail();
     $order->status = 'almost_ready';
@@ -123,8 +121,7 @@ class OrderController extends Controller
     $this->validate($request, [
       'order_code' => 'required|alpha_num|size:8|exists:orders,code',
     ]);
-    $order = Order::whereDispatcherId(auth('chef')->user()->dispatcher->id)
-      ->whereCode($request->order_code)
+    $order = Order::whereCode($request->order_code)
       ->whereIn('status', ['in_kitchen', 'almost_ready'])
       ->firstOrFail();
     $order->status = 'prepare_completed';
