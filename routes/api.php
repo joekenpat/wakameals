@@ -193,6 +193,7 @@ Route::group(['prefix' => 'admin'], function () {
   //admin dispatcher route
   Route::group(['prefix' => 'dispatcher', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminDispatcherController::class, 'index_active']);
+    Route::get('list/pickup/from/{place_id}', [AdminDispatcherController::class, 'index_by_place']);
     Route::get('list/pending', [AdminDispatcherController::class, 'index_pending']);
     Route::get('list/blocked', [AdminDispatcherController::class, 'index_blocked']);
     Route::get('block/{dispatcher_code}', [AdminDispatcherController::class, 'block'])->whereNumber(['dispatcher_code']);
