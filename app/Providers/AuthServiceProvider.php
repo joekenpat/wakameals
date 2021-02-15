@@ -25,11 +25,12 @@ class AuthServiceProvider extends ServiceProvider
   public function boot()
   {
     $this->registerPolicies();
+    Passport::personalAccessTokensExpireIn(now()->addDays(30));
 
     Passport::tokensCan([
       'admin' => 'Access Admin Backend',
       'dispatcher' => 'Food Delivery Users',
-      'chef'=>'Food Preparing agents',
+      'chef' => 'Food Preparing agents',
       'user' => 'Food Ordering Users',
     ]);
 
