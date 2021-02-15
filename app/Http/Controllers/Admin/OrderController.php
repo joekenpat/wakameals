@@ -172,9 +172,11 @@ class OrderController extends Controller
       return response()->json($response, Response::HTTP_OK);
     } elseif ($request->new_status == 'confirmed') {
       $order = Order::with('ordered_meals')->whereId($request->order_id)->firstOrFail();
-      $dispatcher = Dispatcher::whereCode($request->dispatcher_code)->firstOrFail();
+      if ($request->delivery_type == 'door_delivery') {
+        $dispatcher = Dispatcher::whereCode($request->pickup_place_code)->firstOrFail();
+        $order->dispatcher_id = $dispatcher->id;
+      }
       $order->status = 'confirmed';
-      $order->dispatcher_id = $dispatcher->id;
       $order->update();
       $order_user = User::whereId($order->user_id)->firstOrFail();
       Mail::to($order_user)->send(new OrderConfirmed($order_user, $order));
