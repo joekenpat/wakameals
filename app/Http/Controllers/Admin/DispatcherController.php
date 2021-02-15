@@ -50,7 +50,7 @@ class DispatcherController extends Controller
     try {
       // $lga =  Lga::whereSlug($lga_slug)->firstOrFail();
       // $pickups = Dispatcher::whereLgaId($lga->id)->whereType("pickup")->get();
-      $place = Place::whereSlug($place_id)->firstOrFail();
+      $place = Place::whereId($place_id)->firstOrFail();
       $pickups = Dispatcher::wherePlaceId($place->id)->with(['place'])->select(['id', 'code', 'name', 'place_id', 'address'])
         ->whereType("pickup")
         ->whereStatus('active')->get();
