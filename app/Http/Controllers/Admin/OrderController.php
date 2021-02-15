@@ -37,7 +37,7 @@ class OrderController extends Controller
       $statuses = ['new'];
     }
     if ($status == 'future') {
-      $orders = Order::with(['user'])
+      $orders = Order::with(['user', 'dispatcher:id,name,code'])
         ->wherePlaceId(auth('admin')->user()->place_id)
         ->where('status', 'confirmed')
         ->whereDate('created_at', '>=', now()->addDay())
@@ -70,7 +70,7 @@ class OrderController extends Controller
       $statuses = ['new'];
     }
     if ($status == 'future') {
-      $orders = Order::with(['user'])->where('status', 'confirmed')
+      $orders = Order::with(['user', 'dispatcher:id,name,code'])->where('status', 'confirmed')
         ->whereDate('created_at', '>=', now()->addDay())
         ->paginate(20);
     } else {
@@ -106,7 +106,9 @@ class OrderController extends Controller
       'order_id' => 'required|uuid|exists:orders,id',
       'new_status' => 'required|alpha_dash|in:confirmed,cancelled,dispatched,completed,in_kitchen,prepare_completed,almost_ready',
       'dispatch_type' => 'required_if:new_status,dispatched|in:pickup,door_delivery',
-      'dispatcher_code' => [Rule::requiredIf($request->dispatch_type == 'door_delivery' || $request->new_status == 'confirmed'), 'nullable', 'alpha_num', 'size:6', 'exists:dispatchers,code'],
+      'dispatcher_code' => 'required_if:dispatch_type,door_delivery|nullable|alpha_num|size:6|exists:dispatchers,code',
+      'delivery_type' => 'required_if|new_status:confirmed|in:door_delivery,pickup',
+      'pickup_place_code' => 'required_if:delivery_type,door_delivery|nullable|alpha_num|size:6|exists:dispatchers,code,type,pickup',
     ]);
     if ($request->new_status == 'completed') {
       $order = Order::with(['user', 'ordered_meals'])->whereId($request->order_id)->firstOrFail();
