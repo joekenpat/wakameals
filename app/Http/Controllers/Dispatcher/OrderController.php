@@ -22,7 +22,7 @@ class OrderController extends Controller
   public function index_assigned()
   {
     $orders = Order::with(['user'])
-      // ->whereDispatcherId(auth('dispatcher')->user()->id)
+      ->whereDispatcherId(auth('dispatcher')->user()->id)
       ->whereStatus('dispatched')
       ->whereDate('created_at', '<=', now())
       ->paginate(20);
