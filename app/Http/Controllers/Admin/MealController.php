@@ -58,13 +58,13 @@ class MealController extends Controller
       'category' => 'required|alpha_dash|exists:categories,slug',
       'subcategory' => 'required|alpha_dash|exists:subcategories,slug',
       'measurement_quantity' => 'required|integer',
-      'measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo',
+      'measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo,regular',
       'description' => 'required|string|',
       'meal_extras' => 'sometimes|nullable|array|',
       'meal_extras.*.name' => 'required|string|min:3|max:240',
       'meal_extras.*.price' => 'required|integer|digits_between:1,999999',
       'meal_extras.*.measurement_quantity' => 'required|integer|',
-      'meal_extras.*.measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo',
+      'meal_extras.*.measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo,regular',
     ]);
 
     try {
@@ -139,13 +139,13 @@ class MealController extends Controller
       'category' => 'sometimes|nullable|alpha_dash|exists:categories,slug',
       'subcategory' => 'sometimes|nullable|alpha_dash|exists:subcategories,slug',
       'measurement_quantity' => 'sometimes|nullable|integer',
-      'measurement_type' => 'sometimes|nullable|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo',
+      'measurement_type' => 'sometimes|nullable|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo,regular',
       'description' => 'sometimes|nullable|string|',
       'meal_extras' => 'sometimes|nullable|array|',
       'meal_extras.*.name' => 'required|string|min:3|max:240',
       'meal_extras.*.price' => 'required|integer|digits_between:1,999999',
       'meal_extras.*.measurement_quantity' => 'required|integer|',
-      'meal_extras.*.measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo',
+      'meal_extras.*.measurement_type' => 'required|in:piece,g,kg,cube,small,big,medium,large,xlarge,xxlarge,jumbo,regular',
     ]);
 
     try {
