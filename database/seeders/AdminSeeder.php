@@ -18,7 +18,6 @@ class AdminSeeder extends Seeder
     Admin::create([
       'first_name' => 'Test',
       'last_name' => 'Admin',
-      'title' => 'mr',
       'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'phone' => '08174310668',
@@ -31,7 +30,6 @@ class AdminSeeder extends Seeder
     Admin::create([
       'first_name' => 'Inmotion',
       'last_name' => 'Hub',
-      'title' => 'mr',
       'status' => 'active',
       'email' => 'inmotionicthub@gmail.com',
       'phone' => '09060400096',

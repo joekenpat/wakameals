@@ -105,7 +105,6 @@ class AdminController extends Controller
       $attribs = [
         'first_name',
         'last_name',
-        'title',
         'phone',
         'place',
         'password'

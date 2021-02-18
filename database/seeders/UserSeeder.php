@@ -19,7 +19,6 @@ class UserSeeder extends Seeder
     User::create([
       'first_name' => 'Test',
       'last_name' => 'User',
-      'title' => 'mr',
       'status' => 'active',
       'email' => 'joekenpat@gmail.com',
       'phone' => '08174310668',
@@ -33,7 +32,6 @@ class UserSeeder extends Seeder
     User::create([
       'first_name' => 'Inmotion',
       'last_name' => 'Hub',
-      'title' => 'mr',
       'status' => 'active',
       'email' => 'inmotionicthub@gmail.com',
       'phone' => '09060400096',

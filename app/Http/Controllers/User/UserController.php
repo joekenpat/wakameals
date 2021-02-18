@@ -38,7 +38,6 @@ class UserController extends Controller
   public function default_register(Request $request)
   {
     $this->validate($request, [
-      'title' => 'sometimes|nullable|in:mr,ms',
       'first_name' => 'required|alpha',
       'last_name' => 'required|alpha',
       'phone' => 'sometimes|nullable|string|max:15|min:8|unique:users,phone',
@@ -61,11 +60,6 @@ class UserController extends Controller
       } else {
         $new_user->{$attrib} = $request->{$attrib};
       }
-    }
-    if ($request->has('title')) {
-      $new_user->title = $request->title;
-    } else {
-      $new_user->title = 'mr';
     }
 
     $new_user->status = 'active';
@@ -166,7 +160,6 @@ class UserController extends Controller
       $attribs = [
         'first_name',
         'last_name',
-        'title',
         'phone',
         'place',
         'password'

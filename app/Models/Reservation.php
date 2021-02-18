@@ -80,7 +80,7 @@ class Reservation extends Model
 
   public function user()
   {
-    return $this->belongsTo(User::class)->select('id', 'first_name', 'last_name', 'phone', 'title', 'email');
+    return $this->belongsTo(User::class)->select('id', 'first_name', 'last_name', 'phone', 'email');
   }
 
   public function dispatcher()
