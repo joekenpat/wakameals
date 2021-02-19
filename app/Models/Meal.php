@@ -102,9 +102,14 @@ class Meal extends Model
     return $this->belongsToMany(ExtraItem::class, 'meal_extra_items')->using(MealExtraItem::class);
   }
 
+  public function ordered_meals()
+  {
+    return $this->belongsToMany(OrderedMeal::class, 'meal_id');
+  }
+
   public function getImageAttribute($value)
   {
-    return $value == null ? null : asset('images/meals/'. $value);
+    return $value == null ? null : asset('images/meals/' . $value);
   }
 
   public function make_available()
