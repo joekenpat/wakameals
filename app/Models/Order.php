@@ -92,7 +92,7 @@ class Order extends Model
 
   public function ordered_meals()
   {
-    return $this->hasMany(OrderedMeal::class);
+    return $this->hasMany(OrderedMeal::class,'order_id');
   }
 
   public function user()

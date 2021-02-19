@@ -67,7 +67,7 @@ class OrderedMeal extends Model
 
   public function meal()
   {
-    return $this->belongsTo(Meal::class);
+    return $this->belongsTo(Meal::class, 'meal_id');
   }
 
   public function ordered_meal_extra_items()
