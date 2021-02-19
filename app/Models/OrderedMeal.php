@@ -49,7 +49,7 @@ class OrderedMeal extends Model
     'deleted_at',
     'updated_at',
     'order_id',
-    'meal_id',
+    // 'meal_id',
   ];
 
   /**
