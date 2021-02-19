@@ -104,7 +104,7 @@ class Meal extends Model
 
   public function ordered_meals()
   {
-    return $this->belongsToMany(OrderedMeal::class, 'meal_id');
+    return $this->hasMany(OrderedMeal::class, 'meal_id');
   }
 
   public function getImageAttribute($value)
