@@ -14,7 +14,7 @@ class CreateDispatchersTable extends Migration
   public function up()
   {
     Schema::create('dispatchers', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->id()->primary();
       $table->string('code', 10)->unique();
       $table->string('avatar')->nullable()->default(null);
       $table->string('name')->nullable()->default(null);

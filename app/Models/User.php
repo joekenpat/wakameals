@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Traits\UuidForKey;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -10,7 +9,7 @@ use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-  use UuidForKey, Notifiable, HasApiTokens;
+  use Notifiable, HasApiTokens;
 
   const filterables = [
     'name', 'place', 'blocked',

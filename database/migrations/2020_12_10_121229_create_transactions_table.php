@@ -15,7 +15,7 @@ class CreateTransactionsTable extends Migration
   {
     Schema::create('transactions', function (Blueprint $table) {
       $table->id();
-      $table->uuid('user_id');
+      $table->unsignedBigInteger('user_id');
       $table->uuid('order_id');
       $table->decimal('total_amount', 14, 2);
       $table->string('status', 40);

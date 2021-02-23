@@ -15,8 +15,8 @@ class CreateCartsTable extends Migration
   {
     Schema::create('carts', function (Blueprint $table) {
       $table->uuid('id')->primary();
-      $table->uuid('user_id');
-      $table->uuid('meal_id');
+      $table->unsignedBigInteger('user_id');
+      $table->unsignedBigInteger('meal_id');
       $table->string('name');
       $table->text('meal_extras')->nullable()->default(null);
       $table->text('special_instruction')->nullable()->default(null);

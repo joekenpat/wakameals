@@ -217,9 +217,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::get('list/active', [AdminChefController::class, 'index_active']);
     Route::get('list/blocked', [AdminChefController::class, 'index_blocked']);
     Route::get('list/pending', [AdminChefController::class, 'index_pending']);
-    Route::get('block/{chef_id}', [AdminChefController::class, 'block'])->whereUuid(['chef_id']);
-    Route::get('activate/{chef_id}', [AdminChefController::class, 'unblock'])->whereUuid(['chef_id']);
-    Route::get('delete/{chef_id}', [AdminDispatcherController::class, 'delete'])->whereUuid(['chef_id']);
+    Route::get('block/{chef_id}', [AdminChefController::class, 'block'])->whereNumber(['chef_id']);
+    Route::get('activate/{chef_id}', [AdminChefController::class, 'unblock'])->whereNumber(['chef_id']);
+    Route::get('delete/{chef_id}', [AdminDispatcherController::class, 'delete'])->whereNumber(['chef_id']);
   });
 
 
@@ -227,8 +227,8 @@ Route::group(['prefix' => 'admin'], function () {
   Route::group(['prefix' => 'user', 'middleware' => ['auth:admin']], function () {
     Route::get('list/active', [AdminUserController::class, 'index_active']);
     Route::get('list/blocked', [AdminUserController::class, 'index_blocked']);
-    Route::get('block/{user_id}', [AdminUserController::class, 'block'])->whereUuid(['user_id']);
-    Route::get('activate/{user_id}', [AdminUserController::class, 'activate'])->whereUuid(['user_id']);
+    Route::get('block/{user_id}', [AdminUserController::class, 'block'])->whereNumber(['user_id']);
+    Route::get('activate/{user_id}', [AdminUserController::class, 'activate'])->whereNumber(['user_id']);
   });
 
   //admin meal route

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Traits\Sluggable;
-use App\Traits\UuidForKey;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Str;
@@ -11,7 +10,7 @@ use Illuminate\Support\Str;
 class Meal extends Model
 {
 
-  use UuidForKey, SoftDeletes, Sluggable;
+  use SoftDeletes, Sluggable;
 
   /**
    * set the attributes to slug from

@@ -14,13 +14,13 @@ class CreateChefsTable extends Migration
   public function up()
   {
     Schema::create('chefs', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->id();
       $table->string('avatar')->nullable()->default(null);
       $table->string('name')->nullable()->default(null);
       $table->string('phone', 11)->unique()->nullable()->default(null);
       $table->string('email')->unique();
       $table->string('status', 40);
-      $table->uuid('dispatcher_id')->nullable()->default(null);
+      $table->unsignedBigInteger('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->timestamp('email_verified_at')->nullable();
       $table->ipAddress('last_ip');

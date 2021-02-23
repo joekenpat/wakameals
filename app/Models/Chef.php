@@ -10,7 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class Chef extends Authenticatable
 {
-  use Notifiable, HasApiTokens, UuidForKey, SoftDeletes;
+  use Notifiable, HasApiTokens, SoftDeletes;
 
 
   const filterables = [

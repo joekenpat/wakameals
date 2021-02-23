@@ -14,7 +14,7 @@ class CreateReservationsTable extends Migration
   public function up()
   {
     Schema::create('reservations', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->id();
       $table->string('code', 10)->unique();
       $table->string('name');
       $table->string('phone');
@@ -26,7 +26,7 @@ class CreateReservationsTable extends Migration
       $table->string('crowd_type')->nullable();
       $table->string('menu_type')->nullable()->default(null);;
       $table->integer('no_of_persons')->default(1);
-      $table->uuid('dispatcher_id')->nullable()->default(null);
+      $table->unsignedBigInteger('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->string('status', 40);
       $table->timestamp('reserved_at', 6)->useCurrent()->nullable();

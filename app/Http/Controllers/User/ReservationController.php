@@ -78,7 +78,7 @@ class ReservationController extends Controller
       'service_type' => 'required|string|in:pickup,door_delivery,full_buffet,served_buffet,pre_packed_service',
       'crowd_type' => 'required|string|in:mixed,adults,children,advanced,high_class,middle_class,low_class,mixed_class',
       'menu_type' => 'required|string|in:waka_g&b,waka_chinese,waka_naija,beverages,others',
-      'dispatcher' => 'required|uuid|exists:dispatchers,id',
+      'dispatcher' => 'required|exists:dispatchers,id',
       'reserved_date' => 'date_format:Y-m-d|before_or_equal:2 weeks|after_or_equal:tomorrow',
       'reserved_time' => 'date_format:H:i|before_or_equal:17:00|after_or_equal:8:00',
       'no_of_persons' => 'required|integer|min:1|max:50',

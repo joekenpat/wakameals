@@ -17,9 +17,9 @@ class CreateOrdersTable extends Migration
       $table->uuid('id')->primary();
       $table->string('code', 10)->unique();
       $table->string('dispatch_code', 10)->unique()->nullable()->default(null);
-      $table->uuid('user_id');
-      $table->uuid('chef_id')->nullable()->default(null);
-      $table->uuid('dispatcher_id')->nullable()->default(null);
+      $table->unsignedBigInteger('user_id');
+      $table->unsignedBigInteger('chef_id')->nullable()->default(null);
+      $table->unsignedBigInteger('dispatcher_id')->nullable()->default(null);
       $table->unsignedBigInteger('place_id')->nullable()->default(null);
       $table->string('status', 40);
       $table->string('delivery_type', 40);

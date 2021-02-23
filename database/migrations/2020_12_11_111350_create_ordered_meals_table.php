@@ -16,7 +16,7 @@ class CreateOrderedMealsTable extends Migration
     Schema::create('ordered_meals', function (Blueprint $table) {
       $table->id();
       $table->uuid('order_id');
-      $table->uuid('meal_id');
+      $table->unsignedBigInteger('meal_id');
       $table->string('name');
       $table->string('status', 40);
       $table->text('special_instruction')->nullable()->default(null);

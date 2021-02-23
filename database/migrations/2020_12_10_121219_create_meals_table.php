@@ -14,7 +14,7 @@ class CreateMealsTable extends Migration
   public function up()
   {
     Schema::create('meals', function (Blueprint $table) {
-      $table->uuid('id')->primary();
+      $table->id();
       $table->unsignedBigInteger('subcategory_id');
       $table->unsignedBigInteger('category_id');
       $table->string('slug')->unique();

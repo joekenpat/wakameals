@@ -10,7 +10,7 @@ use Laravel\Passport\HasApiTokens;
 
 class Admin extends Authenticatable
 {
-  use Notifiable, HasApiTokens, UuidForKey, SoftDeletes;
+  use Notifiable, HasApiTokens,SoftDeletes;
 
   /**
    * The attributes that are mass assignable.

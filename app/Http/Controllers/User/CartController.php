@@ -33,7 +33,7 @@ class CartController extends Controller
     $this->validate($request, [
       'id' => 'required|uuid',
       'name' => 'required|regex:/[A-Za-z0-9_ -]+/',
-      'meal_id' => 'required|uuid|exists:meals,id',
+      'meal_id' => 'required|exists:meals,id',
       'special_instruction' => 'sometimes|nullable|string',
       'meal_extras' => 'sometimes|array|min:0',
       'meal_extras.*.id' => 'required|exists:extra_items,id',
@@ -79,7 +79,7 @@ class CartController extends Controller
       'items' => 'required|array',
       'items.*.id' => 'required|uuid',
       'items.*.name' => 'required|regex:/[A-Za-z0-9_ -]+/',
-      'items.*.meal_id' => 'required|uuid|exists:meals,id',
+      'items.*.meal_id' => 'required|exists:meals,id',
       'items.*.special_instruction' => 'sometimes|nullable|string',
       'items.*.meal_extras' => 'sometimes|array|min:0',
       'items.*.meal_extras.*.id' => 'required|exists:extra_items,id',
@@ -172,7 +172,7 @@ class CartController extends Controller
   public function destroy(Request $request)
   {
     $this->validate($request, [
-      'id' => 'required|uuid|exists:carts',
+      'id' => 'required|exists:carts',
     ]);
     try {
       $user = User::whereId(Auth('user')->user()->id)->firstOrFail();
