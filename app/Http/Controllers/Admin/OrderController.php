@@ -43,7 +43,7 @@ class OrderController extends Controller
         ->whereDate('created_at', '>=', now()->addDay())
         ->paginate(20);
     } else {
-      $orders = Order::with(['user'])
+      $orders = Order::with(['user','ordered_meals','ordered_meals.meal'])
         ->wherePlaceId(auth('admin')->user()->place_id)
         ->whereIn('status', $statuses)
         ->whereDate('created_at', '<=', now())
